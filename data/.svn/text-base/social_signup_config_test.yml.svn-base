@@ -1,0 +1,8 @@
+facebook:
+    appId: 222032464632845
+    secret: 4b9910cdfc9978e001f452e999423938
+    redirect_uri: http://test.regurume.com/login/signupfacebook/
+twitter:
+    appId: 118493191654608
+    secret: 9f8a2541f71cb45ee69c0304edf4e203
+    redirect_uri: http://regurume.com/index/facebooklogin/

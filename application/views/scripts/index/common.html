@@ -1,0 +1,83 @@
+{{if $view_flg == "new"}}
+
+ <!--#新着/-->
+
+<div id="current" class="content_wrap">
+
+<div class="block thumbnailBox" id="ranklist_new">
+    {{if $top_new !=array()}}
+        {{foreach from=$top_new key="key" item="value" name="rank"}}
+
+            {{include file="./common/ranking.html"}}
+
+        {{/foreach}}
+    {{/if}}
+</div>
+
+{{if $top_new and ($top_new.0.cnt > $display_numinit)}}
+<div class="block moreRead" id="readmore_new">
+    <a href="javascript:void(0);" id="atag_new">もっと見る</a>
+        <input type="hidden" id="intPage_new" name="intPage_new" value="{{$display_numinit}}">
+        <input type="hidden" id="display_num_new" name="display_num_new" value="{{$display_num}}">
+</div>
+{{/if}}
+
+</div>
+
+<!--#新着/-->
+
+{{/if}}
+
+
+{{if $view_flg == "reguru"}}
+
+ <!--#気に入り/-->
+ <div id="reguru" class="content_wrap">
+ <div class="block thumbnailBox" id="ranklist_reguru">
+     {{if $top_reguru !=array()}}
+         {{foreach from=$top_reguru key="key" item="value" name="rank"}}
+
+            {{include file="./common/ranking.html"}}
+
+         {{/foreach}}
+     {{/if}}
+ </div>
+
+{{if $top_reguru and ($top_reguru.0.cnt > $display_numinit)}}
+ <div class="block moreRead" id="readmore_reguru">
+     <a href="javascript:void(0);" id="atag_reguru">もっと見る</a>
+         <input type="hidden" id="intPage_reguru" name="intPage_reguru" value="{{$display_numinit}}">
+         <input type="hidden" id="display_num_reguru" name="display_num_reguru" value="{{$display_num}}">
+ </div>
+ {{/if}}
+
+ </div>
+ <!--#気に入り/-->
+
+{{/if}}
+
+
+{{if $view_flg == "pageview"}}
+ <!--#ページビュー数/-->
+ <div id="pv" class="content_wrap">
+ <div class="block thumbnailBox" id="ranklist_pv">
+     {{if $top_pageview !=array()}}
+         {{foreach from=$top_pageview key="key" item="value" name="rank"}}
+
+            {{include file="./common/ranking.html"}}
+
+         {{/foreach}}
+     {{/if}}
+ </div>
+{{if $top_pageview and ($top_pageview.0.cnt > $display_numinit)}}
+ <div class="block moreRead" id="readmore_pv">
+     <a href="javascript:void(0);"  id="atag_pv">もっと見る</a>
+         <input type="hidden" id="intPage_pv" name="intPage_pv" value="{{$display_numinit}}">
+         <input type="hidden" id="display_num_pv" name="display_num_pv" value="{{$display_num}}">
+ </div>
+ {{/if}}
+
+ </div>
+ <!--#ページビュー数/-->
+
+ {{/if}}

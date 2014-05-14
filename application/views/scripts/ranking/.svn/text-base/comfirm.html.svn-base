@@ -1,0 +1,232 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<script type="text/javascript">
+$(document).ready(function(){
+    //クリック先によってアクションを変更
+    $('[actionURL]').click(function(){
+        if($(this).attr('actionURL') != ""){
+            $('form').attr('action', $(this).attr('actionURL'));
+        }
+    });
+});
+</script>
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+
+<!--#wrapper/-->
+<div id="wrapperBg">
+    <!--#header/-->
+    {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#contents/-->
+    <div id="container" class="wrap clearfix">
+    	<div id="colomnContents">
+            <h2 class="titleBox01"><span>:</span>ランキングを作る／確認</h2>
+        <div class="inputStyleBox">
+
+		<form enctype="multipart/form-data" id="form_main" name="form_main" action="" method="post">
+        <div class="editRankStyle">
+            <p class="stepTitle"><span class="step">STEP1</span><br />ランキングタイトルをいれます <span class="textAttention">必須</span></p>
+            <div class="rankingInput">{{$detail.title|escape:"html"}}Best3</div>
+            <p class="stepTitle"><span class="step">STEP2</span><br />重視しているカテゴリにチェックを入れます <span class="textAttention">必須（1個以上）</span></p>
+            <div>
+            	<ul class="listCategory1">
+            		{{foreach from=$check_list key="l_id" item="l_value" name="large"}}
+            		<li>
+                    {{foreach from=$list key="k" item="v" name="category"}}
+			        {{if $v.large_id == $l_value.large_id}}
+			            {{$v.large_value}}
+			        {{/if}}
+                    {{/foreach}}
+
+                    {{if $l_value.small_value !=""}}
+                    ／{{$l_value.small_value}}
+                    {{/if}}
+                    </li>
+                {{/foreach}}
+            	</ul>
+            </div>
+            <p class="stepTitle"><span class="step">STEP3</span><br />お店を登録します <span class="textAttention">必須(一店舗以上)</span></p>
+
+            <div>
+
+            <div class="shopPosting clearfix">
+            <p class="rankNumber">1位</p>
+
+            {{if $detail.shop_id_1 !=""}}
+                <div class="photoUp">
+                    <div class="file">
+                           {{if $photo_1 != null and $photo_1 !="" and $detail.photo_delflg_1 !="1" }}
+        					<img src="/img/tmp/ranking/{{$user_id}}/{{$photo_1}}" width="100" height="100" />
+   							{{/if}}
+                    </div>
+                </div>
+                <div class="textUp">
+                    <dl class="listDl1">
+                        <dt>店名</dt>
+                        <dd>
+                        {{if $detail.shop_name_1}}
+                            {{$detail.shop_name_1}}
+                        {{/if}}
+                        </dd>
+                        <dt>感想</dt>
+                        <dd>{{$detail.explain_1|escape:"html"}}</dd>
+                    </dl>
+                </div>
+                {{else}}
+				    未設定<!--:<a href="/shop/regist/" target="_blank">お店を新しく登録する</a>-->
+				{{/if}}
+            </div>
+            <div class="shopPosting clearfix">
+            <p class="rankNumber">2位</p>
+            {{if $detail.shop_id_2 !=""}}
+                <div class="photoUp">
+                    <div class="file">
+                           {{if $photo_2 != null and $photo_2 !="" and $detail.photo_delflg_2 !="1"}}
+        					<img src="/img/tmp/ranking/{{$user_id}}/{{$photo_2}}" width="100" height="100" />
+   							{{/if}}
+                    </div>
+                </div>
+                <div class="textUp">
+                    <dl class="listDl1">
+                        <dt>店名</dt>
+                        <dd>
+                        {{if $detail.shop_name_2}}
+                            {{$detail.shop_name_2}}
+                        {{/if}}
+                        </dd>
+                        <dt>感想</dt>
+                        <dd>{{$detail.explain_2|escape:"html"}}</dd>
+                    </dl>
+                </div>
+                {{else}}
+				    未設定<!--:<a href="/shop/regist/">お店を新しく登録する</a>-->
+				{{/if}}
+            </div>
+            <div class="shopPosting clearfix">
+            <p class="rankNumber">3位</p>
+
+            {{if $detail.shop_id_3 !=""}}
+                <div class="photoUp">
+                    <div class="file">
+                           {{if $photo_3 != null and $photo_3 !="" and $detail.photo_delflg_3 !="1"}}
+                           <img src="/img/tmp/ranking/{{$user_id}}/{{$photo_3}}" width="100" height="100" />
+   							{{/if}}
+                    </div>
+                </div>
+                <div class="textUp">
+                    <dl class="listDl1">
+                        <dt>店名</dt>
+                        <dd>
+                        {{if $detail.shop_name_3}}
+                            {{$detail.shop_name_3}}
+                        {{/if}}
+                        </dd>
+                        <dt>感想</dt>
+                        <dd>{{$detail.explain_3|escape:"html"}}</dd>
+                    </dl>
+                </div>
+                {{else}}
+				    未設定<!--:<a href="/shop/regist/">お店を新しく登録する</a>-->
+				{{/if}}
+
+            </div>
+             </div>
+
+             <div class="boxTag" id="area">
+              <p>タグづけ <span>同じ話題のランキングを他のユーザーから見つけやすくするという機能です</span></p>
+                <div>{{foreach from=$detail.tag key="tag_id" item="tag_value" name="tag"}}
+    <ul class="inline">
+    {{$tag_value}}
+    <li><input type="hidden" name="tag[]"   value="{{$tag_value|escape:'html'}}"/></li>
+    {{/foreach}}
+    </ul>
+	</div>
+  </div>
+
+<input type="hidden" name="title"   id="title"  value="{{$detail.title}}"/>
+<input type="hidden" name="rank_id"   id="rank_id"  value="{{$detail.rank_id}}"/>
+<input type="hidden" name="shop_name_1"   id="shop_name_1"  value="{{if $detail.shop_name_1}}{{$detail.shop_name_1}}{{/if}}"/>
+<input type="hidden" name="explain_1"   id="explain_1"  value="{{$detail.explain_1}}"/>
+<input type="hidden" name="shop_id_1"   id="shop_id_1"  value="{{$detail.shop_id_1}}"/>
+<input type="hidden" name="genre1_1"   id="genre1_1"  value="{{$detail.genre1_1}}"/>
+<input type="hidden" name="genre2_1"   id="genre2_1"  value="{{$detail.genre2_1}}"/>
+<input type="hidden" name="genre3_1"   id="genre3_1"  value="{{$detail.genre3_1}}"/>
+<input type="hidden" name="photo_1"   id="photo_1"  value="{{$detail.photo_1}}"/>
+<input type="hidden" name="photo_tempo_1"   id="photo_1"  value="{{$photo_1}}"/>
+
+<input type="hidden" name="shop_name_2"   id="shop_name_2"  value="{{if $detail.shop_name_2}}{{$detail.shop_name_2}}{{/if}}"/>
+<input type="hidden" name="explain_2"   id="explain_2"  value="{{$detail.explain_2}}"/>
+<input type="hidden" name="shop_id_2"   id="shop_id_2"  value="{{$detail.shop_id_2}}"/>
+<input type="hidden" name="genre1_2"   id="genre1_1"  value="{{$detail.genre1_2}}"/>
+<input type="hidden" name="genre2_2"   id="genre2_2"  value="{{$detail.genre2_2}}"/>
+<input type="hidden" name="genre3_2"   id="genre3_2"  value="{{$detail.genre3_2}}"/>
+<input type="hidden" name="photo_2"   id="photo_2"  value="{{$detail.photo_2}}"/>
+<input type="hidden" name="photo_tempo_2"   id="photo_1"  value="{{$photo_2}}"/>
+
+<input type="hidden" name="shop_name_3"   id="shop_name_3"  value="{{if $detail.shop_name_3}}{{$detail.shop_name_3}}{{/if}}"/>
+<input type="hidden" name="explain_3"   id="explain_3"  value="{{$detail.explain_3}}"/>
+<input type="hidden" name="shop_id_3"   id="shop_id_3"  value="{{$detail.shop_id_3}}"/>
+<input type="hidden" name="genre1_3"   id="genre1_3"  value="{{$detail.genre1_3}}"/>
+<input type="hidden" name="genre2_3"   id="genre2_3"  value="{{$detail.genre2_3}}"/>
+<input type="hidden" name="genre3_3"   id="genre3_3"  value="{{$detail.genre3_3}}"/>
+<input type="hidden" name="photo_3"   id="photo_3"  value="{{$detail.photo_3}}"/>
+<input type="hidden" name="photo_tempo_3"   id="photo_1"  value="{{$photo_3}}"/>
+
+<input type="hidden" name="photo_delflg_1"   id="photo_delflg_1"  value="{{$detail.photo_delflg_1}}"/>
+<input type="hidden" name="photo_delflg_2"   id="photo_delflg_2"  value="{{$detail.photo_delflg_2}}"/>
+<input type="hidden" name="photo_delflg_3"   id="photo_delflg_3"  value="{{$detail.photo_delflg_3}}"/>
+
+<input type="hidden" name="pref_1"   id="pref_1"  value="{{$detail.pref_1}}"/>
+<input type="hidden" name="pref_2"   id="pref_2"  value="{{$detail.pref_2}}"/>
+<input type="hidden" name="pref_3"   id="pref_3"  value="{{$detail.pref_3}}"/>
+
+<input type="hidden" name="comfirm_flg"   id="comfirm_flg"  value="1"/>
+
+<div>
+ <ul class="inline text-center">
+{{if $detail.rank_id != ""}}
+ 	<li><input type="submit" value="入力画面に戻る" actionURL="/ranking/backtoedit/" class="btn btnFix" /></li>
+{{else}}
+    <li><input type="submit" value="入力画面に戻る" actionURL="/ranking/backtoinput/" class="btn btnFix" /></li>
+{{/if}}
+ 	<li><input type="submit"  value="完了画面へ" actionURL="/ranking/complete/" class="btn btnFix" /></li>
+ </ul>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+
+
+<!--#右サイド/-->
+    {{include file="./common/rightside.html"}}
+<!--#右サイド/-->
+
+
+
+    </div>
+    <!--/#contents-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+</div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>
+

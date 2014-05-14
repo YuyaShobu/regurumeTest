@@ -1,0 +1,62 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<!--#wrapper/-->
+<div id="wrapperBg">
+    <!--#header/-->
+     {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#container/-->
+    <div id="container" class="wrap ">
+         <div id="boxEntry">
+            <h2 class="titleBox01"><span>:</span>アカウント削除申請</h2>
+            <div class="formStyleTable block">
+            <form action="/user/retirecomplete/"  method="post">
+			 <table>
+	             <tr>
+	             	<th>ニックネーム </th>
+	             	<td>{{$user_name}}</td>
+	             </tr>
+	             <tr>
+	             	<th>メールアドレス</th>
+	             	<td>{{$mail_address}}</td>
+	             </tr>
+	             <tr>
+	             	<th>アカウント削除理由</th>
+	             	<td><textarea name="retire_reason" id="self_intro" rows="5" ></textarea></td>
+	             </tr>
+             </table>
+
+			<p style="margin-bottom:10px">以上の点をご理解、ご了承いただいた上、アカウントの削除申請を続けますか？</p>
+
+			<input type="hidden" name="user_name" value="{{$user_name}}">
+			<input type="hidden" name="mail_address" value="{{$mail_address}}">
+			<input type="hidden" name="retire_flg" value="1">
+			<input type="hidden" name="user_id" value="{{$user_name}}">
+		    <div class="text-center"><input type="submit" value="退会する" class="btn btnF">
+		    <a href="/user/" class="btn btnF">キャンセルする</a></div>
+                </div>
+        </div>
+    </div>
+    <!--/#container-->
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>
+

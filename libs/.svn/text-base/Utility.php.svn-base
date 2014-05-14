@@ -1,0 +1,928 @@
+<?php
+/**
+ * ユーティリティー
+ *
+ * @copyright 2013
+ * @author    xiuhui yang
+ */
+
+
+/**
+ * ユーティリティークラス
+ */
+class Utility {
+
+    //ボタン種類定義
+    const CONST_VALUE_VOTING_BUTTON_BEENTO = '1';//行ったボタン
+    const CONST_VALUE_VOTING_BUTTON_WANTTO = '2';//行きたいボタン
+
+    const CONST_USER_IMAGE_PATH = '/img/pc/user/';//ユーザー画像パス
+    const CONST_RANKING_IMAGE_PATH = '/img/pc/ranking/';//ランキングPC画像
+    const CONST_RANKING_IMAGE_SP_PATH = '/img/sp/ranking/';//ランキング画像
+    const CONST_BEENTO_IMAGE_PATH = '/img/pc/shop/';//行った店画像パス
+    const CONST_NOIMAGE_IMAGE_PATH = '/img/pc/common/';//ノーイメージ画像パス
+    const CONST_NO_IMG_PROFILE_NAME = "noimg_profile.jpg";//プロフィールのNOIMAGE画像
+    const CONST_NO_IMG_FILE_NAME = "noimg_shop.jpg";//お店のNOIMAGE画像
+    const CONST_NO_IMG_PENDENT_NAME = "noimg_pendent.jpg";//ランキングのNOIMAGE画像
+
+    const CONST_IMG_THUMNAILER_SIZE = 58;//ランキングサムネール画像サイズ
+    const CONST_IMG_THUMNAILER_SIZE_RANKING_DETAIL = 226;//ランキングサムネール画像サイズ
+
+    const CONST_IMG_THUMNAILER_SIZE_BEENTO_USER = 48;//行った店サムネール（user）画像サイズ
+    const CONST_IMG_THUMNAILER_SIZE_BEENTO_PHOTO = 98;//行った店サムネール（beento）画像サイズ
+
+
+    const CONST_IMG_THUMNAILER_STYLE = "top:0px;left:0px;";//正方形の場合styleの指定
+
+    //タイムラインテーブルデータ種類
+    const CONST_VALUE_TIMELINE_TYPE_RANKING = 1;//行ったボタン
+    const CONST_VALUE_TIMELINE_TYPE_BEENTO = 2;//行った店
+    const CONST_VALUE_TIMELINE_TYPE_WANTTO = 3;//行った店
+    const CONST_VALUE_TIMELINE_TYPE_OEN = 4;//行った店
+
+    //管理者ユーザー
+    const CONST_VALUE_ADMIN_HAMULET_TEST = 139;
+    const CONST_VALUE_ADMIN_KINUE_TEST = 104;
+    const CONST_VALUE_ADMIN_HAMULET = 1;
+    const CONST_VALUE_ADMIN_KINUE = 191;
+
+
+
+    function Utility() {
+    }
+
+    /**
+     * ファイルアップロード
+     *
+     * @param string $updir PC画像置くバス
+     * @param string $updir_sp SmartPhone画像置くパス
+     * @param array $new_name 画像名
+     * @param string $upfile アップロードされたファイル
+     * @return
+     */
+    public static function uploadFile($updir,$updir_sp,$new_name,$upfile)
+    {
+        $ret = true;
+        // アップロード先のパス
+        // ディレクトリがない場合は作成する
+        if (!file_exists($updir) && !is_dir($updir)) {
+            mkdir($updir,0777,true);
+        }
+        if (!file_exists($updir_sp) && !is_dir($updir_sp)) {
+            mkdir($updir_sp,0777,true);
+        }
+        $upload_file_path = $updir."/".$new_name;
+        $upload_file_path_sp = $updir_sp."/".$new_name;
+        try {
+        // 正常にアップロードされていれば，imgディレクトリにデータを保存
+        if ( $upfile[ 'error' ] == 0 && $upfile['tmp_name']!="" ) {
+            @rename( $upfile['tmp_name'], $upload_file_path );
+            //@rename( $upfile['tmp_name'], $upload_file_path_sp );
+
+            /*
+            // 画像ファイルのサイズ変換
+            $finfo = pathinfo($upload_file_path);
+            $ext = self::VALID_IMAGE_EXTENSIONS();
+            if ( isset($finfo) &&  in_array($finfo['extension'] , $ext) ) {
+                $image = new Imagick();
+                 $size = self::IMAGE_SIZE_PC();  // ＰＣ用画像サイズ
+                $image->readImage($upload_file_path);
+                $image->thumbnailImage($size[0],$size[1]);
+                $image->writeImage($upload_file_path);
+
+                // スマートフォン用縮小サイズ作成
+                $size1 = self::IMAGE_SIZE_SMARTPHONE();  // スマートフォン用画像サイズ
+                $image->thumbnailImage($size1[0],$size1[1]);
+                $image->writeImage($upload_file_path_sp);
+                unset($image);
+            }
+            */
+        }
+         } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+        return $ret;
+    }
+
+
+    /**
+     * アップロードされているファイルを削除
+     *
+     * @param string $upload_file
+     * @return boolean $ret
+     */
+    public static function deleteUpFile($upload_file)
+    {
+        $ret = true;
+        //削除
+        if (is_readable($upload_file)) {
+            $ret = @unlink($upload_file);
+        } else {
+            $ret = false;
+        }
+        return $ret;
+    }
+
+
+    /*
+     * ディレクトリ削除
+     * @author: xiuhui yang
+     *
+     * 中身のファイルを削除してからディレクトリを削除する。
+     *
+     * @param $dir 削除するディレクトリ。末尾/はなし
+     * @return bool ディレクトリ削除に成功したらtrue, 失敗はfalse
+     */
+    function removeDirectory($dir)
+    {
+        // $dirが/で終わっている場合は/削除
+        if (strripos($dir, '/') === mb_strlen($dir, 'UTF-8')) {
+            $dir = rtrim($dir, '/');
+        }
+        // ディレクトリ内のファイルの削除
+        foreach(glob($dir . '/*.*') as $file) {
+            // ファイルの存在確認
+            if (file_exists($file) === false) {
+                return false;
+            }
+            // パーミッションエラー
+            if (file_exists($file)
+                && !is_writable($file)
+                || !is_writable(dirname($dir))
+            ) {
+                return false;
+            }
+            // ファイル削除
+            if(unlink($file) === false) {
+                // 原因が特定できないエラー
+                return false;
+            }
+        }
+        // ディレクトリの存在確認
+        if (file_exists($dir) === false) {
+            return false;
+        }
+        // ディレクトリパーミッションエラー
+        if (file_exists($dir)
+            && !is_writable($dir)
+        ) {
+            return false;
+        }
+        // ディレクトリ削除
+        if (rmdir($dir) === false) {
+            // 原因が特定できないエラー
+            return false;
+        }
+        return true;
+    }
+
+    /**
+      * 画像の存在チェック
+      *
+      *
+      *
+      * @param string $imgPath 画像ファイル
+      *
+      * @return true,false
+      *
+      *
+      */
+     public static function isImagePathExisted($imgPath){
+
+         //$imgPath = '/img/shop/'.$file_name;
+         $checkPath = ROOT_PATH . $imgPath;
+
+        if (file_exists($checkPath)) {
+            return true;
+        } else {
+            return false;
+        }
+     }
+
+    /**
+     * 画像の存在チェック
+     * @param array  $list
+     * @return 表示する画像のパス(画像が存在しなかった場合は NO IMAGE 画像)
+    */
+    public static function userImgExists($list) {
+        if(is_array($list) && count($list) > 0) {
+	        //画像名ファイルサーバーにあるかチェック、なければノーイメージ表示
+	        for($i = 0; $i<count($list); $i++) {
+	            $image_existed_flg = self::isImagePathExisted(self::CONST_USER_IMAGE_PATH.$list[$i]["user_photo"]);
+	            if(!isset($list[$i]["user_photo"]) or $list[$i]["user_photo"] =="" or $image_existed_flg != true){
+
+                    if (isset($list[$i]["user_fb_photo"]) != "" ) {
+                        $list[$i]['user_photo'] = $list[$i]["user_fb_photo"];
+                    } else {
+                        $list[$i]['user_photo'] = Utility::CONST_NOIMAGE_IMAGE_PATH.Utility::CONST_NO_IMG_PROFILE_NAME;
+                    }
+
+
+                   // $list[$i]["user_photo"] = self::CONST_NOIMAGE_IMAGE_PATH.self::CONST_NO_IMG_FILE_NAME;
+	            } else {
+	                $list[$i]["user_photo"] = self::CONST_USER_IMAGE_PATH.$list[$i]["user_photo"];
+	            }
+	        }
+        }
+        return $list;
+    }
+
+
+    /**
+     * FILE関連情報:VALIDATION
+     * アップロード最大ファイルバイト数
+     */
+    static public function MAX_FILE_SIZE()
+    {
+        // 3MB
+        return 3000000;
+    }
+
+    /**
+     * FILE関連情報:VALIDATION
+     * アップロード可能画像ファイル拡張子
+     */
+    static public function VALID_IMAGE_EXTENSIONS()
+    {
+        return array('jpg','gif','png','JPG','GIF','PNG');
+    }
+
+    /**
+     * 画像サイズ関連
+     * PC用画像サイズ（横×縦）
+     */
+    static public function IMAGE_SIZE_PC()
+    {
+        return array(200,200);
+    }
+
+    /**
+     * 画像関連
+     * スマートフォン用画像サイズ（横×縦）
+     */
+    static public function IMAGE_SIZE_SMARTPHONE()
+    {
+        return array(100,100);
+    }
+
+    /**
+     * ユーザーエージェントを判別
+     *
+     */
+    public function getUerAgent(){
+	    $ua=$_SERVER['HTTP_USER_AGENT'];
+        //if((strpos($ua,’iPhone’)!==false)||(strpos($ua,’iPod’)!==false)||(strpos($ua,’Android’)!==false)) {
+	    if( strpos($ua,'iPhone') or strpos($ua,'iPod') or strpos($ua,'Android')) {
+			return 'sp';
+		} else {
+		 	return 'pc';
+		}
+    }
+
+    /**
+     * ランキングもっと見るajax取得の際タグ作成処理
+     *
+     */
+    public function makeRankMoreReadTag($res){
+
+    $tags = "";
+    if ( $res ) {
+        for ($i=0; $i<count($res); $i++) {
+            $ctlitags ="";
+            if (isset($res[$i]['category'])) {
+                for ($t=0; $t<count($res[$i]['category']); $t++) {
+                    $ctlitag = "";
+                    if (isset($res[$i]['category'][$t]['large_id']) !="" && isset($res[$i]['category'][$t]['category_name']) !="") {
+                        $ctlitag = "<li><span class=\"cate0{$res[$i]['category'][$t]['large_id']}\">{$res[$i]['category'][$t]['category_name']}</span></li>";
+                    }
+                    $ctlitags .=$ctlitag;
+                }
+            }
+            $pref = "";
+            if (isset($res[$i]['pref']) !="") {
+                $pref = $res[$i]['pref'];
+            }
+            if (isset($res[$i]['rank_id']) && $res[$i]['rank_id'] !="") {
+                $divtag = "
+                            <div class=\"thumbBox01\">
+                            <div class=\"deco01\"></div>
+                            <p class=\"thumArea01\">{$pref}</p>
+                            <a href=\"/ranking/detail/id/{$res[$i]['rank_id']}\" target=\"_blank\" class=\"thumRankLink\" title=\"{$res[$i]['title']}\">
+                                <div class=\"space02\">
+                                <ul class=\"inline thumCategory\">
+                                {$ctlitags}
+                                </ul>
+                                <p class=\"thumRankTitle\"><span class=\"thumRankTitleText\">{$res[$i]['title']}</span><span class=\"rankDefiniteText\">Best3</span>
+                                <span class=\"thumRankReaction\">{$res[$i]['page_view']} view</span>
+                                </p>
+                                <ul class=\"thumPhoto01\">
+                                ";
+                                $litags = "";
+                                for ($j=0; $j<count($res[$i]['detail']); $j++) {
+
+		                            $width_size = "";
+		                            if ($res[$i]['detail'][$j]['width_size'] !="") {
+		                                $width_size = " width=\"{$res[$i]['detail'][$j]['width_size']}px\" ";
+		                            }
+		                            $height_size = "";
+		                            if ($res[$i]['detail'][$j]['height_size'] !="") {
+		                                $height_size = " height=\"{$res[$i]['detail'][$j]['height_size']}px\" ";
+		                            }
+                                	$litag ="<li>
+                                                <span class=\"iconRank{$res[$i]['detail'][$j]['rank_no']}\"></span>
+                                                <span class=\"thumPhoto01_thum\">
+                                                <img src=\"{$res[$i]['detail'][$j]['photo']}\" alt=\"\" title=\"{$res[$i]['detail'][$j]['shop_name']}\" style=\"{$res[$i]['detail'][$j]['style']}\" {$width_size} {$height_size}/>
+                                                </span>
+                                            </li>";
+                                    $litags .= $litag;
+                                }
+                                $divtag = $divtag.$litags.
+                                "</ul>
+                                </div>
+                            </a>
+                            <div class=\"thumUser\"><a href=\"/user/myranking/id/{$res[$i]['user_id']}\">
+                                <img src=\"{$res[$i]['user_photo']}\" alt=\"\" width=\"80\" height=\"80\" title=\"{$res[$i]['user_name']}\" /> {$res[$i]['user_name']}</a></div>
+                            </div>
+                        ";
+                    $tags .= $divtag;
+                }
+            }
+            return $tags;
+        }
+    }
+
+    /**
+     * 店一覧もっと見るajax取得の際タグ作成処理
+     *
+     */
+    public function makeShopMoreReadTag($res){
+
+    $dltags = "";
+    if ( $res ) {
+           for ($i=0; $i<count($res); $i++) {
+           	    //ユーザーnoimage対応
+                if (isset($res[$i]['user_photo']) !="") {
+                    $user_photo = "/img/sp/user/".$res[$i]['user_photo'];
+                } else {
+                    $user_photo = "/img/pc/common/noimg_shop.jpg";
+                }
+                //ジャンル表示
+                $genre = "";
+                if (isset($res[$i]['genre1_value']) !="") {
+                    $genre = $res[$i]['genre1_value'];
+                }
+                if (isset($res[$i]['genre2_value']) !="") {
+                    $genre .= ",".$res[$i]['genre2_value'];
+                }
+                if (isset($res[$i]['genre3_value']) !="") {
+                    $genre .= ",".$res[$i]['genre3_value'];
+                }
+
+                //店のリストのもっと見るで、一言がセットされているときのみ表示する
+                if (isset($res[$i]['explain']) and $res[$i]['explain']) {
+                	$beento_explain_tag = "   <dd>
+					                        	<div>
+					                                <ul class=\"rankShopInfo\">
+					                                    <li><span>一言</span>".$res[$i]['explain']."</li>
+					                                </ul>
+					                        	</div>
+					                        </dd>";
+                } else {
+                	$beento_explain_tag = "";
+                }
+                $dltag = "
+                        <dl>
+                            <dt>
+                                <a href=\"/shop/detail/id/{$res[$i]['shop_id']}\">
+                                    <img src=\"{$user_photo}\" alt=\"\" title=\"{$res[$i]['shop_name']}\" />
+                                </a>
+                            </dt>
+                            <dd>
+                                <p class=\"rankTitle\"><a href=\"/shop/detail/id/{$res[$i]['shop_id']}\">{$res[$i]['shop_name']}</a></p>
+                                <div>
+                                    <ul class=\"rankShopInfo\">
+                                        <li><span>エリア</span>{$res[$i]['pref']}　{$res[$i]['city']}</li>
+                                        <li>
+                                            <span>ジャンル</span>
+                                            {$genre}
+                                        </li>
+                                        <li><span>ランクイン</span>{$res[$i]['rankin_count']}件</li>
+                                    </ul>
+                                </div>
+                            </dd>
+                            {$beento_explain_tag}
+                        </dl>
+                        ";
+                $dltags .= $dltag;
+            }
+        }
+        return $dltags;
+    }
+
+    /**
+     * 店一覧もっと見るajax取得の際タグ作成処理
+     *
+     */
+    public function makeBeentoShopMoreReadTag($res,$user_id){
+
+    $dltags = "";
+    if ( $res ) {
+           for ($i=0; $i<count($res); $i++) {
+
+                //ジャンル表示
+                $genre = "";
+                if (isset($res[$i]['genre1_value']) !="") {
+                    $genre = $res[$i]['genre1_value'];
+                }
+                if (isset($res[$i]['genre2_value']) !="") {
+                    $genre .= ",".$res[$i]['genre2_value'];
+                }
+                if (isset($res[$i]['genre3_value']) !="") {
+                    $genre .= ",".$res[$i]['genre3_value'];
+                }
+                $edit_link = "";
+                if ($res[$i]['user_id'] and  ($res[$i]['user_id'] == $user_id) ) {
+                    $edit_link = "<a class=\"btn btnF btnC01\" href=\"/beento/edit/id/{$res[$i]['bt_id']}\">編集</a>
+                                  <a class=\"btn btnF btnC01\" href=\"javascript:void(0);\" onclick=\"ajax_delbeento({$res[$i]['bt_id']},'{$res[$i]['photo']}',{$user_id});return false;\">削除</a>
+                                ";
+
+                }
+
+                $photo_width_size = "";
+                if ($res[$i]['photo_width_size'] !="") {
+                    $photo_width_size = " width=\"{$res[$i]['photo_width_size']}px\" ";
+                }
+                $photo_height_size = "";
+                if ($res[$i]['photo_height_size'] !="") {
+                    $photo_height_size = " height=\"{$res[$i]['photo_height_size']}px\" ";
+                }
+                $userphoto_width_size = "";
+                if ($res[$i]['userphoto_width_size'] !="") {
+                    $userphoto_width_size = " width=\"{$res[$i]['userphoto_width_size']}px\" ";
+                }
+                $userphoto_height_size = "";
+                if ($res[$i]['userphoto_height_size'] !="") {
+                    $userphoto_height_size = " height=\"{$res[$i]['userphoto_height_size']}px\" ";
+                }
+
+                //店のリストのもっと見るで、一言がセットされているときのみ表示する
+                $beento_explain = "";
+                if ($res[$i]['explain'] !="") {
+                    $beento_explain = nl2br($res[$i]['explain']);
+                } else {
+                    $beento_explain = "行きました。";
+                }
+                $dltag = "
+                    <div class=\"boxUserbeentoshop\">
+                        <p class=\"rankTitle\"><a href=\"/shop/detail/id/{$res[$i]['shop_id']}\">{$res[$i]['shop_name']}</a></p>
+                        <dl class=\"innerUserbeentoshop01\">
+                            <dt>
+                                <a href=\"{$res[$i]['photo']}\" rel=\"lightbox\" title=\"{$res[$i]['shop_name']}\">
+                                    <span>
+                                        <img src=\"{$res[$i]['photo']}\" alt=\"\" title=\"{$res[$i]['shop_name']}\" style=\"{$res[$i]['photo_style']}\" {$photo_width_size} {$photo_height_size}/>
+                                    </span>
+                                </a>
+                            </dt>
+                            <dd>
+                                <ul class=\"rankShopInfo\">
+                                    <li><span>エリア</span>{$res[$i]['pref']}　{$res[$i]['city']}</li>
+                                    <li>
+                                       <span>ジャンル</span>
+                                       {$genre}
+                                    </li>
+                                    <li><span>ランクイン</span>{$res[$i]['ranking_count']}件</li>
+                                </ul>
+                                <dl class=\"innerUserbeentoshop02\">
+                                    <dt>
+                                       <a href=\"/user/myranking/id/{$res[$i]['user_id']}\">
+                                           <span>
+                                               <img src=\"{$res[$i]['user_photo']}\" alt=\"{$res[$i]['user_name']}\" style=\"{$res[$i]['userphoto_style']}\" {$userphoto_width_size} {$userphoto_height_size}/>{$res[$i]['user_name']}
+                                           </span>
+                                       </a>
+                                    </dt>
+                                    <dd>
+                                       <p class=\"rankCommentBox\">
+                                      {$edit_link} 　　{$beento_explain}
+                                       </p>
+                                    </dd>
+                                </dl>
+                            </dd>
+                        </dl>
+                    </div>
+                ";
+                $dltags .= $dltag;
+            }
+        }
+        return $dltags;
+    }
+
+    /**
+     * 生年月日プルダウンにセット処理
+     *
+     *
+     */
+    public function _makeBirthdayList($results)
+    {
+        $nowyear = date("Y");
+        $nextyear = $nowyear + 1;
+        //年候補
+        for ($i= 1900; $i<$nextyear; $i++) {
+            $results["yearlist"][$i-1900]=$i;
+        }
+        //月候補
+        for ($m=1;$m<=12;$m++) {
+            $results["monthlist"][$m-1]=$m;
+        }
+        //日候補
+        for ($j=1;$j<=31;$j++) {
+            $results["daylist"][$j-1]=$j;
+        }
+        //年月日プルダウン初期値
+        if($results["birthday_year"] != "" && $results["birthday_month"] != "" && $results["birthday_day"] != "")
+        {
+            $results['selyear'] = $results["birthday_year"];
+            $results['selmonth'] = $results["birthday_month"];
+            $results['selday'] = $results["birthday_day"];
+        }
+
+        //結果を返す
+        return $results;
+    }
+
+
+    /**
+     * メールの送信処理
+     *
+     * @param   string  $send_to e-mail address
+     * @param   string  $subject e-mail subject
+     * @param   string  $message e-mail body
+     * @param   string  $headers additional_headers (From等)
+     * @param   string  $options additional_parameter
+     * @return  boolean
+     */
+    function send ($send_to, $subject, $message, $headers, $options='')
+    {
+        try {
+            mb_language('Japanese');
+            mb_internal_encoding('UTF-8');
+            return mb_send_mail($send_to, $subject, $message, $headers, $options);
+        } catch (exception $e) {
+            throw new exception ($e);
+        }
+    }
+
+    /**
+     * send_light
+     * 簡易メール送信
+     */
+    function send_light ($send_to, $subject, $message, $send_from)
+    {
+    	$from = "From:" . $send_from;
+        $ret = self::send($send_to, $subject, $message, $from);
+        return $ret;
+    }
+
+    /**
+     *
+     * サムネイルスタイル指定
+     * return array $ret
+     */
+    function setThumnailerSize($image_url)
+    {
+        $ret = array();
+        list($width,$height) = getimagesize($image_url);
+        if($width > $height) {
+            //横長の場合
+            $ret["height_size"] = self::CONST_IMG_THUMNAILER_SIZE;
+            $ret["width_size"] = "";
+            $mag = $width / ( $height / 60 );
+            $nHeight = floor( ( $mag - 60 ) / 2 ) * (-1);
+            //$nHeight = ( $width - $height ) / 2 * (-1);
+            $ret["style"] = "top:0px;left:{$nHeight}px;height:100%;max-width: none !important;";
+        } else {
+            //縦長の場合
+            $ret["width_size"] = Utility::CONST_IMG_THUMNAILER_SIZE;
+            $ret["height_size"] = "";
+            $mag = $height / ( $width / 58 );
+            $nHeight = floor( ( $mag - 58 ) / 2 ) * (-1);
+            //$nHeight = ( $height - $width ) / 2 * (-1);
+            $ret["style"] = "top:{$nHeight}px;left:0px;";
+            //$ret["style"] = "top:0px;left:0px;";
+        }
+        return $ret;
+    }
+
+    /**
+     *
+     * サムネイルスタイル指定(ランキング詳細画像)
+     * return array $ret
+     */
+    function setRankDetailThumnailerSize($image_url)
+    {
+        $ret = array();
+        list($width,$height) = getimagesize($image_url);
+        if($width > $height) {
+            //横長の場合
+            $ret["height_size"] = self::CONST_IMG_THUMNAILER_SIZE_RANKING_DETAIL;
+            $ret["width_size"] = "";
+            $mag = $width / ( $height / 226 );
+            $nHeight = floor( ( $mag - 226 ) / 2 ) * (-1);
+            //$nHeight = ( $width - $height ) / 2 * (-1);
+            $ret["style"] = "top:0px;left:{$nHeight}px;height:100%;max-width: none !important;";
+        } else {
+            //縦長の場合
+            $ret["width_size"] = Utility::CONST_IMG_THUMNAILER_SIZE_RANKING_DETAIL;
+            $ret["height_size"] = "";
+            $mag = $height / ( $width / 226 );
+            $nHeight = floor( ( $mag - 226 ) / 2 ) * (-1);
+            //$nHeight = ( $height - $width ) / 2 * (-1);
+            $ret["style"] = "top:{$nHeight}px;left:0px;";
+        }
+        return $ret;
+    }
+
+    /**
+     *
+     * サムネイルスタイル指定(行った画像)
+     * return array $ret
+     */
+    function setBeentoThumnailerSize($image_url,$size)
+    {
+        $ret = array();
+        list($width,$height) = getimagesize($image_url);
+        if($width > $height) {
+            //横長の場合
+            $ret["height_size"] = $size;
+            $ret["width_size"] = "";
+            $mag = $width / ( $height / $size );
+            $nHeight = floor( ( $mag - $size ) / 2 ) * (-1);
+            //$nHeight = ( $width - $height ) / 2 * (-1);
+            $ret["style"] = "top:0px;left:{$nHeight}px;height:100%;max-width: none !important;";
+        } else {
+            //縦長の場合
+            $ret["width_size"] = $size;
+            $ret["height_size"] = "";
+            $mag = $height / ( $width / $size );
+            $nHeight = floor( ( $mag - $size ) / 2 ) * (-1);
+            //$nHeight = ( $height - $width ) / 2 * (-1);
+            $ret["style"] = "top:{$nHeight}px;left:0px;";
+        }
+        return $ret;
+    }
+
+    /**
+     * ランキングもっと見るajax取得の際タグ作成処理
+     *
+    */
+    public function makeTimeLineMoreReadTag($res){
+
+    $tags = "";
+    if ( $res ) {
+        for ($i=0; $i<count($res); $i++) {
+
+
+        if ($res[$i]['tl_type'] == "1"){
+
+        $rank_tags = "
+                    <div class=\"thumbBox01\">
+                    <div class=\"decoFollow02\"></div>
+                        <a href=\"/ranking/detail/id/{$res[$i]['rank_id']}\" target=\"_blank\" class=\"thumRankLink\" title=\"{$res[$i]['title']}\">
+                        <div class=\"spaceThumb\">
+                        <p class=\"thumRankTitle\"><span class=\"thumRankTitleText\">{$res[$i]['title']}</span><span class=\"rankDefiniteText\">Best3</span><span class=\"thumRankReaction\">{$res[$i]['page_view']}view</span></p>
+                        <ul class=\"thumPhoto01\">
+                     ";
+                        $litags = "";
+                        for ($j=0; $j<count($res[$i]['ranking_detail']['detail']); $j++) {
+                            $ret = $res[$i]['ranking_detail']['detail'][$j];
+                            $width_size = "";
+                            if ($ret['width_size'] !="") {
+                                $width_size = " width=\"{$ret['width_size']}px\" ";
+                            }
+                            $height_size = "";
+                            if ($ret['height_size'] !="") {
+                                $height_size = " height=\"{$ret['height_size']}px\" ";
+                            }
+
+                            $litag ="<li>
+                                        <span class=\"iconRank{$ret['rank_no']}\"></span>
+                                        <span class=\"thumPhoto01_thum\">
+                                            <img src=\"{$ret['photo']}\" alt=\"\" title=\"{$ret['shop_name']}\" style=\"{$ret['style']}\" {$width_size} {$height_size}/>
+                                        </span>
+                                     </li>";
+                                    $litags .= $litag;
+                        }
+                        $rank_tags = $rank_tags.$litags."
+                        </ul>
+			             <ul class=\"rankShopInfo2\">
+			                <li><span>エリア</span>{$res[$i]['ranking_detail']['pref']}</li>
+			                <li><span>カテゴリ</span>
+			                ";
+                            $category_tags = "";
+                            if ($res[$i]['ranking_detail']['category'] != array()) {
+                            	 for ($t=0; $t<count($res[$i]['ranking_detail']['category']); $t++) {
+                            	   $ret_category = $res[$i]['ranking_detail']['category'][$t];
+                            	   $category_tag = "{$ret_category['category_name']}";
+                            	   $category_tags .= $category_tag;
+                            	 }
+                            }
+                            	 $rank_tags = $rank_tags.$category_tags."
+			                </li>
+			            </ul>
+         </div>
+         </a>
+         <div class=\"thumUser\">
+       <a href=\"/user/myranking/id/{$res[$i]['user_id']}\" title=\"\">
+       <img src=\"{$res[$i]['user_photo']}\"  width=\"60\" height=\"60\"   />
+         {$res[$i]['user_name']}
+       </a>
+      </div>
+      <div class=\"thumComment\">
+      ";
+
+     $reguru_tags = "";
+        if ($res[$i]['ranking_detail']['reguru'] != array()) {
+            for ($f=0; $f<count($res[$i]['ranking_detail']['reguru']); $f++) {
+                $ret_reguru = $res[$i]['ranking_detail']['reguru'][$f];
+                if ($ret_reguru['comment'] != "") {
+                    $comment = $ret_reguru['comment'];
+                } else {
+                    $comment = "リグルメしました！";
+                }
+
+                $reguru_tag = "<div class=\"thumUser\">
+                                <a href=\"/user/myranking/id/{$ret_reguru['reguru_uid']}\" title=\"\">
+                                <img src=\"{$ret_reguru['user_photo']}\"  width=\"60\" height=\"60\"   />
+                                    {$ret_reguru['user_name']}
+                                </a>
+                                </div>
+						        <p class=\"commentBox\">
+                                    {$comment}
+						       </p>
+                                ";
+                $reguru_tags .= $reguru_tag;
+            }
+        }
+        $rank_tags = $rank_tags.$reguru_tags."
+      </div>
+		</div>
+		";
+		$tags .= $rank_tags;
+
+		}elseif ( $res[$i]['tl_type'] == "2" or $res[$i]['tl_type'] == "3" or $res[$i]['tl_type'] == "4") {
+		$shop_tags = "";
+		$explain = "";
+			       if ($res[$i]['tl_type'] == "2") {
+			       	 if ($res[$i]['explain'] != "") {
+		                   $explain = $res[$i]['explain'];
+			       	 } else{
+		                    $explain = "行きました！";
+			       	 }
+			       } else if( $res[$i]['tl_type'] == "3") {
+		              $explain = " 行きたいです！";
+		           } else if ($res[$i]['tl_type'] == "4") {
+		              $explain = "応援します！ ";
+		           }
+
+		         $shop_tags .= "  <div class=\"thumbBox01\"> ";
+		         if ($res[$i]['tl_type'] == "2") {
+		            $shop_tags .="<div class=\"decoFollow03\"></div>";
+		         }else if ($res[$i]['tl_type'] == "3") {
+		         	$shop_tags .="<div class=\"decoFollow05\"></div>";
+		         }else if ($res[$i]['tl_type'] == "4") {
+		            $shop_tags .="<div class=\"decoFollow04\"></div>";
+		         }
+		         $shop_tags .= "
+		                    <a href=\"/shop/detail/id/{$res[$i]['shop_id']}\" target=\"_blank\" class=\"thumRankLink\" title=\"{$res[$i]['shop_name']}\">
+		                    <div class=\"spaceThumb\">
+					             <p class=\"thumRankTitle\">{$res[$i]['shop_name']}</p>
+					             <ul class=\"rankShopInfo2\">
+					                <li><span>エリア</span>{$res[$i]['pref']}　{$res[$i]['city']}</li>
+					                <li><span>ジャンル</span>{$res[$i]['genre1_value']}
+					           ";
+		                     if ($res[$i]['genre2_value'] !="") {
+		                        $shop_tags .= $res[$i]['genre2_value'];
+		                     }
+		                     if ($res[$i]['genre3_value'] !="") {
+		                     	$shop_tags .= $res[$i]['genre3_value'];
+		                     }
+		         $shop_tags .="
+					                </li>
+					            </ul>
+					         </div>
+		                 </a>
+		         <div class=\"thumUser\">
+		       <a href=\"/user/myranking/id/{$res[$i]['created_user_id']}\" title=\"\">
+		       <img src=\"{$res[$i]['user_photo']}\"  width=\"60\" height=\"60\"   />
+		        {$res[$i]['user_name']}
+		       </a>
+		      </div>
+		      <div class=\"thumComment\">
+		      ";
+            if ($res[$i]['tl_type'] == "2") {
+                $photo = "";
+                if ( $res[$i]['photo'] !="" && self::isImagePathExisted(self::CONST_BEENTO_IMAGE_PATH.$res[$i]['photo']) == true) {
+                    $photo = "/img/pc/shop/".$res[$i]['photo'];
+                    $shop_tags .="
+                          <div class=\"commentPhoto\">
+                              <a href=\"/shop/detail/id/{$res[$i]['shop_id']}\"><img src=\"{$photo}\"  width=\"60\" height=\"60\"   title=\"{$res[$i]['shop_name']}\" />
+                              </a>
+                          </div>
+                          ";
+                } else {
+                    $shop_tags .="
+                          <div class=\"commentPhoto\">
+                          </div>
+                          ";
+                }
+            }
+            $shop_tags .="
+                            <p class=\"commentBox\">
+		                      {$explain}
+		                    </p>
+		                    </div>
+		                    </div>
+		                  ";
+            $tags .= $shop_tags;
+        }
+    }
+    return $tags;
+    }
+}
+   /**
+     * テストと本番のソーシャル周りのconfig切り替え
+     * param  string
+     * return string
+     */
+    public function _getSocialLoginConfigPath()
+    {
+    	if ($this->_checkEnv()) {
+			$config_path = DATA_PATH."/social_login_config.yml";
+    	} else {
+    		//テスト環境ならこっちを読む
+			$config_path = DATA_PATH."/social_login_config_test.yml";
+    	}
+    	return $config_path;
+    }
+    public function _getSocialSignUpConfigPath()
+    {
+    	if ($this->_checkEnv()) {
+			$config_path = DATA_PATH."/social_signup_config.yml";
+    	} else {
+    		//テスト環境ならこっちを読む
+			$config_path = DATA_PATH."/social_signup_config_test.yml";
+    	}
+    	return $config_path;
+    }
+    public function _getSocialConnectConfigPath()
+    {
+    	if ($this->_checkEnv()) {
+			$config_path = DATA_PATH."/social_connect_config.yml";
+    	} else {
+    		//テスト環境ならこっちを読む
+			$config_path = DATA_PATH."/social_connect_config_test.yml";
+    	}
+    	return $config_path;
+    }
+    public function _getDbConnectConfigPath()
+    {
+        if ($this->_checkEnv()) {
+            $config_path = DATA_PATH."/db_connect_config.yml";
+        } else {
+            //テスト環境ならこっちを読む
+            $config_path = DATA_PATH."/db_connect_config_test.yml";
+        }
+        return $config_path;
+    }
+
+    public function tdkEngine() {
+    	 $env_flg = $this->_checkEnv();
+    	 return $env_flg;
+    }
+
+   /**
+     * テストか本番か見分ける関数
+     * return boolian
+     */
+    private function _checkEnv()
+    {
+
+    	if ($_SERVER['SERVER_NAME'] == 'regurume.com') {
+			return true;
+    	} else {
+			return false;
+    	}
+
+    }
+   /**
+     * ec2のドメインか否かのチェックを行う
+     * return boolian
+     */
+    public function redirectEc2toLiveEnv()
+    {
+    	if (strstr($_SERVER['SERVER_NAME'], 'ec2')) {
+			header("Location: http://regurume.com/");
+    	}
+    }
+
+}
+?>

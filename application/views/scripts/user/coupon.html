@@ -1,0 +1,278 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<script type="text/javascript" src="/js/user/coupondetail.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+<script type="text/javascript">
+{{if $keidoido}}
+var keidoido = new Array();
+
+$(document).ready(function(){
+    function attachMessage(marker, msg) {
+        google.maps.event.addListener(marker, 'click', function(event) {
+          new google.maps.InfoWindow({
+            content: msg
+          }).open(marker.getMap(), marker);
+        });
+    }
+	function init () {
+		var i = 0;
+		var data = new Array();
+		{{foreach from=$keidoido key=k item=data}}
+			{{if $k == 0}}
+	        var latlng1 = new google.maps.LatLng('{{$data.latitude}}','{{$data.longitude}}');
+	        var opts = {
+	        zoom: 11,
+	        center: latlng1,
+	        mapTypeId: google.maps.MapTypeId.ROADMAP
+	    	};
+	        map = new google.maps.Map(document.getElementById("map_canvas"), opts);
+	        {{else}}
+			data.push({position: new google.maps.LatLng('{{$data.latitude}}','{{$data.longitude}}'), content: '{{$data.shop_name}}'});
+			{{/if}}
+		{{/foreach}}
+	    for (i = 0; i < data.length; i++) {
+	        var myMarker = new google.maps.Marker({
+	          position: data[i].position,
+	          map: map
+	        });
+	        attachMessage(myMarker, data[i].content);
+	    }
+	}
+	window.onload = init();
+});
+{{/if}}
+</script>
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+
+<body>
+<div id="fb-root"></div>
+<script>
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=1392971240920479";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script>
+
+<!-- ここから -->
+
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+
+<!--#wrapper/-->
+<div id="wrapper">
+    <!--#header/-->
+    {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#contents/-->
+    <div id="container" class="wrap clearfix">
+        <div id="colomnContents">
+        	<h2 class="titleBox01"><span>:</span>{{$user_name}}さんの使えるクーポン一覧</h2>
+		<div class="inputStyleBox">
+            <div class="rankDate">
+                <div class="block">
+	                <div id="map_canvas" class="boxMap" ></div>
+					</div>
+					<div class="">
+		            	<div class="borderBox">
+{{foreach from=$coupon_info key=key1 item=item1}}
+			                   {{if $key1 == 'oen'}}
+			                   <dl class="userInfo">
+			                    <dt class="title">応援クーポン</dt>
+			                    <dd class="clearfix">
+			                    <table class="couponTable01">
+											<thead>
+											<tr>
+												 <th>店名</th>
+												 <th>特典</th>
+												 <th>利用条件</th>
+												 <th>利用期限</th>
+												 <th>クーポン</th>
+											</tr>
+											</thead>
+											<tbody>
+			                        {{if $item1 !=""}}
+			                        {{foreach from=$item1 key=key2 item=item2 name=item1name}}
+											<tr>
+												<td><a href="/shop/detail/id/{{$item2.shop_id}}" title="{{$item2.shop_name}}">{{$item2.shop_name}}</a></td>
+												<td>{{$item2.title}}</td>
+												<td>{{$item2.coupon}}</td>
+												<td>{{$item2.public_start|date_format:"%Y年%m月%d日"}}～{{$item2.public_end|date_format:"%Y年%m月%d日"}}</td>
+												<td><a href="/user/coupondetail/coupon_id/{{$item2.coupon_id}}/" class="btn">詳細</a></td>
+											</tr>
+											<input type="hidden" id="lantitude_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.latitude}}">
+				                        	<input type="hidden" id="longitude_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.longitude}}">
+				                        	<input type="hidden" id="shopname_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.shop_name}}">
+				                        	<input type="hidden" name= "shopid_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.shop_id}}">
+				                     {{/foreach}}
+			                        {{else}}
+			                        	<tr>
+			                        	<td colspan="5">応援してくれている方々にお店がクーポンを発行しているとき、ここに表示されます。</td>
+			                        	</tr>
+			                        {{/if}}
+											</tbody>
+										</table>
+			                    </dd>
+			                   </dl>
+			                    {{/if}}
+
+			                   {{if $key1 == 'regular'}}
+			                   <dl class="userInfo">
+			                    <dt class="title">常連クーポン</dt>
+			                    <dd class="clearfix">
+			                        	<table class="couponTable01">
+											<thead>
+											<tr>
+												 <th>店名</th>
+												 <th>特典</th>
+												 <th>利用条件</th>
+												 <th>利用期限</th>
+												 <th>クーポン</th>
+											</tr>
+											</thead>
+											<tbody>
+			                        {{if $item1 !=""}}
+			                        {{foreach from=$item1 key=key2 item=item2 name=item1name}}
+											<tr>
+												<td><a href="/shop/detail/id/{{$item2.shop_id}}" title="{{$item2.shop_name}}">{{$item2.shop_name}}</a></td>
+												<td>{{$item2.title}}</td>
+												<td>{{$item2.coupon}}</td>
+												<td>{{$item2.public_start|date_format:"%Y年%m月%d日"}}～{{$item2.public_end|date_format:"%Y年%m月%d日"}}</td>
+												<td><a href="/user/coupondetail/coupon_id/{{$item2.coupon_id}}/" class="btn">詳細</a></td>
+											</tr>
+											<input type="hidden" id="lantitude_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.latitude}}">
+				                        	<input type="hidden" id="longitude_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.longitude}}">
+				                        	<input type="hidden" id="shopname_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.shop_name}}">
+				                        	<input type="hidden" name= "shopid_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.shop_id}}">
+				                     {{/foreach}}
+			                        {{else}}
+			                        	<tr>
+			                        	<td colspan="5">応援しているお客さんの中でお店が常連だと認めた場合、あなただけの特別なクーポンが発行されます。
+			                        	</td>
+			                        	</tr>
+			                        {{/if}}
+											</tbody>
+										</table>
+			                    </dd>
+			                  </dl>
+			                   {{/if}}
+
+			                   {{if $key1 == 'inviting'}}
+			                   <dl class="userInfo">
+			                    <dt class="title">あなたが発行できるクーポン</dt>
+			                    <dd class="clearfix">
+			                    	<table class="couponTable01">
+											<thead>
+											<tr>
+												 <th>店名</th>
+												 <th>特典</th>
+												 <th>利用条件</th>
+												 <th>利用期限</th>
+												 <th>クーポン</th>
+											</tr>
+											</thead>
+											<tbody>
+			                        {{if $item1 !=""}}
+			                        {{foreach from=$item1 key=key2 item=item2 name=item1name}}
+											<tr>
+												<td><a href="/shop/detail/id/{{$item2.shop_id}}" title="{{$item2.shop_name}}">{{$item2.shop_name}}</a></td>
+												<td>{{$item2.title}}</td>
+												<td>{{$item2.coupon}}</td>
+												<td>{{$item2.public_start|date_format:"%Y年%m月%d日"}}～{{$item2.public_end|date_format:"%Y年%m月%d日"}}</td>
+												<td><a href="/user/coupondetail/invite_coupon_id/{{$item2.coupon_id}}/" class="btn">発行</a></td>
+											</tr>
+											<input type="hidden" id="lantitude_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.latitude}}">
+				                        	<input type="hidden" id="longitude_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.longitude}}">
+				                        	<input type="hidden" id="shopname_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.shop_name}}">
+				                        	<input type="hidden" name= "shopid_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.shop_id}}">
+				                     {{/foreach}}
+			                        {{else}}
+			                        	<tr>
+			                        	<td colspan="5">応援しているお客さんの中で「あなたの友人ならこれくらいサービスするよ」というクーポンです。使用時にあなたの名前を言うようにお友達にお伝えください。</p>
+			                        	</td>
+			                        	</tr>
+			                        {{/if}}
+											</tbody>
+										</table>
+			                  		</dd>
+			                    </dl>
+			                    {{/if}}
+			                   {{if $key1 == 'invitee'}}
+			                   <dl class="userInfo">
+			                    <dt class="title">あなたの友人が常連のため、友人が紹介できるクーポン</dt>
+			                    <dd class="clearfix">
+			                    	<table class="couponTable01">
+											<thead>
+											<tr>
+												 <th>店名</th>
+												 <th>特典</th>
+												 <th>利用条件</th>
+												 <th>利用期限</th>
+												 <th>クーポン</th>
+											</tr>
+											</thead>
+											<tbody>
+			                        {{if $item1 !=""}}
+			                        {{foreach from=$item1 key=key2 item=item2 name=item1name}}
+											<tr>
+												<td><a href="/shop/detail/id/{{$item2.shop_id}}" title="{{$item2.shop_name}}">{{$item2.shop_name}}</a></td>
+												<td>{{$item2.title}}</td>
+												<td>{{$item2.coupon}}</td>
+												<td>{{$item2.public_start|date_format:"%Y年%m月%d日"}}～{{$item2.public_end|date_format:"%Y年%m月%d日"}}</td>
+												<td><a href="/user/coupondetail/couponid/{{$item2.coupon_id}}/" class="btn">詳細</a></td>
+											</tr>
+											<input type="hidden" id="lantitude_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.latitude}}">
+				                        	<input type="hidden" id="longitude_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.longitude}}">
+				                        	<input type="hidden" id="shopname_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.shop_name}}">
+				                        	<input type="hidden" name= "shopid_regular_{{$smarty.foreach.item1name.iteration}}" value="{{$item2.shop_id}}">
+				                     {{/foreach}}
+			                        {{else}}
+			                        	<tr>
+			                        	<td colspan="5">「○○さんの友人なら…」というクーポンです。</p>
+			                        	</td>
+			                        	</tr>
+			                        {{/if}}
+											</tbody>
+										</table>
+
+
+			                    </dd>
+			                    </dl>
+			                    {{/if}}
+{{/foreach}}
+			            </div>
+					</div>
+     		</div>
+        </div>
+</div>
+        <!--#右サイド/-->
+
+
+         {{include file="./common/rightside.html"}}
+
+        <!--#右サイド/-->
+
+    </div>
+    <!--/#contents-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+</div>
+<!--/#wrapper-->
+
+</body>
+</html>
+
+

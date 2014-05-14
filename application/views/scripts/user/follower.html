@@ -1,0 +1,89 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<script type="text/javascript" src="/js/user/user.js"></script>
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+<!--#wrapper/-->
+<div id="wrapper">
+    <!--#header/-->
+     {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+<!--#container/-->
+    <div id="container" class="wrap clearfix">
+        <div id="colomnContents">
+
+            <!--TOP SLIDE/-->
+                {{include file="./user/common.html"}}
+            <!--/TOP SLIDE-->
+
+
+            <!--TAB NAViGATION/-->
+            <div class="block navTabBox">
+                <div class="clearfix">
+                    <div class="left">
+                        <ul class="navTab inline">
+                            <li><a href="/user/follow/id/{{$uid}}">フォロー<span>{{$user_cominfo.follow}}</span></a></li>
+                            <li class="current"><a href="/user/follower/id/{{$uid}}">フォロワー<span>{{$user_cominfo.follower}}</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--/TAB NAViGATION-->
+                    {{ if $follower_list!=array()}}
+                    <input type="hidden" id="user_com_id" name="user_com_id" value="{{$user_cominfo.user_detail.user_id}}" />
+                    <input type="hidden" id="login_uid" name="login_uid" value="{{$user_id}}" />
+                    {{foreach from=$follower_list key="key" item="value" name="follower"}}
+	                    <ul class="userPhotoM inline">
+		                    <li>
+		                        <a href="/user/myranking/id/{{$value.follower}}" title="{{$value.user_name}}">
+		                            <img src="{{$value.user_photo}}" alt="" title="" />
+		                        </a>
+		                    </li>
+                            <li>
+                                <a href="/user/myranking/id/{{$value.follower}}" title="{{$value.user_name}}">
+                                    {{$value.user_name}}
+                                </a>
+                            </li>
+                            {{if $user_id != $value.follower}}
+                            <li>
+                                 <span id="followlist" >　
+                                 {{if $value.follow_flg == true}}
+                                    <button type="button" class="btn" id="bt_followlist" onclick="ajax_follow('followlist','/user/ajaxunfollow/',{{$value.follower}});">フォロー解除</button>
+                                 {{else}}
+                                    <button type="button" class="btn" id="bt_followlist" onclick="ajax_follow('followlist','/user/ajaxfollow/',{{$value.follower}});">フォローする</button>
+                                 {{/if}}
+                                 </span>
+                            </li>
+                            {{/if}}
+	                    </ul>
+                    {{/foreach}}
+                    {{else}}
+                        <p class="caption">
+                            フォロワーはまだいません。
+                        </p>
+                    {{/if}}
+        </div>
+
+        <!--#右サイド/-->
+            {{include file="./common/rightside.html"}}
+        <!--#右サイド/-->
+
+    </div>
+    <!--/#container-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

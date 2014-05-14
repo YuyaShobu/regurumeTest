@@ -1,0 +1,106 @@
+<?php
+/*
+ * 2013.8.23 chou
+ * //kanekura
+ *
+ */
+
+class TestController extends AbstractController {
+ Const DISPLAY_NUM_INIT =  3;//1ページ目表示件数(件)
+    Const DISPLAY_NUM = 2;//1ページ表示件数(件)
+
+ public function indexAction () {
+        // パラメター取得
+        $shop_id = $this->getRequest()->getParam('id');
+        if (!empty($shop_id)) {
+            //詳細ページ開かれた場合、ページビューテーブルに登録
+            $this->service('shop','insertUpdateShopPageview',$shop_id);
+            //詳細情報取得
+            $res = $this->service('shop','getShopDetail',$shop_id);
+
+            if ($res) {
+
+                //ランクインされたランキング情報取得
+                $param['now_post_num'] = 0;
+                $param['get_post_num'] = self::DISPLAY_NUM_INIT;
+                $param['shop_id'] = $shop_id;
+                $res['shop_ranking_list'] = $this->service('shop','getRankingFromShopid',$param);
+
+                //行ったユーザのコメント情報取得
+                $res['shop_beento_list'] = $this->service('shop','getBeentoUserCommentList',$param);
+
+                //みんな投稿画像表示/img/pc/shopフォルダ画像あったら表示
+                $photolist = $this->_getPhotoList($shop_id);
+                $res['photo'] = $photolist;
+
+                // その他各種情報取得
+                $para['user_id'] = $this->user_info['user_id'];
+                $para['shop_id'] = $shop_id;
+                $para['voting_kind'] = Utility::CONST_VALUE_VOTING_BUTTON_WANTTO;
+                $ret = $this->service('shop','getShopOtherInfo',$para);
+                $res = array_merge($res,$ret);
+
+                //TDKにタイトルを追加
+                $title = $res['shop_name'].'｜'.$res['address'];
+            	$this->_getTdk($title);
+
+            	$this->view->shop = $res;
+                $this->view->wantto_list = $res['wantto_list'];
+                $this->view->beento_list = $res['beento_list'];
+                $this->view->oen_list = $res['oen_list'];
+                $this->view->latitude = $res['latitude'];
+                $this->view->longitude = $res['longitude'];
+                $this->view->display_numinit= self::DISPLAY_NUM_INIT;
+                $this->view->display_num= self::DISPLAY_NUM;
+                $this->view->shop_id = $shop_id;
+            } else {
+               //データがない場合トップページに遷移する
+               $this->_redirect("/index/index");
+            }
+        } else {
+           //パラメタがない場合トップページに遷移する
+           $this->_redirect("/index/index");
+        }
+    }
+
+private function _getPhotoList($shop_id)
+    {
+        //該当shopディレクトリの画像一覧を取得する
+        $list = array();
+        $photoList = array();
+        $dir = ROOT_PATH."/img/pc/shop/".$shop_id."/";
+        if (file_exists($dir) && is_dir($dir)) {
+            $dh = opendir($dir);
+            while(false !== ($fn = readdir($dh))){
+                if($fn !== '.' && $fn !== '..' && !is_dir($dir.$fn)){
+                    array_push($photoList, $fn);
+                }
+            }
+            closedir($dh);
+            //作成者画像チェック
+            if (is_array($photoList) && count($photoList) > 0) {
+                for ($i=0; $i<count($photoList); $i++) {
+                    $img_filename = $photoList[$i];
+                    $args =  explode('_', $img_filename);
+                    if(isset($args[1])){
+                        $list[$i]['user_id'] = $args[1];
+                        //ユーザー画像チェック
+                        //作成者画像チェック
+                        $user_photo = $args[1].'jpg';
+                        $image_existed = Utility::isImagePathExisted(Utility::CONST_USER_IMAGE_PATH.$user_photo);
+                        if( $image_existed != true) {
+                            $list[$i]['user_photo'] = Utility::CONST_NOIMAGE_IMAGE_PATH.Utility::CONST_NO_IMG_FILE_NAME;
+                        } else {
+                            $list[$i]['user_photo'] = Utility::CONST_USER_IMAGE_PATH.$user_photo;
+                        }
+                    }
+                    $list[$i]['photo'] = $photoList[$i];
+                }
+            }
+        }
+        return $list;
+    }
+
+}
+
+

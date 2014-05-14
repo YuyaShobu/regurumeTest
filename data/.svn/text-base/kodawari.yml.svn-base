@@ -1,0 +1,64 @@
+0:
+    tag_id: 0
+    tag_name: 値段にこだわり
+1:
+    tag_id: 1
+    tag_name: 店員にこだわり
+2:
+    tag_id: 2
+    tag_name: 店主にこだわり
+3:
+    tag_id: 3
+    tag_name: 立地にこだわり
+4:
+    tag_id: 4
+    tag_name: 場所にこだわり
+5:
+    tag_id: 5
+    tag_name: 料理にこだわり
+6:
+    tag_id: 6
+    tag_name: 飲み物にこだわり
+7:
+    tag_id: 7
+    tag_name: 雰囲気にこだわり
+8:
+    tag_id: 8
+    tag_name: 一緒に行く人にこだわり
+9:
+    tag_id: 9
+    tag_name: 客層にこだわり
+10:
+    tag_id: 10
+    tag_name: ミーハー心にこだわり
+11:
+    tag_id: 11
+    tag_name: ボリュームにこだわり
+12:
+    tag_id: 12
+    tag_name: 逸品にこだわり
+13:
+    tag_id: 13
+    tag_name: サービス重視
+14:
+    tag_id: 14
+    tag_name: お得感にこだわり
+15:
+    tag_id: 15
+    tag_name: 目的にこだわり
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

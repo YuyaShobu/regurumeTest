@@ -1,0 +1,104 @@
+
+ <!--#新着/-->
+
+<div id="current" class="content_wrap {{if $user_id !=null}}disnon{{/if}}">
+
+<div class="block thumbnailBox" id="ranklist1">
+    {{if $top.new_rank !=array()}}
+        {{foreach from=$top.new_rank key="key" item="value" name="rank"}}
+        <div class="thumbBox01">
+                <div class="deco01"></div>
+                <p class="thumArea01">{{$value.pref}}</p>
+                <a href="/ranking/detail/id/{{$value.rank_id}}" target="_blank" class="thumRankLink" title="{{$value.title}}"><div class="space02">
+
+                    <p class="thumRankTitle">{{$value.title}}<span class="rankDefiniteText">BEST3</span><span class="thumRankReaction">{{$value.page_view}} view</span></p>
+                    <ul class="thumPhoto01">
+                         {{foreach from=$value.detail key="dkey" item="dvalue" name="detail"}}<li><span class="iconRank{{$dvalue.rank_no}}"></span>
+                                <img src="{{if $dvalue.photo != null}}/img/sp/ranking/{{$dvalue.photo}}{{/if}}" width="60" height="60"  alt=""{{$dvalue.shop_name|escape}}" /></li>{{/foreach}}
+                    </ul>
+                </div>
+                </a>
+                <div class="thumUser">
+		            <a href="/user/myranking/id/{{$value.user_id}}" title="{{$value.user_name}}"><img src="{{if $value.user_photo !=null}}/img/sp/user/{{$value.user_photo}}{{/if}}"  width="60" height="60"  alt="{{$value.user_name}}" /> {{$value.user_name}}</a>
+	            </div>
+       </div>
+
+        {{/foreach}}
+    {{/if}}
+</div>
+<div class="block moreRead" id="readmore1">
+    <a href="">もっと見る</a>
+        <input type="hidden" id="intPage1" name="intPage1" value="{{$display_numinit}}">
+        <input type="hidden" id="display_num1" name="display_num1" value="{{$display_num}}">
+</div>
+</div>
+<!--#新着/-->
+
+ <!--#気に入り/-->
+ <div id="reguru" class="content_wrap disnon">
+ <div class="block thumbnailBox" id="ranklist2">
+     {{if $top.reguru_rank !=array()}}
+         {{foreach from=$top.reguru_rank key="key2" item="value2" name="rank2"}}
+
+         <div class="thumbBox01">
+                <div class="deco01"></div>
+                <p class="thumArea01">{{$value2.pref}}</p>
+                <a href="/ranking/detail/id/{{$value2.rank_id}}" target="_blank" class="thumRankLink" title="{{$value2.title}}"><div class="space02">
+
+                    <p class="thumRankTitle">{{$value2.title}}<span class="rankDefiniteText">BEST3</span><span class="thumRankReaction">{{$value2.page_view}} view</span></p>
+                    <ul class="thumPhoto01">
+                         {{foreach from=$value2.detail key="dkey2" item="dvalue2" name="detail2"}}<li><span class="iconRank{{$dvalue2.rank_no}}"></span>
+                                <img src="{{if $dvalue2.photo != null}}/img/sp/ranking/{{$dvalue2.photo}}{{/if}}" width="60" height="60"  alt="{{$dvalue2.shop_name|escape}}" /></li>{{/foreach}}
+                    </ul>
+                </div>
+                </a>
+                <div class="thumUser">
+		            <a href="/user/myranking/id/{{$value2.user_id}}" title="{{$value2.user_name}}"><img src="{{if $value2.user_photo !=null}}/img/sp/user/{{$value2.user_photo}}{{/if}}"  width="60" height="60"  alt="{{$value2.user_name}}" /> {{$value2.user_name}}</a>
+	            </div>
+       </div>
+
+         {{/foreach}}
+     {{/if}}
+ </div>
+ <div class="block moreRead" id="readmore2">
+     <a href="">もっと見る</a>
+         <input type="hidden" id="intPage2" name="intPage2" value="{{$display_numinit}}">
+         <input type="hidden" id="display_num2" name="display_num2" value="{{$display_num}}">
+ </div>
+ </div>
+ <!--#気に入り/-->
+
+
+ <!--#ページビュー数/-->
+ <div id="pv" class="content_wrap disnon">
+ <div class="block thumbnailBox" id="ranklist3">
+     {{if $top.pv_rank !=array()}}
+         {{foreach from=$top.pv_rank key="key3" item="value3" name="rank3"}}
+
+          <div class="thumbBox01">
+                <div class="deco01"></div>
+                <p class="thumArea01">{{$value3.pref}}</p>
+                <a href="/ranking/detail/id/{{$value3.rank_id}}" target="_blank" class="thumRankLink" title="{{$value3.title}}"><div class="space02">
+
+                    <p class="thumRankTitle">{{$value3.title}}<span class="rankDefiniteText">BEST3</span><span class="thumRankReaction">{{$value3.page_view}} view</span></p>
+                    <ul class="thumPhoto01">
+                         {{foreach from=$value3.detail key="dkey3" item="dvalue3" name="detail3"}}<li><span class="iconRank{{$dvalue3.rank_no}}"></span>
+                                <img src="{{if $dvalue3.photo != null}}/img/sp/ranking/{{$dvalue3.photo}}{{/if}}" width="60" height="60"  alt="{{$dvalue3.shop_name|escape}}" /></li>{{/foreach}}
+                    </ul>
+                </div>
+                </a>
+                <div class="thumUser">
+		            <a href="/user/myranking/id/{{$value3.user_id}}" title="{{$value3.user_name}}"><img src="{{if $value3.user_photo !=null}}/img/sp/user/{{$value3.user_photo}}{{/if}}"  width="60" height="60"  alt="{{$value3.user_name}}" /> {{$value3.user_name}}</a>
+	            </div>
+       </div>
+
+         {{/foreach}}
+     {{/if}}
+ </div>
+ <div class="block moreRead" id="readmore3">
+     <a href="" >もっと見る</a>
+         <input type="hidden" id="intPage3" name="intPage3" value="{{$display_numinit}}">
+         <input type="hidden" id="display_num3" name="display_num3" value="{{$display_num}}">
+ </div>
+ </div>
+ <!--#ページビュー数/-->

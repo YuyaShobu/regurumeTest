@@ -1,0 +1,205 @@
+{{include file="./common/head.html"}}
+<style type="text/css">
+.disnon {
+  display: none;
+}
+</style>
+<body>
+
+<div id="fb-root"></div>
+<script>
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=1392971240920479";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script>
+
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<!--#wrapper/-->
+<div id="wrapper">
+    <!--#header/-->
+    {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <div class="wrap">
+            <!--#breadcrumb/-->
+            <ul id="breadcrumb" class="inline">
+                <li>リグルメ-皆でつなぐグルメランキング</li>
+            </ul>
+            <!--/#breadcrumb-->
+        </div>
+    </div>
+    <!--#contents/-->
+
+{{if $user_id ==null}}
+<div id="container" class="wrap">
+    <div><!--TOP SLIDE/-->
+        <div class="block01"><img src="/img/pc/common/main01.jpg" alt="スライドだよー" /></div>
+        <!--/TOP SLIDE--></div>
+    <div>
+        <div class="contents">
+             <h2 class="titleBox01"><span>:</span>みんなが作ったランキング</h2>
+            <!--TAB NAViGATION/-->
+            <div class="block navTabBox">
+                <ul class=" navSmall inline phone-hidden">
+                    <li><a href=""><img src="/img/pc/common/icon-search_bk.png" alt="" />お店を探す</a></li>
+                    <li><a href=""><img src="/img/pc/common/icon-ranking_bk.png" alt="" />ランキングを作る</a></li>
+                </ul>
+                <ul class="navTab inline" id="tab">
+                    <li class="select"><a href="">みんなの新着</a></li>
+                    <li><a href="">みんなのお気に入り</a></li>
+                    <li><a href="">閲覧順</a></li>
+                </ul>
+            </div>
+            <!--/TAB NAViGATION-->
+        </div>
+
+        <!--#トップ共通エリア/-->
+        {{include file="./index/common.html"}}
+        <!--#トップ共通エリア/-->
+
+
+    </div>
+</div>
+
+{{else}}
+
+    <div id="container" class="wrap clearfix">
+        <div id="colomnContents">
+            <!--登録/-->
+            <div class="block01">
+                <form action="">
+                    <div class="titleBox02">行ったお店を登録しよう！</div>
+                        <div class="borderBox01 space01">
+                        <div class="space02 clearfix">
+                            <div style=""><input type="text" class="show01" style="width:50%;" placeholder="お店の名前はなんですか？" /> <p class="btn btnS show02">検索</p></div>
+
+                        </div>
+                        <div class="show01_inner">
+                        <div class="space02">
+                        <div class="clearfix" >
+                                <div class="left" style="width:530px">
+                                    <textarea name="" id="" class="" style="width:100%;" rows="4" placeholder="お店の良かったところや、美味しかった料理を書いてください＾＾"></textarea>
+                                </div>
+                                <div class="right">
+                                    <div class="file">写真をアップしましょう<input type="file" style="background:url(img/dammy.jpg);" /></div>
+                                    <!--<div><img src="./img/709410.jpg" alt="" width="120" /><div><input type="file" style="width:100px;" /></div></div>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" text-center space02">
+                            <div>
+                                <button class="btn btnC01 btnL">投稿する</button>
+                            </div>
+                            <input id="facebook" type="checkbox" checked="checked" /><label for="facebook"> Facebookにも投稿</label>
+                        </div>
+                        </div>
+                        </div>
+                </form>
+            </div>
+            <!--/登録-->
+            <h2 class="titleBox01"><span>:</span>みんなが作ったランキング</h2>
+            <!--TAB NAViGATION/-->
+            <div class="block navTabBox">
+                <ul class="navTab inline" id="tab">
+                    <li class="select"><a href="">フォロー</a></li>
+                    <li><a href="">みんなの新着</a></li>
+                    <li><a href="">みんなのお気に入り</a></li>
+                    <li><a href="">閲覧順</a></li>
+                </ul>
+            </div>
+            <!--/TAB NAViGATION-->
+
+        <!--#タイムライン/-->
+        <div id="tl" class="content_wrap">
+	        <div class="block thumbnailBox" id="ranklist4">
+	            {{if $top.time_line !=array()}}
+	                {{foreach from=$top.time_line key="key_tl" item="value_tl" name="rank_tl"}}
+
+	                <div class="thumbBox01">
+                <div class="deco01"></div>
+                <p class="thumArea01">{{$value_tl.pref}}</p>
+                <a href="/ranking/detail/id/{{$value_tl.rank_id}}" target="_blank" class="thumRankLink" title="{{$value_tl.title}}"><div class="space02">
+
+                    <p class="thumRankTitle">{{$value_tl.title}}<span class="rankDefiniteText">BEST3</span><span class="thumRankReaction">{{$value_tl.page_view}} view</span></p>
+                    <ul class="thumPhoto01">
+                         {{foreach from=$value_tl.detail key="dkey_tl" item="dvalue_tl" name="detail_tl"}}<li><span class="iconRank{{$dvalue_tl.rank_no}}"></span>
+                                <img src="{{if $dvalue_tl.photo != null}}/img/sp/ranking/{{$dvalue_tl.photo}}{{/if}}" width="60" height="60"  alt="{{$dvalue_tl.shop_name|escape}}" /></li>{{/foreach}}
+                    </ul>
+                </div>
+                </a>
+                <div class="thumUser">
+		            <a href="/user/myranking/id/{{$value_tl.user_id}}" title="{{$value_tl.user_name}}"><img src="{{if $value_tl.user_photo !=null}}/img/sp/user/{{$value_tl.user_photo}}{{/if}}"  width="60" height="60"  alt="{$value_tl.user_name}}" /> {{$value_tl.user_name}}</a>
+	            </div>
+       </div>
+
+
+	               <!-- <div class="thumbBox01">
+	                    <div class="deco01"></div>
+	                    <p class="thumArea01">{{$value_tl.pref}}</p>
+	                    <div class="mosaic-block01 fade"> <a href="/ranking/detail/id/{{$value_tl.rank_id}}" target="_blank" class="mosaic-overlay"></a>
+	                        <div class="mosaic-backdrop">
+	                            <div class="space02">
+	                                <p class="thumRankTitle"><a href="#">{{$value_tl.title}}</a></p>
+	                                <ul class="thumPhoto01">
+	                                {{foreach from=$value_tl.detail key="dkey_tl" item="dvalue_tl" name="detail_tl"}}
+	                                    <li>
+	                                        <span class="iconRank{{$dvalue_tl.rank_no}}"></span>
+	                                        <img src="{{if $dvalue_tl.photo != null}}/img/sp/ranking/{{$dvalue_tl.photo}}{{/if}}" width="60" height="60"  alt="" title="{{$dvalue_tl.shop_name|escape}}" />
+	                                    </li>
+	                                {{/foreach}}
+	                                </ul>
+
+	                                <div class="thumRankReaction clearfix">
+	                                    <div class=" text-right">{{$value_tl.page_view}} <span>view</span></div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                    <div class="thumUser">
+	                    <a href="/user/myranking/id/{{$value_tl.user_id}}">
+	                        <img src="{{if $value_tl.user_photo !=null}}/img/sp/user/{{$value_tl.user_photo}}{{/if}}"  width="60" height="60"  alt="" title="{{$value_tl.user_name}}" />
+	                        {{$value_tl.user_name}}
+	                    </a>
+	                    </div>
+	                </div> -->
+	                {{/foreach}}
+	            {{/if}}
+	        </div>
+	        <div class="block moreRead" id="readmore4">
+	            <a href="">もっと見る</a>
+	                <input type="hidden" id="intPage4" name="intPage4" value="{{$display_numinit}}">
+	                <input type="hidden" id="display_num4" name="display_num4" value="{{$display_num}}">
+	        </div>
+        </div>
+        <!--#タイムライン/-->
+
+        <!--#トップ共通エリア/-->
+        {{include file="./index/common.html"}}
+        <!--#トップ共通エリア/-->
+</div>
+        <!--#ログイン右サイド/-->
+        {{include file="./common/rightsidelogin.html"}}
+        <!--#ログイン右サイド/-->
+
+    </div>
+
+
+{{/if}}
+
+    <!--/#container-->
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<script type="text/javascript" src="/js/user/top.js"></script>
+
+<!--/#wrapper-->
+</body>
+</html>

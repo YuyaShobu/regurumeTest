@@ -1,0 +1,438 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+{{include file="./common/head_part_js.html"}}
+<script type="text/javascript" src="/js/user/rankingdetail.js"></script>
+<script type="text/javascript" src="/js/user/slimbox2.js"></script>
+<script>
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=1392971240920479";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+    //ランキング順位変更
+    function sort_ranking(no,url) {
+        if(no !="" && url != ""){
+            $('#rank_no').val(no);
+            $('#form_sortranking').attr('action', url);
+            $('#form_sortranking').submit();
+        }
+    }
+
+    function popup_modal(url){
+        var newWin = window.open(
+                "about:blank",  //ダミーの移動先
+                "pop",      //ターゲット名（formタグのtargetと同じ値にする）
+                "width=800, height=480"
+            );
+        CloseWindow = setTimeout ( 'Close()' , 3000 ) ;
+        var frm = document.form_main2; //フォームオブジェクト取得
+        frm.target = "pop";
+        frm.action = url; //移動先
+        frm.submit();
+        newWin.focus();
+        //モーダルダイアログが終了すると、ここからスクリプトが続行される
+    }
+</script>
+
+{{include file="./common/head_part_css.html"}}
+<link href="/css/user/slimbox2.css" rel="stylesheet" media="all">
+{{include file="./common/head_part_end.html"}}
+
+<body>
+<div id="fb-root"></div>
+
+<!-- ここから -->
+
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+
+<!--#wrapper/-->
+<div id="wrapper">
+    <!--#header/-->
+    {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <div class="wrap">
+            <!--#breadcrumb/-->
+            <ul id="breadcrumb" class="inline">
+                <li><a href="">Re:gurume（リグルメ）-私的ランキングで交流するグルメサイト</a></li>
+                <li class="tagList">
+                <ul>
+                {{if $detail.tags !=array()}}
+                    <span class="divider">&gt;</span>
+                    {{foreach from=$detail.tags key="k" item="v" name="tag"}}
+                        <li><a href="/tag/index/name/{{$v.tag_name}}">{{$v.tag_name}}</a></li>
+                    {{/foreach}}
+                {{else}}
+                    <span class="divider">&gt;</span>
+                    <li>ランキング詳細</li>
+                {{/if}}
+                </ul>
+      		</li>
+         </ul>
+            <!--/#breadcrumb-->
+        </div>
+    </div>
+    <!--#contents/-->
+    <div id="container" class="wrap clearfix rankingDetailBox">
+        <div id="colomnContents">
+		<div class="inputStyleBox block">
+        <div class="boxDetailTitle" >
+            <h1 class="rankTitle">
+                {{$detail.title}}<span>Best3</span>
+                <form id="" name="form_main2" action="/ranking/edit" method="post">
+                {{if $detail.user_id == $user_id}}
+                    <button type="submit" class="btnRankingEdit"  actionURL="/ranking/edit"  onClick ="">ランキング内容編集</button>　
+                    <button type="button" class="btnRankingEdit"  actionURL=""  onClick="popup_modal('/ranking/sort');return false;">ランキング順位変更</button>
+                {{/if}}
+                        <input type="hidden" id="create_user_id" name="create_user_id" value="{{$detail.user_id}}" />
+                        <input type="hidden" id="rank_id" name="rank_id" value="{{$detail.rank_id}}" />
+                        <input type="hidden" id="user_id" name="user_id" value="{{$user_id}}" />
+                </form>
+            </h1>
+            <input type="hidden" id="latitude_1" name="latitude_1" value="{{$detail.latitude_1}}" />
+            <input type="hidden" id="latitude_2" name="latitude_2" value="{{$detail.latitude_2}}" />
+            <input type="hidden" id="latitude_3" name="latitude_3" value="{{$detail.latitude_3}}" />
+
+            <input type="hidden" id="longitude_1" name="longitude_1" value="{{$detail.longitude_1}}"/>
+            <input type="hidden" id="longitude_2" name="longitude_2" value="{{$detail.longitude_2}}" />
+            <input type="hidden" id="longitude_3" name="longitude_3" value="{{$detail.longitude_3}}" />
+
+            <input type="hidden" id="shop_name_1" name="shop_name_1" value="{{$detail.shop_name_1}}" />
+            <input type="hidden" id="shop_name_2" name="shop_name_2" value="{{$detail.shop_name_2}}" />
+            <input type="hidden" id="shop_name_3" name="shop_name_3" value="{{$detail.shop_name_3}}" />
+
+            <input type="hidden" id="address_1" name="address_1" value="{{$detail.address_1}}" />
+            <input type="hidden" id="address_2" name="address_2" value="{{$detail.address_2}}" />
+            <input type="hidden" id="address_3" name="address_3" value="{{$detail.address_3}}" />
+
+			<div style="display:none" id="reguru-dialog" title="ランキングメモ＆フォロアーに伝える">
+				<p><input type="text" name="comment"   id="comment"  value=""/></p>
+			</div>
+
+            <div class="rankDiffusion clearfix">
+                <ul class="inline left">
+                    <li>
+                        <ul id="bt_reguru">
+                        {{if $bt_viewflg == "0"}}
+                            <li><a href="javascript:;" class="btn btnReguru btnC01" id="reguru_button" onclick="ajax_reguru('reguru')" >リグルメ</a></li>
+                        {{else}}
+                            <li><a href="javascript:;" class="btn btnReguru btnCD" id="reguru_button" onclick="ajax_reguru('cancel')" >リグルメしました</a></li>
+                        {{/if}}
+                        </ul>
+
+                        <div id="view_comment"
+                            {{if $bt_viewflg == "0"}}
+                                style="display:"
+                            {{else}}
+                                style="display:none"
+                            {{/if}}
+                        >
+                        </div>
+                    </li>
+                    <li class="thumRankReaction">{{if $detail.page_view > 0}}{{$detail.page_view}}{{else}}0{{/if}}<span>view</span></li>
+                </ul>
+                <ul class="inline right">
+                    <li style="width:95x;"><a href="https://twitter.com/share" class="twitter-share-button" data-via="regurume" data-lang="ja">ツイート</a>
+                    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></li>
+                    <li><div class="fb-like" data-href="http://regurume.com/ranking/detail/id/{{$detail.rank_id}}" data-width="200" data-layout="button_count" data-action="recommend" data-show-faces="true" data-send="false"></div></li>
+                </ul>
+            </div>
+
+            <div class="">
+                <ul class="inline thumCategory">
+                {{if $detail.category !=array()}}
+                 {{foreach from=$detail.category key="ck" item="cv" name="category"}}
+                        <li><span href="" class="cate0{{$cv.large_id}}">{{$cv.category_name}}</span></li>
+                 {{/foreach}}
+                 {{/if}}
+                </ul>
+            </div>
+           </div>
+
+            <div class="rankDate">
+                <!--1-->
+                <div class="block">
+                    <div class="clearfix rank1">
+                     {{if $detail.rank_no_1 !=""}}
+                        <div class="rankShopBox">
+                            <table class="rankShopTable">
+                                <tr>
+                                    <th rowspan="2"><img src="/img/pc/common/icon_rank1_b.png" alt="" width="98" height="79" /></th>
+                                    <td class="rankShopName">
+                                        <a href="/shop/detail/id/{{$detail.shop_id_1}}">{{$detail.shop_name_1}}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <ul class="rankShopInfo">
+                                            <li><span>エリア</span>{{$detail.pref_1}}/{{$detail.city_1}}</li>
+                                        </ul>
+                                        <ul class="rankShopInfo">
+                                            <li>
+                                                <span>ジャンル</span>
+                                                {{$detail.genre1_value_1}}
+                                                {{if $detail.genre2_value_1 !=""}}
+                                                    ,{{$detail.genre2_value_1}}
+                                                {{/if}}
+                                                {{if $detail.genre3_value_1 !=""}}
+                                                    ,{{$detail.genre3_value_1}}
+                                                {{/if}}
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="rankCommentBox">{{$detail.explain_1|escape|nl2br nofilter}}</p>
+                        </div>
+                         <div class="rankPhoto">
+                         <ul class="">
+                            <li>
+                            <a href="{{$detail.photo_1}}" rel="lightbox-cats" title="{{$detail.shop_name_1}}">
+                                <span class="thumPhoto01_thum">
+                                    <img src="{{$detail.photo_1}}" style="{{$detail.style_1}}" {{if $detail.width_size_1 !=""}}width="{{$detail.width_size_1}}px"{{/if}} {{if $detail.height_size_1 !=""}} height="{{$detail.height_size_1}}px" {{/if}}></img>
+                                </span>
+                            </a>
+                            </li>
+                          </ul>
+                         </div>
+                        {{else}}
+                        <div class="rankShopBox">
+                            <table class="rankShopTable">
+                                <tr>
+                                    <th><img src="/img/pc/common/icon_rank1_b.png" alt="" width="98" height="79" /></th>
+                                    <td class="rankShopName">決められません＞＜</td>
+                                </tr>
+                            </table>
+                        </div>
+ 						<div class="rankPhoto">
+                         <span class="thumPhoto01_thum"><img alt="" src="/img/pc/common/noimg_pendent.jpg"></span>
+ 						</div>
+   					  {{/if}}
+                    </div>
+                </div>
+                <!--2-->
+                <div class="block">
+                    <div class="clearfix rank2">
+                     {{if $detail.rank_no_2 !=""}}
+                         <div class="rankShopBox">
+                            <table class="rankShopTable">
+                                <tr>
+                                    <th rowspan="2"><img src="/img/pc/common/icon_rank2_b.png" alt="" width="98" height="79" /></th>
+                                    <td class="rankShopName"><a href="/shop/detail/id/{{$detail.shop_id_2}}">{{$detail.shop_name_2}}</a></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <ul class="rankShopInfo">
+                                            <li><span>エリア</span>{{$detail.pref_2}}/{{$detail.city_2}}</li>
+                                        </ul>
+                                        <ul class="rankShopInfo">
+                                            <li>
+                                                <span>ジャンル</span>
+                                                {{$detail.genre1_value_2}}
+                                                {{if $detail.genre2_value_2 !=""}}
+                                                    ,{{$detail.genre2_value_2}}
+                                                {{/if}}
+                                                {{if $detail.genre3_value_2 !=""}}
+                                                    ,{{$detail.genre3_value_2}}
+                                                {{/if}}
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="rankCommentBox">{{$detail.explain_2|escape|nl2br nofilter}}</p>
+                        </div>
+                       <div class="rankPhoto">
+                         <ul class="">
+                            <li>
+                            <a href="{{$detail.photo_2}}" rel="lightbox-cats" title="{{$detail.shop_name_2}}">
+                                <span class="thumPhoto01_thum">
+                                    <img src="{{$detail.photo_2}}" style="{{$detail.style_2}}" {{if $detail.width_size_2 !=""}}width="{{$detail.width_size_2}}px"{{/if}} {{if $detail.height_size_2 !=""}} height="{{$detail.height_size_2}}px" {{/if}}></img>
+                                </span>
+                            </a>
+                            </li>
+                          </ul>
+                       </div>
+                        {{else}}
+                       <div class="rankShopBox">
+                            <table class="rankShopTable">
+                                <tr>
+                                    <th><img src="/img/pc/common/icon_rank2_b.png" alt="" width="98" height="79" /></th>
+                                    <td class="rankShopName">決められません＞＜</td>
+                                </tr>
+                            </table>
+                        </div>
+ 						<div class="rankPhoto">
+ 						 <span class="thumPhoto01_thum"><img alt="" src="/img/pc/common/noimg_pendent.jpg"></span>
+ 						</div>
+ 						{{/if}}
+                    </div>
+                </div>
+                <!--3-->
+                <div class="block">
+                    <div class="clearfix rank3">
+                     {{if $detail.rank_no_3 !=""}}
+                        <div class="rankShopBox">
+                            <table class="rankShopTable">
+                                <tr>
+                                    <th rowspan="2"><img src="/img/pc/common/icon_rank3_b.png" alt="" width="98" height="79" /></th>
+                                    <td class="rankShopName"><a href="/shop/detail/id/{{$detail.shop_id_3}}">{{$detail.shop_name_3}}</a></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <ul class="rankShopInfo">
+                                            <li><span>エリア</span>{{$detail.pref_3}}/{{$detail.city_3}}</li>
+                                        </ul>
+                                        <ul class="rankShopInfo">
+                                            <li>
+                                                <span>ジャンル</span>
+                                                {{$detail.genre1_value_3}}
+                                                {{if $detail.genre2_value_3 !=""}}
+                                                    ,{{$detail.genre2_value_3}}
+                                                {{/if}}
+                                                {{if $detail.genre3_value_3 !=""}}
+                                                    ,{{$detail.genre3_value_3}}
+                                                {{/if}}
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="rankCommentBox">{{$detail.explain_3|escape|nl2br nofilter}}</p>
+                        </div>
+                        <div class="rankPhoto">
+                         <ul class="">
+                            <li>
+                            <a href="{{$detail.photo_3}}" rel="lightbox-cats" title="{{$detail.shop_name_3}}">
+                                <span class="thumPhoto01_thum">
+                                    <img src="{{$detail.photo_3}}" style="{{$detail.style_3}}" {{if $detail.width_size_3 !=""}}width="{{$detail.width_size_3}}px"{{/if}} {{if $detail.height_size_3 !=""}} height="{{$detail.height_size_3}}px" {{/if}}></img>
+                                </span>
+                            </a>
+                            </li>
+                          </ul>
+                        </div>
+                        {{else}}
+                        <div class="rankShopBox">
+                            <table class="rankShopTable">
+                                <tr>
+                                    <th><img src="/img/pc/common/icon_rank3_b.png" alt="" width="98" height="79" /></th>
+                                    <td class="rankShopName">決められません＞＜</td>
+                                </tr>
+                            </table>
+                        </div>
+ 						<div class="rankPhoto">
+ 						 <span class="thumPhoto01_thum"><img alt="" src="/img/pc/common/noimg_pendent.jpg"></span>
+ 						</div>
+   					  {{/if}}
+                    </div>
+                </div>
+                <div class="block">
+                <h2 class="titleBox01"><span>:</span>ランクインされたお店のエリア</h2>
+                <div id="map_canvas" class="boxMap" ></div>
+                <p class="text-right">更新日  {{$detail.updated_at|date_format:'%Y年%m月%e日'}}｜<a href="mailto:info@regurume.com">不適切な投稿を報告する</a></p>
+				</div>
+
+				<div class="block">
+				<h2 class="titleBox01"><span>:</span>ランキング作者情報</h2>
+            	<div class="borderBox">
+
+                <dl class="userInfo">
+                    <dt class="title">作者情報</dt>
+                    <dd class="clearfix">
+                        <div class="left" style="width:60px;" >
+                            <a href="/user/myranking/id/{{$detail.user_id}}">
+                                <img alt="" src="{{$detail.user_photo}}"  width="50" height="50">
+                            </a>
+                        </div>
+                        <div class="left">
+                            <p style="font-weight:bold;font-size:120%;"><a href="/user/myranking/id/{{$detail.user_id}}"> {{$detail.user_name}}</a></p>
+
+                        </div>
+                    </dd>
+                    <dt class="otherInfo"><a href="/user/myranking/id/{{$detail.user_id}}">作者の他の投稿ランキング</a></dt>
+                    <dd>
+                        <ul class="listStyle1">
+                        {{if $detail.otherranking !=array()}}
+
+                        {{foreach from=$detail.otherranking key="ok" item="ov" name="oranking"}}
+                            <li>
+                                <a href="/ranking/detail/id/{{$ov.rank_id}}">{{$ov.title}}Best3</a>
+                            </li>
+                        {{/foreach}}
+
+                        {{/if}}
+                        </ul>
+                    </dd>
+                </dl>
+            </div>
+		</div>
+    </div>
+
+	<div class="block">
+            <h2 class="titleBox01"><span>:</span>{{$detail.title}}Best3へのリアクション</h2>
+            <div id="BoxRankAllComment">
+                 {{if $reguru_list}}
+                 <ul id="commentlist">
+                     {{foreach from=$reguru_list key="rgurukey" item="reguruvalue" name="regurucomment"}}
+                    <li>
+                      <a href="/user/regururanking/id/{{$reguruvalue.reguru_uid}}">{{$reguruvalue.user_name}}</a>さんがリグルメしました
+                      {{if $reguruvalue.comment !=""}}
+                      <div class="commentInner">{{$reguruvalue.comment|escape|nl2br nofilter}}</div>
+                      {{/if}}
+                    </li>
+                    {{/foreach}}
+                </ul>
+                {{if $reguru_list_count > $display_numinit}}
+                <div class="block moreRead" id="commentreadmore"><a href="javascript:void(0);">もっと読む</a>
+                    <input type="hidden" id="initPage" name="initPage" value="{{$display_numinit}}">
+                    <input type="hidden" id="display_num" name="display_num" value="{{$display_num}}">
+                </div>
+                {{/if}}
+                {{else}}
+                    <div class="block"><p class="txtCaption">このランキングにリグルメするとリアクションが表示されます</p></div>
+                {{/if}}
+           </div>
+       </div>
+        </div>
+        <div class="inputStyleBox">
+                <div class="rankOther01">
+                    <h2 class="titleBox01"><span>:</span>関連ランキング</h2>
+                    <dl class="clearfix">
+                    {{if $detail.similarranking !=array()}}
+                     {{foreach from=$detail.similarranking key="sk" item="sv" name="sranking"}}
+                        <dt>
+                            <a href="/shop/detail/id/{{$sv.shop_id}}">
+                                <img src="{{$sv.photo}}" alt="" title="{{$sv.shop_name}}" />
+                            </a>
+                        </dt>
+                        <dd>
+                            <p class="rankTitle"><a href="/ranking/detail/id/{{$sv.rank_id}}">{{$sv.title}}Best3</a></p>
+                            <div>{{$sv.created_at|date_format:'%Y年%m月%e日'}}｜{{$sv.page_view}} view ｜<img src="{{$sv.user_photo}}" alt="" width="15" height="15" title="{{$sv.user_name}}" /><a href="/user/ranking/id/{{$sv.user_id}}">{{$sv.user_name}}</a></div>
+                        </dd>
+                     {{/foreach}}
+                    {{/if}}
+                    </dl>
+            	</div>
+       </div>
+	</div>
+        <!--#右サイド/-->
+         {{include file="./common/rightside.html"}}
+        <!--#右サイド/-->
+    </div>
+    <!--/#contents-->
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+</div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>
+
+

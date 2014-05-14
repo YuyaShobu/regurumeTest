@@ -1,0 +1,8 @@
+facebook:
+    appId: 648209778545502
+    secret: 4359dc3b72f566b71ec66e63314ee4cf
+    redirect_uri: http://regurume.com/user/facebookconnect/
+twitter:
+    appId: 648209778545502
+    secret: 4359dc3b72f566b71ec66e63314ee4cf
+    redirect_uri: http://regurume.com/user/index/

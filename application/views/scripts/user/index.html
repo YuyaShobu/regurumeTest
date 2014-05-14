@@ -1,0 +1,224 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+
+<style type="text/css">
+#destination{filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(true,sizingMethod=scale);}
+</style>
+<script src="/js/user/destination.js"></script>
+<script src="/js/user/user.js"></script>
+
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<!--#wrapper/-->
+<div id="wrapperBg">
+    <!--#header/-->
+     {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#container/-->
+    <div id="container" class="wrap">
+        <div id="boxEntry">
+            <h2 class="titleBox01"><span>:</span>プロフィール編集</h2>
+            <div class="formStyleTable boxProfileIndex">
+            <p><span class="textrequired">*</span>は必須項目です。</p>
+            <ul class="textError">
+            {{if $errorflg}}
+                {{foreach from=$error item=error_message}}
+                    <li>{{$error_message}}</li>
+                {{/foreach}}
+            {{/if}}
+            {{if $complete_msg}}
+                {{$complete_msg}}
+            {{/if}}
+            </ul>
+
+            <form id="form_main" name="form_main" action="/user/update" method="post" enctype="multipart/form-data">
+                <table>
+                    <tr>
+                        <th>ニックネーム <span class="textrequired">*</span><br /><span class="textAttention">4～20文字</span></th>
+                        <td><input type="text" name="user_name"   id="user_name"  value="{{$user.user_name}}" /></td>
+                    </tr>
+                    <tr>
+                        <th>メールアドレス <span class="textrequired">*</span></th>
+                        <td><input type="text" name="mail_address"   id="mail_address"  value="{{$user.mail_address}}" /></td>
+                    </tr>
+                    <tr>
+                        <th>パスワード <span class="textrequired">*</span><br /><span class="textAttention">英数字6～20文字</span></th>
+                        <td>
+                            <p id="change_psw"><a href="#" class="linkArrow">パスワードの変更</a></p>
+
+                            {{if $error.2 !=""}}
+                            <div id="view_psw" style="">
+                            {{else}}
+                            <div id="view_psw" name="view_psw" style="display:none">
+                            {{/if}}
+
+
+                           {{if $fb_connect_flg == 1}}
+		                      {{if $cannnot_social_denied_flg == 1}}
+		                      		<dt>パスワード設定</dt>
+			                     	<dd>パスワードを設定することでFBログインと通常のログイン両方が使えるようになります。</dd>
+			                     	<input type="hidden" name="fbpasswordflg" value="1">
+		                      {{else}}
+									<dt>現在のパスワード</dt>
+                                    <dd><input type="password" name="password" value="{{$user.password}}"  /></dd>
+		                      {{/if}}
+	                       {{else}}
+									<dt>現在のパスワード</dt>
+                                    <dd><input type="password" name="password" value="{{$user.password}}"  /></dd>
+	                       {{/if}}
+                                <dl>
+                                    <dt>新しいパスワード</dt>
+                                    <dd><input type="password" id="new_password" name="new_password" value="" /></dd>
+                                    <dt>パスワード確認</dt>
+                                    <dd><input type="password" id="conf_password" name="conf_password" value="" /></dd>
+                                </dl>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>生年月日</th>
+                        <td>
+                            <ul class="inline list">
+                                <li>
+                                    <select name="birthday_year">
+                                        <option value="0">--</option>
+                                            {{html_options values=$birthday.yearlist selected=$birthday.selyear output=$birthday.yearlist}}
+                                        </select>年
+                                </li>
+                                <li>
+                                   <select name="birthday_month">
+                                       <option value="0">--</option>
+                                       {{html_options values=$birthday.monthlist|escape selected=$birthday.selmonth|escape output=$birthday.monthlist|escape}}
+                                   </select>月
+                                </li>
+                                <li>
+                                  <select name="birthday_day">
+                                    <option value="0">--</option>
+                                    {{html_options values=$birthday.daylist|escape selected=$birthday.selday|escape output=$birthday.daylist|escape}}
+                                  </select> 日
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>性別</th>
+                        <td>
+	                        <ul class="inline">
+                        		<li><input name="gender" id="formmen" type="radio" value="2" {{if $user.gender== "2" }} checked="checked" {{/if}}> <label for="formmen">男</label></li>
+                        		<li><input name="gender" id="formwomen" type="radio" value="1" {{if $user.gender== "1" }} checked="checked" {{/if}}> <label for="formwomen" >女</label></li>
+
+                        	</ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>写真</th>
+                        <td>
+                                <div class="" id="destination">
+                                    <img alt="" width="100px" height="100px" src="{{$user.photo}}">
+                                </div>
+                                <input name="photo"  id="photo" type="file">
+                                <br>
+
+	                            <div id="showdelphoto"  {{if $user.photo == "/img/pc/common/noimg_profile.jpg"}}class="disnon"{{/if}}>
+	                               <a href="" id="delphoto"  class="linkArrow">画像を削除</a>
+                                   <input type="hidden" id="user_photo" name="user_photo"  value="{{$user.photo}}" />
+	                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>自己紹介</th>
+                        <td><textarea name="self_intro" id="self_intro" rows="5" style="width:100%;">{{$user.self_intro}}</textarea></td>
+                    </tr>
+                    <tr>
+                        <th>ブログ、ホームページ</th>
+                        <td><input type="text" id="blog_site" name="blog_site" style="width:100%;" value="{{$user.blog_site}}" placeholder="http://～" /></td>
+                    </tr>
+                    <tr>
+                        <th>出没エリア <span class="textrequired">*</span></th>
+                        <td>
+                            <select name="address1" id="address1">
+                                <option value="-1">--</option>
+                                {{foreach from=$pref key="key" item="v"}}
+                                    <option value="{{$v.pref_code}}" {{if $user.address1 == $v.pref_code}}selected{{/if}}>{{$v.value}}</option>
+                                {{/foreach}}
+                            </select>
+                            <select name="address2" id="city">
+                                <option value="-1">--</option>
+                                {{foreach from=$city key="ckey" item="cv"}}
+                                    <option value="{{$cv.city_code}}" {{if $user.address2 == $cv.city_code}}selected{{/if}}>{{$cv.value}}</option>
+                                {{/foreach}}
+                             </select></td>
+                    </tr>
+                    <tr>
+                        <th>連携ツール</th>
+                        <td>
+                            {{if $fb_connect_flg == 1}}
+		                      {{if $cannnot_social_denied_flg == 1}}
+			                     フェイスブック連携中
+		                      {{else}}
+			                     <a href="/oauth/disconnect/user_id/{{$user.user_id}}">フェイスブック連携中</a>
+		                      {{/if}}
+	                       {{else}}
+		                      <a href="{{$facebook_login_url}}" class="linkArrow">フェイスブック連携をする</a>
+	                       {{/if}}
+	                       <p class="textAttention">{{$user_already}}
+	                       {{if $cannnot_social_denied_flg == 1}}ログインユーザのため連携解除できません{{/if}}</p>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<th>通知設定</th>
+                    	<td>
+                    		<ul class="inline" style="margin-bottom:5px;">
+                    			<li>フォロー通知 / </li>
+                    			<li class="inlineProfileIndex"><input type="radio" id="followreceive" name="follow_noticeflag" value="1" {{if $user.follow_noticeflag== "1" }} checked="checked" {{/if}} checked/><label for="followreceive">受信する</label></li>
+                    			<li class="inlineProfileIndex"><input type="radio" id="followreceiveblock" name="follow_noticeflag" value="0" {{if $user.follow_noticeflag== "0" }} checked="checked" {{/if}}/><label for="followreceiveblock">受信しない</label></li>
+                    		</ul>
+                    		<ul class="inline">
+                    			<li>リグられ通知 / </li>
+                    			<li class="inlineProfileIndex"><input type="radio" id="regreceive" name="reguru_noticeflag"  value="1" {{if $user.reguru_noticeflag== "1" }} checked="checked" {{/if}} checked/><label for="regreceive">受信する</label></li>
+                    			<li class="inlineProfileIndex"><input type="radio" id="regreceiveblock" name="reguru_noticeflag" value="0" {{if $user.reguru_noticeflag== "0" }} checked="checked" {{/if}}/><label for="regreceiveblock">受信しない</label></li>
+                    		</ul>
+                    	</td>
+                    </tr>
+                </table>
+
+                 <div class="text-center">
+                    <input type="hidden" name="user_id"   id="user_id"  value="{{$user.user_id}}"/>
+                    <input type="hidden" id="city_code" name="city_code"  value="{{$user.address2 }}" />
+                    <button class="btn btnFix " type="submit" style="width:80%;font-size:140%;padding:10px">変更を保存する</button>
+                 </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="boxEntry">
+            <div class="formStyleTable">
+               <table>
+                    <tr>
+                        <th>退会</th>
+                        <td><a href="/user/retire/" class="linkArrow">退会する</a></td>
+                    </tr>
+               </table>
+            </div>
+        </div>
+    </div>
+    <!--/#container-->
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

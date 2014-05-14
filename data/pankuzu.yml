@@ -1,0 +1,20 @@
+about:
+	/about/
+		
+index:
+	/about/index/
+	
+search:
+	/search/searchranking/
+
+admin:
+	/admin/
+	
+admin/index:
+    /admin/index/
+
+admin/list/index:
+    /admin/list/index/
+	
+list/index:
+    /list/index/

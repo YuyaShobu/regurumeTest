@@ -1,0 +1,30 @@
+<!--#ランキング一覧表示共通タグ/-->
+<div class="thumbBox01">
+         <div class="deco01"></div>
+         <p class="thumArea01">{{$value.pref}}</p>
+         <a href="/ranking/detail/id/{{$value.rank_id}}" target="_blank" class="thumRankLink" title="{{$value.title}}"><div class="space02">
+             <ul class="inline thumCategory">
+             {{if $value.category !=array()}}
+                 {{foreach from=$value.category key="ctlk" item="ctlv" name="category"}}<li>
+                 <span href="" class="cate0{{$ctlv.large_id}}">{{$ctlv.category_name}}</span>
+             </li>{{/foreach}}
+             {{/if}}
+             </ul>
+
+             <p class="thumRankTitle"><span class="thumRankTitleText">{{$value.title}}</span><span class="rankDefiniteText">Best3</span><span class="thumRankReaction">{{$value.page_view}}view</span></p>
+             <ul class="thumPhoto01">
+                  {{foreach from=$value.detail key="dkey" item="dvalue" name="detail"}}<li>
+                     <span class="iconRank{{$dvalue.rank_no}}"></span>
+                     <span class="thumPhoto01_thum"><img src="{{$dvalue.photo}}" alt="{{$dvalue.shop_name|escape}}"  style="{{$dvalue.style}}" {{if $dvalue.width_size !=""}}width="{{$dvalue.width_size}}px"{{/if}} {{if $dvalue.height_size !=""}} height="{{$dvalue.height_size}}px" {{/if}}/></span>
+                  </li>{{/foreach}}
+             </ul>
+         </div>
+         </a>
+         <div class="thumUser">
+       <a href="/user/myranking/id/{{$value.user_id}}" title="{{$value.user_name}}">
+       <img src="{{$value.user_photo}}"  alt="{{$value.user_name}}" />
+         {{$value.user_name}}
+       </a>
+      </div>
+</div>
+

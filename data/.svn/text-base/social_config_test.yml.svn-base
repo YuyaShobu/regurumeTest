@@ -1,0 +1,8 @@
+facebook:
+    appId: 118493191654608
+    secret: 9f8a2541f71cb45ee69c0304edf4e203
+    redirect_uri: http://ec2-54-250-123-124.ap-northeast-1.compute.amazonaws.com/index/facebooklogin/
+twitter:
+    appId: 118493191654608
+    secret: 9f8a2541f71cb45ee69c0304edf4e203
+    redirect_uri: http://ec2-54-250-123-124.ap-northeast-1.compute.amazonaws.com/index/facebooklogin/

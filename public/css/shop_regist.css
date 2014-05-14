@@ -1,0 +1,11 @@
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+#map {
+  width: 100%;
+  height: 300px;
+  border: 8px solid #ccc;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}

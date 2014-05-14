@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<link href="/css/user/style.css" rel="stylesheet" media="all">
+<title>リグルメ｜みんなでつなぐグルメランキング｜Regurume|</title>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js?ver=1.8.3"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	var shop_name = '';
+	var address = '';
+	var region = '';
+	var locality = '';
+	var lat = '';
+	var lng = '';
+	function init () {
+		var shop_list;
+		$.ajax({
+			url: "/bookmarklet/ajaxurl",
+			dataType :'json',
+			data: {
+				url: '{{$site_url}}'
+			},
+			success: function( data ) {
+				var html = '<li><input checked="checked" type="checkbox" /></li>';
+				if(data!=''){
+				    $.each(data, function(key,v){
+				    	if(key == 'message' && v == 'mata') {
+				    		$('#wannago_done').html('<p>こちらのサイトは対応しておりません</p>');
+				    		$('#wannago_done').css('display','block');
+				    		html = '';
+				    		return false;
+				    	}
+				    	if(key == 'shop_name') {
+				    		shop_name = v;
+				    		html+='<li class="'+key+'">'+v+'</li>';
+				    	}
+				    	else if(key == 'address') {
+				    		address = v ;
+				    		html+='<li class="'+key+'">'+v+'</li>';
+				    	}
+				    	else if(key == 'shop') {
+				    		shop_list = v;
+				    	}
+				    	else if(key == 'region') {
+				    		region = v;
+				    	}
+				    	else if(key == 'locality') {
+				    		locality = v;
+				    	}
+				    	else if(key == 'lat') {
+				    		lat = v;
+				    	}
+				    	else if(key == 'lng') {
+				    		lng = v;
+				    	}
+				    });
+				    $('#im_loading').css('display','none');
+				    $('#shop_check').html(html);
+					$('#item_exist').css('display','block');
+					$('#close_window').css('display','block');
+					var shop_html = '';
+					if(shop!='') {
+						$.each(shop_list,function(key,v){
+							if(key!='') {
+								shop_html += '<li><input class="shop_list_check" type="checkbox" data-shopId="'+key+'" name="shop_list_check" /> <span>'+v.shop_name+'</span>&nbsp;|&nbsp;<span>'+v.address+'</span></li>';
+							}
+						});
+						$('#list_exist_ul').html(shop_html);
+						$('.list_exist').css('display','block');
+						$('.ikitai').css('display','block');
+					}
+					else {
+						$('#item_not_exist').css('display','block');
+					}
+				}
+			}
+		});
+	}
+	$('#main').on('click','.shop_list_check',function(){
+		if(this.checked == true) {
+			$('#shop_id_hidden').val($(this).attr('data-shopId'));
+		}
+	});
+	$('#bt_wantto').on('click',function(){
+		$('#wannago_done').css('display','none');
+		$('#wannago_done').html('');
+		var shop_id = $('#shop_id_hidden').val();
+	    $.ajax({
+	        type: 'POST',
+	        data: {
+	           shop_id : shop_id ,
+	           shop_name : shop_name,
+	           address : address,
+	           region : region,
+	           locality : locality,
+	           lat : lat,
+	           lng : lng
+	           },
+	        url: '/bookmarklet/ajaxshopwantto/',
+	        dataType: 'html',
+	        cache: false,
+	        success: function(data) {
+
+	        	if(data == true) {
+		        	$('#wannago_done').html('<strong>登録しました。</strong>');
+		        	$('#wannago_done').css('display','block');
+	        	}
+	        	else {
+		        	$('#wannago_done').html('エラーです。');
+		        	$('#wannago_done').css('display','block');
+	        	}
+	        },
+	        error:function() {
+	        	$('#wannago_done').html('エラーです。');
+	        	$('#wannago_done').css('display','block');
+	        }
+	    });
+	});
+	var is_login = '{{$is_login}}';
+	if(is_login == true) {
+		init();
+	} else {
+		$('#wannago_done').html('<p>ログインをしてからお使いください</p><p><a target="_blank" href="/login/">ログインする</a></p><a href="javascript:location.reload()" target="_self">ログインが完了したらクリック</a>');
+		$('#im_loading').css('display','none');
+		$('#item_exist').css('display','block');
+		$('#wannago_done').css('display','block');
+	}
+});
+</script>
+<body class="bodyBookmarklet">
+<div id="main">
+	<h1><a href="/" target="_blank"><img src="/img/pc/common/header_logo.png" alt="Re:gurume ソーシャル私的グルメランキング" /></a></h1>
+	<div id="im_loading"><img src='http://regurume.com/img/other/bookmarklet/load.gif' /></div>
+	<input id="shop_id_hidden" type="hidden" value="" />
+	<div class="boxBookmarklet">
+		<div id="item_exist" style="display:none;">
+			<p class="introBookmarklet">リグルメの「行きたいお店リスト」に追加するお店を、以下のリストから選んで「行きたいお店に登録する」ボタンを押してください。</p>
+			<div class="list_exist message" style="display:none;">
+				<ul id="list_exist_ul"></ul>
+        	</div>
+        	<div class="center ikitai" style="display:none;">
+            	<input id="bt_wantto" class="btn btnF btnC01" type="button" value="行きたいお店に登録する">
+        	</div>
+			<div id="wannago_done" class="message" style="display:none;"></div>
+			<div id="shop">
+				<p>※追加したいお店がない場合は、上記にチェックせずに「行きたいお店に登録する」ボタンを押してください。<br />また、上記にお店が表示されない場合も同様にしてください。<br />下記のお店を登録します。</p>
+				<ul id="shop_check"></ul>
+			</div>
+		</div>
+		<div id="item_not_exist" class="message" style="display:none;">
+            <div class="link_url_area">
+				<a href="" onclick=""  target="_blank">
+					http://regurume.com/shop/regist/
+				</a>
+		    </div>
+		</div>
+		<div id="close_window" style="display:none;">
+			<input type="button" value="閉じる" onclick="window.close(); return false;" src="" alt="閉じる" />
+		</div>
+	</div>
+</div>
+</body>
+</html>

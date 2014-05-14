@@ -1,0 +1,29 @@
+{{include file="./common/header.html"}}
+<p>MY応援一覧</p>
+{{if $list}}
+<table width="500" class="" border=1 cellspacing=0 cellpadding=2>
+<tr>
+    <th align="center">店名</th>
+    <th></th>
+</tr>
+{{foreach from=$list key="oenkey" item="oenvalue" name="oen"}}
+<tr>
+    <td align="center">
+        <a href="/shop/detail/id/{{$oenvalue.shop_id|escape}}">{{$oenvalue.shop_name|escape}}</a>
+    </td>
+    <td align="center">
+        <a href='/oen/input/id/{{$oenvalue.oen_id}}'>編集</a>　　
+        <a href='/oen/delete/id/{{$oenvalue.oen_id}}' onClick="javascript:return confirm('本当に削除しますか？');">削除</a>
+    </td>
+</tr>
+{{/foreach}}
+{{/if}}
+</table>
+<br />
+<div>
+    <form action="/oen/input" method="post">
+        <input type="submit" value="新規登録" />
+    </form>
+</div>
+
+{{include file="./common/footer.html"}}

@@ -1,0 +1,34 @@
+{{include file="./common/head.html"}}
+<body>
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<div id="wrapperBg">
+<!--#header/-->
+ {{include file="./common/header.html"}}
+<!--/#header-->
+<div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+</div>
+<!--#contents/-->
+	<div id="container" class="wrap">
+    	<div id="boxEntry">
+    	    <h2 class="titleBox01"><span>:</span>パスワード設定/変更手続き</h2>
+            <div class="formStyleTable block">
+      	       <p>{{$msg}}</p>
+            </div>
+    </div>
+    </div>
+    <!--/#contents-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+</div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

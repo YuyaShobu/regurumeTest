@@ -1,0 +1,13 @@
+
+<!--#pankuzu/-->
+    <div class="wrap">
+    <!--#breadcrumb/-->
+    <ul id="breadcrumb" class="inline">
+        <li><a href="/">Re:gurume（リグルメ）-私的ランキングで交流するグルメサイト</a></li>
+        {{if $pankuzu.info !=""}}
+            <li><span class="divider">&gt;</span>{{$pankuzu.info}}</li>
+        {{/if}}
+    </ul>
+    <!--/#breadcrumb-->
+</div>
+<!--#pankuzu/-->

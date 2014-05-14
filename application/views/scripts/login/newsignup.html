@@ -1,0 +1,162 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<script type="text/javascript">
+ $(document).ready(function(){
+    function init() {
+        var pref ="";
+        var city ="";
+        {{if $user.address1}}
+            pref = {{$user.address1}};
+        {{/if}}
+
+        {{if $user.address2}}
+            city = {{$user.address2}}
+        {{/if}}
+        ajax_search(pref,city);
+    }
+    // ONLOADイベントにセット
+    window.onload = init();
+
+    //都道府県選択で市町区自動セット
+    $("#address1").change(function(){
+      var pref = $(this).children("option:selected").val();
+      var city ="";
+      {{if $user.address2}}
+          city = {{$user.address2}}
+      {{/if}}
+
+      //var filename = "/search/ajaxgetcity/";
+      $("#city").html("<option value=\"-1\">--</option>");
+      if (pref!="-1"){
+          ajax_search(pref,city);
+      }
+    });
+});
+</script>
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<div id="wrapperBg">
+<!--#header/-->
+ {{include file="./common/header.html"}}
+<!--/#header-->
+<div id="headerUneder">
+    <!--#pankuzu/-->
+    {{include file="./common/pankuzu.html"}}
+    <!--#pankuzu/-->
+</div>
+<!--#contents/-->
+<div id="container" class="wrap">
+    <div id="boxEntry">
+        <h2 class="titleBox01"><span>:</span>{{if $error=='already'}}申し訳ございません。<br />ご入力頂いたメールアドレスは既にご登録されています。{{else}}リグルメンバーへの無料ご登録<br />必要事項を入力の上ご登録ください{{/if}}</h2>
+
+             <div class="formStyleTable block">
+             <p><span class="textrequired">*</span>は必須項目です。</p>
+            <ul class="textError">
+            {{if $errorflg}}
+                {{foreach from=$error item=error_message}}
+                    <li>{{$error_message}}</li>
+                {{/foreach}}
+            {{/if}}
+            {{if $complete_msg}}
+                {{$complete_msg}}
+            {{/if}}
+            </ul>
+
+            <form action="/login/signup/" method="post" name="loginForm">
+            {{if $error == 'already'}}すでにユーザはいるから無理{{elseif $error =='password'}}入力されたパスワードが異なります{{/if}}
+                <table>
+                    <tr>
+                        <th>ニックネーム<span class="textrequired">*</span><br /><span class="textAttention">4～20文字</span></th>
+                        <td><input type="text" name="user_name"  value="{{$user.user_name}}" placeholder="gurumeko" /></td>
+                    </tr>
+                    <tr>
+                        <th>メールアドレス<span class="textrequired">*</span></th>
+                        <td><input type="text"  name="email" value="{{$user.email}}" placeholder="regurume@regurume.com" /></td>
+                    </tr>
+                    <tr>
+                      <th>パスワード<span class="textrequired">*</span><br /><span class="textAttention">英数字6～20文字</span></th>
+                        <td><input type="password" name="password1"  value="{{$user.password1}}"/>
+             <input type="hidden" name="signup_flg" value="1" />
+             <p>▼確認用</p>
+             <input type="password" name="password2" value="{{$user.password2}}"/>
+             </td>
+                    </tr>
+                    <tr>
+                        <th>生年月日</th>
+                        <td>
+                            <ul class="inline list">
+                                <li>
+                                    <select name="birthday_year">
+                                        <option value="0">--</option>
+                                            {{html_options values=$birthday.yearlist selected=$birthday.selyear output=$birthday.yearlist}}
+                                        </select>年
+                                </li>
+                                <li>
+                                   <select name="birthday_month">
+                                       <option value="0">--</option>
+                                       {{html_options values=$birthday.monthlist|escape selected=$birthday.selmonth|escape output=$birthday.monthlist|escape}}
+                                   </select>月
+                                </li>
+                                <li>
+                                  <select name="birthday_day">
+                                    <option value="0">--</option>
+                                    {{html_options values=$birthday.daylist|escape selected=$birthday.selday|escape output=$birthday.daylist|escape}}
+                                  </select> 日
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>性別</th>
+                        <td><input type="radio" id="formmen" name="gender" value="1" {{if $user.gender== "1" }} checked="checked" {{/if}}/>
+                            <label for="ormmen">男</label>
+                            <input type="radio" id="formwomen" name="gender" value="2" {{if $user.gender== "2" }} checked="checked" {{/if}}/>
+                            <label for="formwomen">女</label></td>
+                    </tr>
+                    <tr>
+                        <th>出没エリア<span class="textrequired">*</span></th>
+                        <td>
+                              <select name="address1" id="address1">
+                                <option value="">--</option>
+                                {{foreach from=$pref key="key" item="v"}}
+                                    <option value="{{$v.pref_code}}" {{if $user.address1 == $v.pref_code}}selected{{/if}}>{{$v.value}}</option>
+                                {{/foreach}}
+                            </select>
+                            <select name="address2" id="city">
+                                <option value="-1">--</option>
+                             </select>
+            		   </td>
+                    </tr>
+                </table>
+                <div class="text-center block">
+                    <input type="checkbox" name="rules" value="1" {{if $user.rules== "1" }} checked="checked" {{/if}}/>
+                    <a href="/rules/" target="_blank">リグルメ利用規約</a>と<a href="/policy/" target="_blank">プライバシーポリシー</a>に同意する<span class="textrequired">*</span>
+                </div>
+                <div class="text-center">
+                    <button class="btn btnFix" type="submit">登録する</button>
+                </div>
+
+        </form>
+            </div>
+            <div class="formStyleTable block">
+        	<p style="font-size110%;font-weight:bold;">Facebookをご利用の方は</p>
+                <div class="text-center"><a href="{{$facebook_login_url}}" class="btn btnC05 btnFix" >Facebook アカウントで簡単登録</a></div>
+             </div>
+    </div>
+    </div>
+    <!--/#contents-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

@@ -1,0 +1,80 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<script type="text/javascript" src="/js/user/user.js"></script>
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+<!--#wrapper/-->
+<div id="wrapper">
+    <!--#header/-->
+     {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#container/-->
+    <div id="container" class="wrap clearfix">
+        <div id="colomnContents">
+
+            <!--TOP SLIDE/-->
+                {{include file="./user/common.html"}}
+            <!--/TOP SLIDE-->
+
+            <!--TAB NAViGATION/-->
+            <div class="block navTabBox">
+                <div class="clearfix">
+                    <div class="left">
+                        <ul class="navTab inline">
+                            <li class="current"><a href="/user/myranking/id/{{$uid}}">マイランキング<span>{{if $user_cominfo.rank_list}}{{$user_cominfo.rank_list|@count}}{{else}}0{{/if}}</span></a></li>
+                            <li><a href="/user/regururanking/id/{{$uid}}">リグルメ<span>{{if $user_cominfo.reguru_list}}{{$user_cominfo.reguru_list|@count}} {{else}}0{{/if}}</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--/TAB NAViGATION-->
+
+            {{ if $rank_list}}
+
+            <div class="block clearfix thumbnailBox" id="ranklist">
+            {{foreach from=$rank_list key="key" item="value" name="rank"}}
+
+                {{include file="./common/ranking.html"}}
+
+            {{/foreach}}
+
+            </div>
+            {{if $user_cominfo.rank_list|@count > $display_numinit}}
+            <div class="block moreRead" id="readmore">
+                <a href="javascript:void(0);">もっと見る</a>
+                <input type="hidden" id="flg" name="flg" value="myranking">
+                <input type="hidden" id="uid" name="uid" value="{{$uid}}">
+                <input type="hidden" id="intPage" name="intPage" value="{{$display_numinit}}">
+                <input type="hidden" id="display_num" name="display_num" value="{{$display_num}}">
+            </div>
+            {{/if}}
+
+            {{else}}
+                <p class="caption">
+                    ランキングデータは登録されておりません。<br /><a href="/ranking/input">あなたの基準で使えるお店ランキングを作りましょう！</a>
+                </p>
+            {{/if}}
+        </div>
+
+        <!--#右サイド/-->
+            {{include file="./common/rightside.html"}}
+        <!--#右サイド/-->
+
+    </div>
+    <!--/#container-->
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

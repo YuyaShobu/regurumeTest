@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js?ver=1.8.3"></script>
+<script type="text/javascript" src="/js/admin/admin.js"></script>
+</head>
+<body>
+<form id="select_action_form" action="/admin/shop" method="post">
+	<select name="select_action" class="admin_select">
+		<option {{if $select_action == 1 }}selected="selected"{{/if}} value="1">行った</option>
+		<option {{if $select_action == 2 }}selected="selected"{{/if}} value="2">行きたい</option>
+		<option {{if $select_action == 3 }}selected="selected"{{/if}} value="3">応援</option>
+	</select>
+</form>
+{{if $items}}
+<table>
+	{{if $select_action == 1}}
+	<tr><td>bt_id</td><td>user_id</td><td>shop_id</td><td>explain</td></tr>
+	{{/if}}
+	{{if $select_action == 2}}
+	<tr><td>voting_id</td><td>shop_id</td><td>category_id</td></tr>
+	{{/if}}
+	{{if $select_action == 3}}
+	<tr><td>user_id</td><td>oen_id</td><td>shop_id</td><td>shop_name</td><td>explain</td></tr>
+	{{/if}}
+	{{foreach from = $items item = data}}
+	<tr>
+	{{if $select_action == 1}}
+		<td>{{$data.bt_id}}</td>
+		<td>{{$data.user_id}}</td>
+		<td>{{$data.shop_id}}</td>
+		<td>{{$data.explain}}</td>
+	{{/if}}
+	{{if $select_action == 2}}
+		<td>{{$data.voting_id}}</td>
+		<td>{{$data.shop_id}}</td>
+		<td>{{$data.category_id}}</td>
+	{{/if}}
+	{{if $select_action == 3}}
+		<td>{{$data.user_id}}</td>
+		<td>{{$data.oen_id}}</td>
+		<td>{{$data.shop_id}}</td>
+		<td>{{$data.shop_name}}</td>
+		<td>{{$data.explain}}</td>
+	{{/if}}
+	</tr>
+	{{/foreach}}
+</table>
+{{/if}}
+<form id="paging_form" method="post" action="/admin/shop">
+{{foreach from = $pages->pagesInRange item = page}}
+{{if $page != $pages->current}}
+    <a class="paging" page="{{$page}}" href="javascript:;">
+        {{$page}}
+    </a>
+{{else}}
+    <span id="now_page">{{$page}}</span>
+{{/if}}
+{{/foreach}}
+</body>
+</html>

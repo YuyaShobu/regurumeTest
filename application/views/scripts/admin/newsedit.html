@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<title>リグルメ管理者画面|お知らせ</title>
+	<link rel="stylesheet" href="/css/admin/style.css" type="text/css" media="all" />
+	<link href="/css/zebra_datepicker.css" rel="stylesheet" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js?ver=1.8.3"></script>
+	<script type="text/javascript" src="/js/admin/admin.js"></script>
+	<script type="text/javascript" src="/js/zebra_datepicker.js"></script>
+	<script type="text/javascript">
+    $(function(){
+    	$('#public_start').Zebra_DatePicker();
+    	$('#public_end').Zebra_DatePicker();
+    });
+    </script>
+</head>
+<body>
+<!-- Header -->
+<div id="header">
+	<div class="wrapper">
+		<!--ロゴとトップのナビ -->
+		<div id="top">
+			<h1><a href="/admin/index">Re:gurume管理者ページ</a></h1>
+			<div id="top-navigation">
+				管理者名 <a href="#"><strong>{{$admin_name}}</strong></a>
+				<span>|</span>
+				<a href="#">管理者一覧</a>
+				<span>|</span>
+				<a href="/admin/logout">ログアウト</a>
+			</div>
+		</div>
+		<!-- Endロゴとトップのナビ -->
+
+		<!-- Main Nav -->
+		<div id="navigation">
+			<ul>
+			    <li><a href="/admin/index" ><span>トップ</span></a></li>
+			     <li><a href="/admin/clientedit"><span>会員店舗一覧</span></a></li>
+			    <li><a href="/admin/useredit" ><span>ユーザ一覧</span></a></li>
+			    <li><a href="/admin/shopedit"><span>ショップ一覧</span></a></li>
+			    <li><a href="/admin/rankingedit"><span>ランキング一覧</span></a></li>
+			    <li><a href="/admin/couponedit"><span>クーポン一覧</span></a></li>
+			    <li><a href="/admin/newsedit" class="active"><span>お知らせ設定</span></a></li>
+			</ul>
+		</div>
+		<!-- End Main Nav -->
+	</div>
+</div>
+<!-- End Header -->
+
+<!-- Container -->
+<div id="container">
+	<div class="wrapper">
+
+		<!-- Small Nav -->
+		<div class="small-nav">
+			<a href="/admin/index">トップ</a>
+			<span>&gt;</span>
+			お知らせ
+		</div>
+		<!-- End Small Nav -->
+
+		<!-- Message OK -->
+		<div class="msg msg-ok">
+			{{if $error_flg}}
+				{{foreach from=$error item=error_message}}
+					<p><strong>{{$error_message}}</strong></p>
+					<a href="#" class="close">close</a>
+				{{/foreach}}
+			{{/if}}
+		</div>
+		<!-- End Message OK -->
+
+		<br />
+		<!-- Main -->
+		<div id="main">
+			<div class="cl">&nbsp;</div>
+
+			<!-- Content -->
+			<div id="content">
+
+				<!-- Box -->
+				<div class="box">
+					<!-- Box Head -->
+					<div class="box-head">
+						<h2 class="left">お知らせ一覧</h2>
+					</div>
+					<!-- End Box Head -->
+
+					<!-- Table -->
+					<div class="table">
+						{{if $items}}
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<th width="13"><input type="checkbox" class="checkbox" /></th>
+								<th>タイトル</th>
+								<th>期間</th>
+								<th>対象</th>
+								<th width="110" class="ac">操作情報</th>
+							</tr>
+							{{foreach from = $items key = k item = data}}
+							<tr>
+								<td><input type="checkbox" class="checkbox" /></td>
+								<td><h3><a href="#">{{$data.title}}</a></h3></td>
+								<td>{{$data.public_start|date_format:"%Y/%m/%d"}}-{{$data.public_end|date_format:"%Y/%m/%d"}}</td>
+								<td>
+									<a href="#">
+									{{if $data.status}}
+									{{if $data.status == 1}}全員
+									{{elseif $data.status == 2}}店舗会員
+									{{elseif $data.status == 3}}有料店舗会
+									{{elseif $data.status == 4}}Ｔ店舗会員
+									{{elseif $data.status == 5}}無料店舗会員
+									{{elseif $data.status == 6}}ユーザー全員
+									{{elseif $data.status == 7}}会員ユーザー
+									{{/if}}
+									{{/if}}
+									</a>
+								</td>
+								<td>
+									<form action="/admin/newsconfom" method="post">
+									<input name="news_id" type="hidden" value="{{$data.news_id}}" />
+									<a href="javascript:;" class="ico del">Delete</a>
+									<a href="#" class="ico edit">Edit</a>
+									</form>
+								</td>
+							</tr>
+							{{/foreach}}
+						</table>
+						{{/if}}
+
+						<!-- Pagging -->
+						<form id="paging_form" method="post" action="/admin/newsedit">
+						<div class="pagging">
+							<div class="left">Showing 1-{{$pages->itemCountPerPage}} of {{$pages->pageCount}}</div>
+							<div class="right">
+								{{if $pages->previous}}
+								<a class="paging" page="{{$pages->previous}}" href="javascript:;">Previous</a>
+								{{/if}}
+								{{foreach from = $pages->pagesInRange item = page}}
+								    <a class="paging" page="{{$page}}" href="javascript:;">
+								        {{$page}}
+								    </a>
+								{{/foreach}}
+								<a class="paging" page="{{$pages->last}}" href="javascript:;">{{$pages->totalItemCount}}</a>
+								<span>...</span>
+								{{if $pages->next}}
+									<a class="paging" page="{{$pages->next}}" href="javascript:;">Next</a>
+								{{/if}}
+							</div>
+						</div>
+						</form>
+						<!-- End Pagging -->
+
+					</div>
+					<!-- Table -->
+
+				</div>
+				<!-- End Box -->
+
+				<!-- Box -->
+				<div class="box">
+					<!-- Box Head -->
+					<div class="box-head">
+						<h2>お知らせ作成</h2>
+					</div>
+					<!-- End Box Head -->
+
+					<form action="/admin/newsconfom" method="post">
+						<input name="insert" type="hidden" value="insert" />
+						<!-- Form -->
+						<div class="form">
+								<p>
+									<span class="req">max 100 symbols</span>
+									<label>Article Title <span>(Required Field)</span></label>
+									<input type="text" name="title" class="field size1" value="{{$title}}" />
+								</p>
+								<select name="status" class="field size2">
+									<option {{if $status == 1}}selected="selected"{{/if}} value="1">全員</option>
+									<option {{if $status == 2}}selected="selected"{{/if}} value="2">店舗会員</option>
+									<option {{if $status == 3}}selected="selected"{{/if}} value="3">有料店舗会員</option>
+									<option {{if $status == 4}}selected="selected"{{/if}} value="4">Ｔ店舗会員</option>
+									<option {{if $status == 5}}selected="selected"{{/if}} value="5">無料店舗会員</option>
+									<option {{if $status == 6}}selected="selected"{{/if}} value="6">ユーザー全員</option>
+									<option {{if $status == 7}}selected="selected"{{/if}} value="7">会員ユーザー</option>
+								</select>
+								<p class="inline-field">
+									<label>開始日時</label>
+									<input id="public_start" type="text" name="public_start" value="{{$public_start|date_format:"%Y-%m-%d"}}" class="col-4" />
+								</p>
+								<p class="inline-field">
+									<label>終了日時</label>
+									<input id="public_end" type="text" name="public_end" value="{{$public_end|date_format:"%Y-%m-%d"}}" class="col-4" />
+								</p>
+								<p>
+									<span class="req">max 100 symbols</span>
+									<label>Content <span>(Required Field)</span></label>
+									<textarea name="content" class="field size1" rows="10" cols="30">{{$content}}</textarea>
+								</p>
+
+						</div>
+						<!-- End Form -->
+
+						<!-- Form Buttons -->
+						<div class="buttons">
+							<input type="button" class="button" value="preview" />
+							<input type="submit" class="button" value="submit" />
+						</div>
+						<!-- End Form Buttons -->
+					</form>
+				</div>
+				<!-- End Box -->
+
+			</div>
+			<!-- End Content -->
+
+			<div class="cl">&nbsp;</div>
+		</div>
+		<!-- Main -->
+	</div>
+</div>
+<!-- End Container -->
+
+<!-- Footer -->
+<div id="footer">
+	<div class="wrapper">
+	</div>
+</div>
+<!-- End Footer -->
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>TOP3サイト</title>
+    <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+    <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <style>
+        #map {
+          width: 100%;
+          height: 300px;
+          border: 8px solid #ccc;
+          -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+        }
+    </style>
+    <script type="text/javascript" src="/js/utility.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+        function init() {
+              var latlng = new google.maps.LatLng({{$latitude}},{{$longitude}});
+              var opts = {
+                zoom: 18,
+                center: latlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+
+              };
+              map = new google.maps.Map(document.getElementById("map_canvas"), opts);
+              // マーカーの生成
+              var marker = createMarker(latlng);
+              // 中心位置の移動
+              map.setCenter(latlng);
+        }
+
+        // ONLOADイベントにセット
+        window.onload = init();
+        var obj = $("select[name='shop_id']").val();
+        //var search_val=$("#shop_name").val();
+        $("#search_results").slideUp();
+        $("#search_button").click(function(e){
+            e.preventDefault();
+            ajax_search();
+        });
+        $("#shop_name").keyup(function(e){
+            e.preventDefault();
+            ajax_search();
+        });
+
+
+    });
+    </script>
+
+</head>
+<body>

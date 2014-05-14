@@ -1,0 +1,48 @@
+{{include file="./common/head.html"}}
+
+<script type="text/javascript">
+    function send(url,id){
+        var frm = this.document.forms[0];
+        $("#rank_id").val(id);
+            frm.action = url;
+            frm.submit();
+        }
+</script>
+
+<p>MYランキング一覧</p>
+<form id="from_main" name="form_main" action="" method="post" >
+<input type="hidden" name="rank_id"   id="rank_id"  value=""/>
+
+{{if $list}}
+{{foreach from=$list key="key" item="value" name="rank"}}
+<table width="600" class="" border=1 cellspacing=0 cellpadding=2>
+<tr>
+    <th>{{$value.title}}</th>
+    <th>
+        <input type="button" value="編集" onClick="send('/ranking/input','{{$value.rank_id}}');"/>
+        <input type="button" value="削除" onClick="send('/ranking/delete','{{$value.rank_id}}');"/>
+        <input type="hidden" name="title"   id="title"  value="{{$list.0.title}}"/>
+    </th>
+</tr>
+{{foreach from=$value.detail key="dkey" item="dvalue" name="detail"}}
+<tr>
+    <td align="center" width="300">{{$dvalue.rank_no}}位</td>
+    <td align="center">
+        <a href="/shop/detail/id/{{$dvalue.shop_id|escape}}">{{$dvalue.shop_name|escape}}</a>
+    </td>
+</tr>
+{{/foreach}}
+</table><br />
+{{/foreach}}
+{{/if}}
+
+</form>
+
+<br />
+<div>
+    <form id="new" name="new" action="/ranking/input" method="post">
+        <input type="submit" value="新規登録" />
+        <input type="hidden" name="newflg"   id="newflg"  value="1"/>
+    </form>
+</div>
+{{include file="./common/footer.html"}}

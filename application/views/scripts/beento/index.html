@@ -1,0 +1,23 @@
+{{include file="./common/header.html"}}
+<p>行ったよー一覧</p>
+{{if $list}}
+<table width="500px" class="" border=1 cellspacing=0 cellpadding=2>
+<tr>
+    <th align="left">店名</th>
+    <th align="left"></th>
+</tr>
+{{foreach from=$list key="key" item="value" name="beento"}}
+<tr>
+    <td>
+        <a href="/shop/detail/id/{{$value.shop_id}}">{{$value.shop_name|escape}}</a>
+    </td>
+    <td>
+        <a href='/beento/input/id/{{$value.bt_id}}'>編集</a>
+    </td>
+</tr>
+{{/foreach}}
+
+</table>
+{{/if}}
+<br />
+{{include file="./common/footer.html"}}

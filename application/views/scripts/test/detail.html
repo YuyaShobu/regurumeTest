@@ -1,0 +1,303 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<script type="text/javascript" src="/js/utility.js"></script>
+<script type="text/javascript" src="/js/user/shop.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+  <!-- FlexSlider -->
+  <script defer src="/js/user/jquery.flexslider.js"></script>
+  <script src="/js/user/jquery.easing.js"></script>
+  <script src="/js/user/jquery.mousewheel.js"></script>
+   <script type="text/javascript">
+    $(function(){
+      SyntaxHighlighter.all();
+    });
+    $(window).load(function(){
+      $('.flexslider').flexslider({
+        animation: "slide",
+        animationLoop: false,
+        itemWidth: 180,
+        itemMargin: 5,
+        minItems: 2,
+        maxItems: 4,
+        start: function(slider){
+          $('body').removeClass('loading');
+        }
+      });
+    });
+  </script>
+<link rel="stylesheet" href="/css/user/flexslider.css" type="text/css" media="screen" />
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=1392971240920479";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<!--#wrapper/-->
+<div id="wrapper">
+    <!--#header/-->
+    {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <div class="wrap clearfix">
+            <!--#breadcrumb/-->
+            <ul id="breadcrumb" class="inline">
+                <li><a href="">リグルメ-皆でつなぐグルメランキング</a> <span class="divider">&gt;</span></li>
+                <li class="active">{{$shop.shop_name}}</li>
+            </ul>
+            <!--/#breadcrumb-->
+        </div>
+    </div>
+    <!--#container/-->
+    <div id="container" class="wrap clearfix">
+        <div id="colomnContents">
+        	<div class="wBox">
+            <div class="space01 block" style="background:#F2F0ED;">
+                <h1 class="shopTitle">{{$shop.shop_name}}</h1>
+                <ul class="rankShopInfo">
+                    <li><span>エリア</span>{{$shop.pref}}/{{$shop.city}}</li>
+                </ul>
+                <ul class="rankShopInfo">
+                    <li>
+                        <span>ジャンル</span>
+                        {{$shop.genre1_value}}
+                        {{if $shop.genre2_value !=""}}
+                        ,{{$shop.genre2_value}}
+                        {{/if}}
+                        {{if $shop.genre3_value !=""}}
+                        ,{{$shop.genre3_value}}
+                        {{/if}}
+                    </li>
+                </ul>
+                <div class="rankDiffusion clearfix">
+                    <ul class="inline left">
+                    <input type="hidden" id="shop_id" name="shop_id" value="{{$shop.shop_id}}" />
+                    <input type="hidden" id="shop_name" name="shop_name" value="{{$shop.shop_name}}" />
+                    <input type="hidden" id="user_id" name="user_id" value="{{$user_id}}" />
+                    <input type="hidden" id="latitude" name="latitude" value="{{$shop.latitude}}" />
+                    <input type="hidden" id="longitude" name="longitude" value="{{$shop.longitude}}" />
+                        <li id="beento">
+                        {{if $shop.beento_flg <= 0}}
+                            <input type="button" id="bt_beento" class="btn btnF btnC01" value="行った" onclick="ajax_shopbeento({{$shop.shop_id}},'beento','/voting/ajaxshopbeento/');"/>
+                        {{else}}
+                            <input type="button" id="bt_beento" class="btn btnF btnCD" value="行った削除" onclick="ajax_shopbeentocancel({{$shop.shop_id}},'beento','/voting/ajaxshopbeentocancel/');"/>
+                        {{/if}}
+                        </li>
+                        <li id="wantto">
+                        {{if $shop.wantto_flg <= 0}}
+                            <input type="button" id="bt_wantto" class="btn btnF btnC01" value="行きたい" onclick="ajax_shopwantto({{$shop.shop_id}},'wantto','/voting/ajaxshopwantto/');"/>
+                        {{else}}
+                            <input type="button" id="bt_wantto" class="btn btnF btnCD" value="行きたい削除" onclick="ajax_shopwanttocancel({{$shop.shop_id}},'wantto','/voting/ajaxshopwanttocancel/');"/>
+                        {{/if}}
+                        </li>
+                        <li id="shopoen">
+                        {{if $shop.oen_flg <= 0}}
+	                    <input type="button" id="bt_oen" class="btn btnF btnC03" value="応援する" onclick="ajax_shopoen({{$shop.shop_id}},'shopoen','/voting/ajaxshopoen/');"/>
+	                    {{else}}
+                            <input type="button" id="bt_oen" class="btn btnF btnCD" value="応援しました" onclick="ajax_shopoencancel({{$shop.shop_id}},'shopoen','/voting/ajaxshopoencancel/');"/>
+                        {{/if}}
+                        </li>
+                    </ul>
+					<ul class="inline right">
+					                    <li style="width:95x;"><a href="https://twitter.com/share" class="twitter-share-button" data-via="regurume" data-lang="ja">ツイート</a>
+					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></li>
+                    <li><div class="fb-like" data-href="http://regurume.com" data-width="200" data-layout="button_count" data-action="recommend" data-show-faces="true" data-send="false"></div></li>
+                </ul>
+                </div>
+            </div>
+	            <div class="block">
+	                <h2 class="titleBox01"><span>:</span>みんなの投稿写真</h2>
+	                <div class="thumbnailBox03">
+                        {{if $shop.photo}}
+	                    <div class="flexslider">
+	                    <ul class="slides">
+	                        {{foreach from=$shop.photo key="pk" item="pv" name="photo"}}
+	                            <li>
+	                                <div class="thumbBox03"><img src="/img/pc/shop/{{$shop.shop_id}}/{{$pv.photo}}" width="170" title="店名入るよ"/>
+	                                    <div class="thumUser"><a href="/user/myranking/id/{{$pv.user_id}}"><img src="{{$pv.user_photo}}" alt=""/>{{$pv.user_name}}</a></div>
+	                                </div>
+	                            </li>
+	                       {{/foreach}}
+	                       </ul>
+	                   </div>
+	                   {{/if}}
+	                </div>
+	           </div>
+
+               <h2 class="titleBox01"><span>:</span>{{$shop.shop_name}}がランクインされたランキング（{{$shop.shop_ranking_count}}件）</h2>
+               <div class="rankOther01">
+                  {{if $shop.shop_ranking_list !=array()}}
+                       <dl id="ranklist">
+                       {{foreach from=$shop.shop_ranking_list key="sk" item="sv" name="sranking"}}
+                           <dt>
+                               <a href="/ranking/detail/id/{{$sv.rank_id}}">
+                                   <img src="{{$sv.photo}}" alt="" title="{{$sv.title}}" />
+                               </a>
+                           </dt>
+                           <dd>
+                               <p class="rankTitle">
+                                   <a href="/ranking/detail/id/{{$sv.rank_id}}">{{$sv.title}}</a>
+                               </p>
+                               <div>{{$sv.created_at|date_format:'%Y年%m月%e日'}}｜{{$sv.page_view}} view｜<img src="{{$sv.user_photo}}" alt="" width="15" height="15" title="{{$sv.user_name}}" />
+                                   <a href="/user/myranking/id/{{$sv.user_id}}">{{$sv.user_name}}</a>
+                               </div>
+                           </dd>
+                       {{/foreach}}
+                       </dl>
+
+                    {{if $shop.shop_ranking_count > $display_numinit}}
+	                     <p class="textMore" id="readmore">
+		                     <a href="">&gt;&gt;{{$shop.shop_name}}がランクインされているランキングをもっと見る</a>
+		                     <input type="hidden" id="intPage" name="intPage" value="{{$display_numinit}}">
+		                     <input type="hidden" id="display_num" name="display_num" value="{{$display_num}}">
+	                     </p>
+                    {{/if}}
+
+                   {{else}}
+                   <dl>
+                       <p class="listStyle1 textAttention">あなたが思う{{$shop.shop_name}}が入ったランキングを作りませんか？<br><a href="/ranking/input">ランキングを作ろう！</a></p>
+                   </dl>
+                   {{/if}}
+             </div>
+
+              <h2 class="titleBox01"><span>:</span>{{$shop.shop_name}}に行ったユーザのコメント({{$shop.shop_beento_count}}件）</h2>
+              <div class="rankOther01">
+              	{{if $shop.shop_beento_list !=array()}}
+                      <dl id="beentolist">
+                      {{foreach from=$shop.shop_beento_list key="bk" item="bv" name="beento"}}
+                          <dt>
+                              <a href="">
+                                  <img src="{{$bv.photo}}" alt="" title="" />
+                              </a>
+                          </dt>
+                          <dd>
+                              <p class="userShopComment">
+                                  <a href="">{{$bv.explain}}</a>
+                              </p>
+                              <div>{{$bv.created_at|date_format:'%Y年%m月%e日'}}｜<img src="{{$bv.user_photo}}" alt="" width="15" height="15" title="{{$bv.user_name}}" />
+                                  <a href="/user/myranking/id/{{$bv.user_id}}">{{$bv.user_name}}</a>
+                              </div>
+                          </dd>
+                      {{/foreach}}
+                      </dl>
+
+                   {{if $shop.shop_beento_count > $display_numinit}}
+                    <p class="textMore" id="readmore_beento">
+                     <a href="">&gt;&gt;{{$shop.shop_name}}コメントをもっと見る</a>
+                     <input type="hidden" id="intPage_beento" name="intPage_beento" value="{{$display_numinit}}">
+                     <input type="hidden" id="display_num_beento" name="display_num_beento" value="{{$display_num}}">
+                    </p>
+                   {{/if}}
+                  {{else}}
+                  <dl>
+                      <p class="listStyle1 textAttention">みんなが「行った」時にコメントが書かれると表示されます。</p>
+                  </dl>
+                  {{/if}}
+            </div>
+
+            <div class="block">
+                <h2 class="titleBox01"><span>:</span>お店情報</h2>
+
+                <table class="shopInfoTable shopInfoTitle1">
+                    <tr>
+                    	<th>住所</th>
+                        <td>{{$shop.address}}<div id="map_canvas"  class="boxMap"></div></td>
+
+                    </tr>
+                    <tr>
+                        <th>営業時間</th>
+                        <td>{{$shop.business_day}}</td>
+                    </tr>
+                    <tr>
+                        <th>休日</th>
+                        <td>{{$shop.regular_holiday}}</td>
+                    </tr>
+                    <tr>
+                        <th>店舗URL</th>
+                        <td><a href="{{$shop.shop_url}}" target="_blank">{{$shop.shop_url}}</a></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="block">
+				<table class="shopInfoTable shopInfoTitle2">
+				<thead>
+					<tr>
+				        <th>行った人（<lable id="count_beento">{{if $beento_list}}{{$beento_list|@count}}{{else}}0{{/if}}</lable>人）</th>
+				        <th>行きたい人（<lable id="count_wantto">{{if $wantto_list}}{{$wantto_list|@count}}{{else}}0{{/if}}</lable>人）</th>
+				        <th>応援している人（<lable id="count_oen">{{if $oen_list}}{{$oen_list|@count}}{{else}}0{{/if}}</lable>人）</th>
+				    </tr>
+				</thead>
+				<tbody>
+				    <tr>
+				        <td>
+                            <ul class="userPhotoM inline" id="beentolist">
+                            {{if $beento_list}}
+	       	                    {{foreach from=$beento_list item=user1}}
+		                          <li>
+		                            <a href="/user/myranking/id/{{$user1.user_id}}" title="{{$user1.user_name}}">
+		                                <img alt="{{$user1.user_name}}" src="{{$user1.user_photo}}" >
+		                            </a>
+		                          </li>
+		                       {{/foreach}}
+                            {{else}}
+                                <li>行ったお店は上部の【行った】ボタンを押そう</li>
+                            {{/if}}
+		                    </ul>
+		                </td>
+						<td>
+		                    <ul class="userPhotoM inline" id="wanttolist">
+                            {{if $wantto_list}}
+		                      {{foreach from=$wantto_list item=user2}}
+		                        <li><a href="/user/myranking/id/{{$user2.user_id}}" title="{{$user2.user_name}}">
+		                                <img alt="{{$user2.user_name}}" src="{{$user2.user_photo}}" >
+		                            </a>
+		                        </li>
+		                      {{/foreach}}
+                            {{else}}
+                                <li>行きたいと思ったら上部の【行きたい】ボタンを押そう</li>
+                            {{/if}}
+		                    </ul>
+		                </td>
+						<td>
+		                    <ul class="userPhotoM inline" id="oenlist">
+                            {{if $oen_list!=array()}}
+    		                    {{foreach from=$oen_list item=user3}}
+		                        <li>
+		                            <a href="/user/myranking/id/{{$user3.user_id}}" title="{{$user3.user_name}}">
+		                                <img alt="" src="{{$user3.user_photo}}">
+		                            </a>
+		                        </li>
+	       	                    {{/foreach}}
+                            {{else}}
+                             <li>{{$shop.shop_name}}を応援する場合は上部の【応援する】ボタンを押そう</li>
+                            {{/if}}
+		                    </ul>
+		                </td>
+				    </tr>
+				    </tbody>
+				</table>
+			</div>
+		</div>
+    </div>
+
+        <!--#右サイド/-->
+            {{include file="./common/rightside.html"}}
+        <!--#右サイド/-->
+
+    </div>
+    <!--/#container-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

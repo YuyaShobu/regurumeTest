@@ -1,0 +1,4 @@
+SetEnv APP_ENV development
+RewriteEngine on
+RewriteBase /
+RewriteRule !\.(js|ico|gif|jpg|png|css)$ index.php

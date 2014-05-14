@@ -1,0 +1,20 @@
+{{include file="./common/header.html"}}
+<p>応援一覧</p>
+{{if $list}}
+<table width="" class="" border=0 cellspacing=0 cellpadding=2>
+<tr>
+    <th align="left">店名</th>
+    <th align="left">応援ユーザー数</th>
+</tr>
+{{foreach from=$list key="oenkey" item="oenvalue" name="oen"}}
+<tr>
+    <td>
+        <a href="/shop/detail/id/{{$oenvalue.shop_id}}">{{$oenvalue.shop_name|escape}}</a>
+    </td>
+    <td><a href="/oen/oenuserlist/id/{{$oenvalue.shop_id}}">{{$oenvalue.cnt}}</a></td>
+</tr>
+{{/foreach}}
+{{/if}}
+</table>
+<br />
+{{include file="./common/footer.html"}}

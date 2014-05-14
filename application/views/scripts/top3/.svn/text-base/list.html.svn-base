@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>TOP3登録</title>
+</head>
+<body>
+<h2>MY{{$category_name}}一覧</h2>
+<table width="900" class="" border=1 cellspacing=0 cellpadding=2>
+<tr>
+    <th align="center">No</th>
+    <th align="center">店名</th>
+    <th></th>
+</tr>
+<tr>
+    <td  align="center">No1</td>
+    <td align="center">
+        {{if $list.0.shop_id!="" && $list.0.shop_id !=0 }}
+            <a href="/shop/detail/id/{{$list.0.shop_id|escape}}">{{$list.0.shop_name|escape}}</a>
+        {{else}}
+            未設定
+        {{/if}}
+    </td>
+    <td align="center">
+        <a href='/top3/input/id/{{$category_id}}/no/1'>編集</a>　　
+        <a href='/top3/delete/id/{{$category_id}}/no/1'  onClick="javascript:return confirm('本当に削除しますか？');">削除</a>
+    </td>
+</tr>
+<tr>
+    <td  align="center">No2</td>
+    <td align="center">
+        {{if $list.1.shop_id!="" && $list.1.shop_id !=0}}
+            <a href="/shop/detail/id/{{$list.1.shop_id|escape}}">{{$list.1.shop_name|escape}}</a>
+        {{else}}
+            未設定
+        {{/if}}
+    </td>
+    <td align="center">
+        <a href='/top3/input/id/{{$category_id}}/no/2'>編集</a>　　
+        <a href='/top3/delete/id/{{$category_id}}/no/2'  onClick="javascript:return confirm('本当に削除しますか？');">削除</a>
+    </td>
+</tr>
+<tr>
+    <td  align="center">No3</td>
+    <td align="center">
+        {{if $list.2.shop_id!="" && $list.2.shop_id !=0}}
+            <a href="/shop/detail/id/{{$list.2.shop_id|escape}}">{{$list.2.shop_name|escape}}</a>
+        {{else}}
+            未設定
+        {{/if}}
+    </td>
+    <td align="center">
+        <a href='/top3/input/id/{{$category_id}}/no/3'>編集</a>　　
+        <a href='/top3/delete/id/{{$category_id}}/no/3'  onClick="javascript:return confirm('本当に削除しますか？');">削除</a>
+    </td>
+</tr>
+</table>
+
+</body>
+</html>

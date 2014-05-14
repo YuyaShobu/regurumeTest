@@ -1,0 +1,53 @@
+<?php
+/*
+ * 2013.7.30 chou
+ * //店舗会員の
+ *
+ */
+
+class ClientController extends AbstractController {
+
+	//ログインページ
+	public function loginAction () {
+
+
+	}
+
+	//トップページ
+	public function indexAction () {
+
+
+		//②please count the people who have been to this shop.（been to table）
+
+		//③please count the people who want to assistance this shop ( from oen)
+
+		//④please get all info from rank table , if shop_id is same.
+	}
+
+	//広告一覧ページ
+	public function advertisementlistAction () {
+
+	}
+
+	//広告詳細ページ
+	public function advertisementdetailAction () {
+
+	}
+
+	//広告編集ページ
+	public function advertisementeditAction () {
+
+	}
+
+	//店舗情報ページ
+	public function shopinfoAction () {
+		//
+		//①please get "shop_name , shop_url, address , business_day, regular_holiday, latitude. longitude, updated_at" from shoptable, deleteflg is not 1
+   	    //please dont change latitude and longitude.
+	}
+	//店舗情報編集ページ
+	public function shopinfoeditAction () {
+
+	}
+
+}

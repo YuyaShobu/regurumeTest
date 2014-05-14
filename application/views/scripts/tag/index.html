@@ -1,0 +1,66 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<script type="text/javascript" src="/js/user/tagranking.js"></script>
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+
+<!--#wrapper/-->
+<div id="wrapper">
+    <!--#header/-->
+     {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#container/-->
+    <div id="container" class="wrap clearfix">
+		<div id="colomnContents">
+            <!--/searchbox-->
+
+             <h2 class="titleBox01"><span>:</span>タグ名<span class="serchNumber">{{$tag_name}}</span></h2>
+
+            <div class="block clearfix thumbnailBox" id="ranklist">
+            {{ if $rank_list!=array()}}
+
+            {{foreach from=$rank_list key="key" item="value" name="rank"}}
+
+                {{include file="./common/ranking.html"}}
+
+            {{/foreach}}
+
+            {{/if}}
+            </div>
+            {{if $rank_list.0.count > $display_numinit}}
+            <div class="block moreRead" id="readmore">
+                <a href="javascript:void(0);" id="ranking_readmore">もっと見る</a>
+                <input type="hidden" id="intPage" name="intPage" value="{{$display_numinit}}">
+                <input type="hidden" id="display_num" name="display_num" value="{{$display_num}}">
+                <input type="hidden" id="tag_name" name="tag_name" value="{{$tag_name}}">
+             </div>
+            {{/if}}
+        </div>
+
+        <!--#ログイン右サイド/-->
+         {{include file="./common/rightside.html"}}
+        <!--#ログイン右サイド/-->
+    </div>
+    <!--/#container-->
+
+
+
+<!--#footer/-->
+    {{include file="./common/footer.html"}}
+<!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

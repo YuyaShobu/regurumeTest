@@ -1,0 +1,257 @@
+<?php
+/**
+ * Ｗｅｂサイト
+ *
+ * ＤＢ利用モデルクラスの基底クラス
+ *
+ * @copyright 2013
+ * @author    yang
+ */
+
+// コンポーネントをロードする
+require_once 'Zend/Db.php';
+require_once 'Zend/Exception.php';
+require_once (LIB_PATH .  '/managerLogger.php');
+
+class DbConn
+{
+
+	protected $_db;  // データベースアダプタのハンドル
+    private static $objDb = NULL;
+    protected $_log;// ログ
+
+    /**
+     * インスタンスの生成
+     */
+    public static function getInstance() {
+
+        if ( is_null( DbConn::$objDb ) ) {
+            DbConn::$objDb = new DbConn();
+        }
+        return DbConn::$objDb;
+    }
+
+	/**
+	 * コンストラクタ
+	 *
+	 * @param Zend_Db $db
+	 * @return void
+	 */
+	public function __construct()
+	{
+         // データベースの接続パラメータを定義する
+        $params = array(
+        			    'host'  => 'top3.czywrrkpl5gp.ap-northeast-1.rds.amazonaws.com',
+                        'username' => 'root',
+                        'password' => 'flipboard',
+                        'dbname'   => 'top3'
+                  );
+
+        // データベースアダプタを作成する
+        $this->_db = Zend_Db::factory('Pdo_mysql', $params);
+        // データ取得形式を設定する
+        $this->_db->setFetchMode(Zend_Db::FETCH_ASSOC);
+        $this->_db->getProfiler()->setEnabled(true);
+        //Zend_Db_Table::setDefaultAdapter($this->_db);
+
+        $res =$this->_db->getConnection();
+        $this->_log = managerLogger::getInstance();
+	}//--end:function
+
+    /**
+     * プレースホルダつきSELECT実行関数
+     *
+     * @param string $sql    実行するSQL
+     * @param array $param   問い合わせパラメータ($sql中のプレースホルダと対応)
+     * @param boolean $excpMode エラー発生時、例外を投げるかどうか
+     * @return unknown_type
+     */
+    public function selectPlaceQuery($sql, $param = NULL, $excpMode = TRUE) {
+        $profiler = $this->_db->getProfiler(Zend_Db_Profiler::INSERT);
+        if ($excpMode) {
+            // 例外処理ありモード
+            try{
+                $result = $this->_db->fetchAll($sql, $param);
+                //$query = $profiler->getLastQueryProfile();
+                //$this->_log->logSql($query->getQuery().print_r($param, TRUE));
+            } catch (Zend_Db_Exception $e) {
+                $this->_log->err($e->getMessage().print_r($param,TRUE));
+                throw $e;
+            }
+        } else {
+            // 例外処理なし(トランザクション用)
+            $result = $this->_db->fetchAll($sql, $param);
+            //$query = $profiler->getLastQueryProfile();
+            //$this->_log->logSql($query->getQuery().print_r($param, TRUE));
+        }
+        return $result;
+    }//--end:function
+
+    /**
+     * executeSql
+     *
+     * sqlを直接使用したクエリを実行する
+     *
+     * @param string $sql
+     * @param array $para
+     * @return 処理結果
+     */
+    public function executeSql($sql , $para)
+    {
+         $stmt = $this->_db->prepare($sql);
+         $result = $stmt->execute($para);
+         $res = $stmt->rowCount();
+         return $res;
+    }
+
+
+    /**
+     * パラメータを渡し、データをinsertする
+     * @param string $table テーブル名
+     * @$param array $param更新データ連想配列
+     * @param boolean $excpMode エラー発生時、例外を投げるかどうか
+     *
+     * boolean 処理結果
+     *
+     */
+    public function insertData($table, $param, $excpMode = TRUE)
+    {
+        $profiler = $this->_db->getProfiler(Zend_Db_Profiler::INSERT);
+        if ($excpMode) {
+            // 例外処理ありモード
+            try {
+               $result = $this->_db->insert($table,$param);
+               $query = $profiler->getLastQueryProfile();
+                return true;
+            } catch(Zend_Db_Exception $e){
+               $this->_log->err($e->getMessage().print_r($param,TRUE));
+               throw $e;
+               return false;
+            }
+        } else {
+            // 例外処理なし(トランザクション用)
+            $result = $this->_db->insert($table,$param);
+            if ($result === FALSE) {
+                $this->_log->err(print_r($param,true));
+            } else {
+                $query = $profiler->getLastQueryProfile();
+                $this->_log->logSql($query->getQuery().print_r($param,true));
+            }
+        }
+        return $result;
+    }
+
+
+    /**
+     * パラメータを渡し、データをupdateする
+     * @param string $table テーブル名
+     * @param array $data 更新データ連想配列
+     * @param array $target 更新対象連想配列
+     * @param boolean $excpMode エラー発生時、例外を投げるかどうか
+     *
+     * boolean 処理結果
+     *
+     */
+    public function updateData($table, $data, $target, $excpMode = TRUE)
+    {
+        $profiler = $this->_db->getProfiler(Zend_Db_Profiler::UPDATE);
+        if ($excpMode) {
+            // 例外処理ありモード
+            try{
+                $result = $this->_db->update($table,$data,$target);
+                $query = $profiler->getLastQueryProfile();
+            } catch(Zend_Db_Exception $e){
+                //echo $e->getMessage();
+                $this->_log->err($e->getMessage().print_r($param,TRUE));
+                throw $e;
+                return FALSE;
+            }
+        } else {
+            // 例外処理なし(トランザクション用)
+            $result = $this->_db->update($table,$data,$target);
+        }
+        return $result;
+    }
+
+    /**
+     * クエリを渡し、データをdeleteする
+     * @param string $table テーブル名
+     * @param array $target 更新対象連想配列
+     * @return bool TRUE or FALSE
+     */
+    public function deleteData($table, $target,$excpMode = TRUE)
+    {
+        $profiler = $this->_db->getProfiler(Zend_Db_Profiler::DELETE);
+        if ($excpMode) {
+            // 例外処理ありモード
+            try {
+                $result = $this->_db->delete($table, $target);
+                $query = $profiler->getLastQueryProfile();
+            } catch(Zend_Db_Exception $e) {
+                $this->_log->err($e->getMessage().print_r($param,TRUE));
+                throw $e;
+                //echo $e->getMessage();
+                return FALSE;
+            }
+        } else {
+            // 例外処理なし(トランザクション用)
+            $result = $this->_db->delete($table, $target);
+        }
+        return $result;
+    }
+
+
+    /**
+     * コネクションを切断する。
+     *
+     */
+    public function dbDisconnect() {
+        $this->_db->closeConnection();
+    }
+
+    /**
+     * beginTransactionのラッパークラス
+     *
+     */
+    public function beginTransaction() {
+        $this->_db->beginTransaction();
+        //$this->_db->query('begin');
+    }
+
+    /**
+     * commitのラッパークラス
+     *
+     */
+    public function commit() {
+        $this->_db->commit();
+        //$this->_db->query('commit');
+    }
+
+    /**
+     * rollBackのラッパークラス
+     *
+     */
+    public function rollBack() {
+        $this->_db->rollBack();
+        //$this->_db->query('rollback');
+    }
+
+    /**
+     *自動発番された番号のlastInsertId取得
+     *
+     */
+    public function lastInsertId() {
+        return $this->_db->lastInsertId();
+    }
+
+    /**
+     * quoteIntoのラッパー
+     * @param string $sql
+     * @param string $param
+     * @return string
+     */
+    public function quoteInto( $sql, $param ) {
+        return $this->_db->quoteInto( $sql, $param );
+    }
+
+}//============================ END::CLASS

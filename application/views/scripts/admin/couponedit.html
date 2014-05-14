@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<title>リグルメ管理者画面|クーポン一覧ページ</title>
+	<link rel="stylesheet" href="/css/admin/style.css" type="text/css" media="all" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js?ver=1.8.3"></script>
+	<script type="text/javascript" src="/js/admin/admin.js"></script>
+</head>
+<body>
+<!-- Header -->
+<div id="header">
+	<div class="wrapper">
+		<!--ロゴとトップのナビ -->
+		<div id="top">
+			<h1><a href="/admin/index">Re:gurume管理者ページ</a></h1>
+			<div id="top-navigation">
+				管理者名 <a href="#"><strong>{{$admin_name}}</strong></a>
+				<span>|</span>
+				<a href="#">管理者一覧</a>
+				<span>|</span>
+				<a href="/admin/logout">ログアウト</a>
+			</div>
+		</div>
+		<!-- Endロゴとトップのナビ -->
+
+		<!-- Main Nav -->
+		<div id="navigation">
+			<ul>
+			    <li><a href="/admin/index" ><span>トップ</span></a></li>
+			     <li><a href="/admin/clientedit"><span>会員店舗一覧</span></a></li>
+			    <li><a href="/admin/useredit" ><span>ユーザ一覧</span></a></li>
+			    <li><a href="/admin/shopedit"><span>ショップ一覧</span></a></li>
+			    <li><a href="/admin/rankingedit"><span>ランキング一覧</span></a></li>
+			    <li><a href="/admin/couponedit" class="active"><span>クーポン一覧</span></a></li>
+			    <li><a href="/admin/newsedit"><span>お知らせ設定</span></a></li>
+			</ul>
+		</div>
+		<!-- End Main Nav -->
+	</div>
+</div>
+<!-- End Header -->
+
+<!-- Container -->
+<div id="container">
+	<div class="wrapper">
+		<input type="hidden" id="now_page" value="{{$pages->current}}" />
+		<input type="hidden" id="order" value="{{$orderby}}" />
+		<input type="hidden" id="search" value="{{$search}}" />
+		<!-- Small Nav -->
+		<div class="small-nav">
+			<a href="/admin/index">トップ</a>
+			<span>&gt;</span>
+			クーポン一覧
+		</div>
+		<!-- End Small Nav -->
+		<!-- Main -->
+		<div id="main">
+			<div class="cl">&nbsp;</div>
+
+			<!-- Content -->
+			<div id="content">
+
+				<!-- Box -->
+				<div class="box">
+					<!-- Box Head -->
+					<div class="box-head">
+						<h2 class="left">クーポン一覧</h2>
+						<form id="coupon_search_form"  method="post" action="/admin/couponedit">
+						<div class="right">
+							<label>クーポン名検索</label>
+							<input type="text" name="search" class="field small-field" value="{{$search}}" />
+							<input id="coupon_search" type="submit" class="button admin_submit" value="search" />
+						</div>
+						</form>
+					</div>
+					<!-- End Box Head -->
+
+					<!-- Table -->
+					<div class="table">
+						{{if $items}}
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<th>クーポンID</th>
+								<th>店舗名</th>
+								<th>クーポンタイトル</th>
+								<th>利用条件</th>
+								<th>ステータス</th>
+								<th>期限</th>
+								<th width="110" class="ac">情報を編集</th>
+							</tr>
+							{{foreach from = $items key = k item = data}}
+							<tr {{if $k is odd}}class="odd"{{/if}}>
+								<td><h3><a href="#">{{$data.coupon_id}}</a></h3></td>
+								<td><h3><a href="#">{{$data.shop_name}}</a></h3></td>
+								<td>{{$data.title}}</td>
+								<td>{{$data.coupon}}</td>
+								<td>
+								{{if $data.view_flg}}
+								{{if $data.view_flg == 1}}店舗に表示する
+								{{elseif $data.view_flg == 2}}応援ユーザ
+								{{elseif $data.view_flg == 3}}コミュニティ
+								{{/if}}
+								{{/if}}
+								</td>
+								<td>{{$data.public_start|date_format:"%Y/%m/%d"}}-{{$data.public_end|date_format:"%Y/%m/%d"}}</td>
+								<td>
+									<form action="/admin/couponconfom" method="post">
+										<a href="javascript:;" class="ico del">削除</a>
+										<input name="coupon_id" type="hidden" value="{{$data.coupon_id}}" />
+										<a href="#" class="ico edit">編集</a>
+									</form>
+								</td>
+							</tr>
+							{{/foreach}}
+						</table>
+						{{/if}}
+
+						<!-- Pagging -->
+						<form id="paging_form" method="post" action="/admin/couponedit">
+						<div class="pagging">
+							<div class="left">Showing 1-{{$pages->itemCountPerPage}} of {{$pages->pageCount}}</div>
+							<div class="right">
+								{{if $pages->previous}}
+								<a class="paging" page="{{$pages->previous}}" href="javascript:;">Previous</a>
+								{{/if}}
+								{{foreach from = $pages->pagesInRange item = page}}
+								    <a class="paging" page="{{$page}}" href="javascript:;">
+								        {{$page}}
+								    </a>
+								{{/foreach}}
+								<a class="paging" page="{{$pages->last}}" href="javascript:;">{{$pages->totalItemCount}}</a>
+								<span>...</span>
+								{{if $pages->next}}
+									<a class="paging" page="{{$pages->next}}" href="javascript:;">Next</a>
+								{{/if}}
+							</div>
+						</div>
+						</form>
+						<!-- End Pagging -->
+
+					</div>
+					<!-- Table -->
+
+				</div>
+				<!-- End Box -->
+			</div>
+			<!-- End Content -->
+
+			<!-- Sidebar -->
+			<div id="sidebar">
+
+				<!-- Box -->
+				<div class="box">
+
+					<!-- Box Head -->
+					<div class="box-head">
+						<h2>Management</h2>
+					</div>
+					<!-- End Box Head-->
+
+					<div class="box-content">
+						<!-- Sort -->
+						<form id="coupon_order_form"  method="post" action="/admin/couponedit">
+						<div class="sort">
+							<label>並び替え</label>	
+								<select name="orderby" class="field">
+									<option {{if $orderby == 'new'}}selected="selected"{{/if}} value="new">新しい順</option>
+									<option {{if $orderby == 'old'}}selected="selected"{{/if}} value="old">古い順</option>
+								</select>
+						</div>
+						<div class="sort">
+							<a id="coupon_order" href="javascript:;" class="button admin_submit"><span>実行！！</span></a>
+						</div>
+						</form>
+						<!-- End Sort -->
+
+					</div>
+				</div>
+				<!-- End Box -->
+			</div>
+			<!-- End Sidebar -->
+
+			<div class="cl">&nbsp;</div>
+		</div>
+		<!-- Main -->
+	</div>
+</div>
+<!-- End Container -->
+
+<!-- Footer -->
+<div id="footer">
+	<div class="wrapper">
+		<span class="left">&copy; 2013 -regurume</span>
+	</div>
+</div>
+<!-- End Footer -->
+
+</body>
+</html>

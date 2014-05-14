@@ -1,0 +1,67 @@
+{{include file="./common/head.html"}}
+<body>
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<div id="wrapperBg">
+<!--#header/-->
+ {{include file="./common/header.html"}}
+<!--/#header-->
+<div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+</div>
+<!--#contents/-->
+<div id="container" class="wrap">
+    <div id="boxEntry">
+        <h2 class="titleBox01"><span>:</span>パスワード設定/変更手続き</h2>
+
+             <div class="formStyleTable block">
+             <p>「新しいパスワード」と「パスワード確認」に同じパスワードを入力してください。「送信する」ボタンをクリックしてください。</p>
+                {{if $errorflg}}
+                    <ul class="textError">
+                    {{foreach from=$error item=error_message}}
+                        <li>{{$error_message}}</li>
+                    {{/foreach}}
+                    </ul>
+                {{/if}}
+            <form id="form_main" name="form_main" action="/password/update" method="post">
+                <table>
+                    <tr>
+                        <th>パスワード <span class="textrequired">*</span></th>
+                        <td>
+                                <dl>
+                                    <dt>新しいパスワード</dt>
+                                    <dd><input type="password" id="new_password" name="new_password" value="" /></dd>
+                                    <dt>パスワード確認</dt>
+                                    <dd><input type="password" id="conf_password" name="conf_password" value=""/></dd>
+                                </dl>
+                        </td>
+                    </tr>
+                </table>
+                <p>※パスワードは任意の6～20文字の半角英数字</p>
+                <div class="text-center">
+                    <button class="btn btnFix" type="submit">送信する</button>
+                </div>
+                <input type="hidden" name="email"   id="email"  value="
+                {{if $email}}
+                    {{$email}}
+                {{else}}
+                    {{$info.email}}
+                {{/if}}
+                "/>
+        	</form>
+            </div>
+    </div>
+    <!--/#contents-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

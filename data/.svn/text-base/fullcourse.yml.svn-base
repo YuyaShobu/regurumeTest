@@ -1,0 +1,24 @@
+0:
+    course_id: 1
+    course_name: 前菜
+1:
+    course_id: 2
+    course_name: オードブル
+2:
+    course_id: 3
+    course_name: 魚料理
+3:
+    course_id: 4
+    course_name: 肉料理
+4:
+    course_id: 5
+    course_name: メイン
+5:
+    course_id: 6
+    course_name: スープ
+6:
+    course_id: 7
+    course_name: デザート
+7:
+    course_id: 8
+    course_name: ドリンク

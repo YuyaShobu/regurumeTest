@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>TOP3</title>
+</head>
+{{literal}}<script language="javascript" type="application/javascript">
+    function send()
+    {{
+        var frm = this.document.forms["fullcourse"];
+        frm.action = "/shop/detail";
+        frm.submit();
+    }}
+
+</script>{{/literal}}
+<body>
+<h2>MYフルコース一覧</h2>
+
+{{if $list}}
+
+<table width="900" class="" border=1 cellspacing=0 cellpadding=2>
+<tr>
+    <th align="center">コース名</th>
+    <th align="center">メニュー名(店名)</th>
+    <th></th>
+</tr>
+{{foreach from=$list key="fc_key" item="fc_value" name="fullcourse"}}
+<tr>
+    <td>{{$fc_value.course_name}}</td>
+    <td align="center">
+        {{if $fc_value.detail.menu != "" || $fc_value.detail.shop_id !=""}}
+            {{$fc_value.detail.menu}}<a href="/shop/detail/id/{{$fc_value.detail.shop_id|escape}}">({{$fc_value.detail.shop_name|escape}})</a>
+        {{else}}
+            未設定
+        {{/if}}
+    </td>
+    <td align="center">
+        <a href='/fullcourse/input/id/{{$fc_value.course_id}}'>編集</a>　　
+        <a href='/fullcourse/delete/id/{{$fc_value.course_id}}' onClick="javascript:return confirm('本当に削除しますか？');">削除</a>
+    </td>
+</tr>
+{{/foreach}}
+
+</table>
+
+{{/if}}
+
+</body>
+
+</html>

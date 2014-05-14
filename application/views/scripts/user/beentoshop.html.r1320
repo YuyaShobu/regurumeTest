@@ -1,0 +1,176 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<script type="text/javascript" src="/js/user/slimbox2.js"></script>
+
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+<script type="text/javascript" src="/js/user/user.js"></script>
+<script type="text/javascript">
+var geocoder = new google.maps.Geocoder();
+$(document).ready(function(){
+    function attachMessage(marker, msg) {
+        google.maps.event.addListener(marker, 'click', function(event) {
+          new google.maps.InfoWindow({
+            content: msg
+          }).open(marker.getMap(), marker);
+        });
+    }
+	function init () {
+		var i = 0;
+		var data = new Array();
+		$('.map').map(function(){
+			if(i == 0) {
+		        var latlng1 = new google.maps.LatLng($(this).attr('data-latitude'),$(this).attr('data-longitude'));
+		        var opts = {
+		        zoom: 11,
+		        center: latlng1,
+		        mapTypeId: google.maps.MapTypeId.ROADMAP
+		    	};
+		        map = new google.maps.Map(document.getElementById("map"), opts);
+		        i++;
+			}
+			data.push({position: new google.maps.LatLng($(this).attr('data-latitude'),$(this).attr('data-longitude')), content: $(this).attr('data-shopName')});
+		});
+	    for (i = 0; i < data.length; i++) {
+	        var myMarker = new google.maps.Marker({
+	          position: data[i].position,
+	          map: map
+	        });
+	        attachMessage(myMarker, data[i].content);
+	    }
+	}
+	window.onload = init();
+});
+</script>
+{{include file="./common/head_part_css.html"}}
+<link href="/css/user/slimbox2.css" rel="stylesheet" media="all">
+
+{{include file="./common/head_part_end.html"}}
+<body>
+<!--#wrapper/-->
+<div id="wrapper">
+    <!--#header/-->
+     {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#container/-->
+    <div id="container" class="wrap clearfix">
+        <div id="colomnContents">
+
+            <!--TOP SLIDE/-->
+                {{include file="./user/common.html"}}
+            <!--/TOP SLIDE-->
+
+            <!--TAB NAViGATION/-->
+            <div class="block navTabBox">
+                <div class="clearfix">
+                    <div class="left">
+                        <ul class="navTab inline">
+                            <li><a href="/user/wanttoshop/id/{{$uid}}">行きたいお店<span>{{if $user_cominfo.wantto_list}} {{$user_cominfo.wantto_list|@count}} {{else}}0{{/if}}</span></a></li>
+                            <li class="current"><a href="/user/beentoshop/id/{{$uid}}">行ったお店<span>{{if $user_cominfo.beento_list}}{{$user_cominfo.beento_list|@count}}{{else}}0{{/if}}</span></a></li>
+                            <li><a href="/user/oenshop/id/{{$uid}}">応援しているお店<span>{{if $user_cominfo.oen_list}}{{$user_cominfo.oen_list|@count}}{{else}}0{{/if}}</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--/TAB NAViGATION-->
+            <div id="colomnContents">
+             <div class="block timeline" id="updates">
+                {{if $shop_list!=array()}}
+				<div id="map"></div>
+				{{if $shop_lan_log_list}}
+				{{foreach from=$shop_lan_log_list key="key" item="value" }}
+				<div data-shopName="{{$value.shop_name}}" data-latitude="{{$value.latitude}}" data-longitude="{{$value.longitude}}" class="map"></div>
+				{{/foreach}}
+				{{/if}}
+                <div class="rankOther01" id="shoplist">
+                	<h2 class="titleBox01"><span>:</span>行ったお店</h2>
+
+                    {{foreach from=$shop_list key="key" item="value" name="shop"}}
+                	<div class="boxUserbeentoshop">
+                		<p class="rankTitle"><a href="/shop/detail/id/{{$value.shop_id}}">{{$value.shop_name}}</a></p>
+                		<dl class="innerUserbeentoshop01">
+                			<dt>
+                                <a href="{{$value.photo}}" rel="lightbox" title="{{$value.shop_name}}">
+                                    <span>
+                                        <img src="{{$value.photo}}" alt="" title="{{$value.shop_name}}" style="{{$value.photo_style}}" {{if $value.photo_width_size !=""}}width="{{$value.photo_width_size}}px"{{/if}} {{if $value.photo_height_size !=""}} height="{{$value.photo_height_size}}px" {{/if}}/>
+                                    </span>
+                                </a>
+                            </dt>
+                			<dd>
+                				<ul class="rankShopInfo">
+                					<li><span>エリア</span>{{$value.pref}}　{{$value.city}}</li>
+                					<li>
+                					   <span>ジャンル</span>
+                					    {{$value.genre1_value}}
+                                        {{if $value.genre2_value !=""}}
+                                        ,{{$value.genre2_value}}
+                                        {{/if}}
+                                        {{if $value.genre3_value !=""}}
+                                        ,{{$value.genre3_value}}
+                                        {{/if}}
+                					</li>
+                					<li><span>ランクイン</span>{{$value.ranking_count}}件</li>
+                				</ul>
+                				<dl class="innerUserbeentoshop02">
+                					<dt>
+                					   <a href="/user/myranking/id/{{$value.user_id}}">
+                					       <span>
+                					           <img src="{{$value.user_photo}}" alt="{{$value.user_name}}" style="{{$value.userphoto_style}}" {{if $value.userphoto_width_size !=""}}width="{{$value.userphoto_width_size}}px"{{/if}} {{if $value.userphoto_height_size !=""}} height="{{$value.userphoto_height_size}}px" {{/if}}/>{{$value.user_name}}
+                					       </span>
+                					   </a>
+                					</dt>
+                					<dd>
+                					   <p class="rankCommentBox">
+                                       {{if $user_id == $value.user_id}}
+                                          <a class="btn btnF btnC01" href="/beento/edit/id/{{$value.bt_id}}">編集</a>
+                                          <a class="btn btnF btnC01" href="javascript:void(0);" onclick="ajax_delbeento({{$value.bt_id}},'{{$value.photo}}',{{$user_id}});return false;">削除</a>
+                                       {{/if}}
+                					   {{if $value.explain !=""}}
+                					       {{$value.explain|escape|nl2br nofilter}}
+                					   {{else}}
+                					       行きました。
+                					   {{/if}}　　
+                					   </p>
+                					</dd>
+                				</dl>
+                			</dd>
+                		</dl>
+                	</div>
+                    {{/foreach}}
+                </div>
+
+                {{if $user_cominfo.beento_list|@count > $display_numinit}}
+                <div class="block moreRead"  id="shopreadmore">
+                    <a href="javascript:void(0);">もっと読む</a>
+                    <input type="hidden" id="flg" name="flg" value="mybeento">
+                    <input type="hidden" id="uid" name="uid" value="{{$uid}}">
+                    <input type="hidden" id="intPage" name="intPage" value="{{$display_numinit}}">
+                    <input type="hidden" id="display_num" name="display_num" value="{{$display_num}}">
+                </div>
+                {{/if}}
+
+                {{else}}
+                    <p class="caption">行ったお店まだ登録されておりません、お店ページの「行った」をクリックするとここに保存されます！</p>
+                {{/if}}
+            </div>
+        </div>
+        </div>
+        <!--#右サイド/-->
+            {{include file="./common/rightside.html"}}
+        <!--#右サイド/-->
+    </div>
+    <!--/#container-->
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

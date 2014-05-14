@@ -1,0 +1,54 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<!--#wrapper/-->
+<div id="wrapperBg">
+    <!--#header/-->
+     {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#container/-->
+    <div id="container" class="wrap ">
+         <div id="boxEntry">
+            <h2 class="titleBox01"><span>:</span>アカウント削除申請について</h2>
+            <div class="formStyleTable ">
+            	<div class="block">
+	<p>Regurumeアカウントを削除すると、登録しているメールアドレス、パスワード、ユーザー名などのすべてのアカウント情報が削除されます。</p>
+
+	</div>
+	<p style="margin-bottom:10px;">ただし、以下の内容は削除されませんので、残したくない活動データがある場合は退会処理を行う前に削除されることをお勧めします。</p>
+	<div class="block" style="border:1px dotted #ddd;padding:10px;">
+	<p>
+	・Regurumeで作成したランキング、編集した内容、行ったお店へのコメント<br>
+	・Regurumeサービス内での活動履歴に伴うユーザー名、プロフィール画像</p>
+	<p>一度退会されるとアカウント情報は復旧できません。ご了承ください。</p>
+
+	</div>
+	<div class="text-center">
+    	<a href="/user/retirenext/" class="btn btnF">アカウント削除申請する</a>
+    	<a href="/user/" class="btn btnF">キャンセルする</a>
+    </div>
+
+                </div>
+        </div>
+    </div>
+    <!--/#container-->
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

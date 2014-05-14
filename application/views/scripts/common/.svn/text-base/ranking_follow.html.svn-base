@@ -1,0 +1,121 @@
+{{if $value.tl_type == "1"}}
+ <div class="thumbBox01"><!-- リグルメランキング -->
+         <div class="decoFollow02"></div>
+         <a href="/ranking/detail/id/{{$value.rank_id}}" target="_blank" class="thumRankLink" title="{{$value.title}}">
+         <div class="spaceThumb">
+             <p class="thumRankTitle"><span class="thumRankTitleText">{{$value.title}}</span><span class="rankDefiniteText">Best3</span><span class="thumRankReaction">{{$value.page_view}}view</span></p>
+             <ul class="thumPhoto01">
+                  {{foreach from=$value.ranking_detail.detail key="dkey" item="dvalue" name="detail"}}<li>
+                     <span class="iconRank{{$dvalue.rank_no}}"></span>
+                     <span class="thumPhoto01_thum"><img src="{{$dvalue.photo}}" alt="{{$dvalue.shop_name|escape}}" style="{{$dvalue.style}}" {{if $dvalue.width_size !=""}}width="{{$dvalue.width_size}}px" {{/if}} {{if $dvalue.height_size !=""}} height="{{$dvalue.height_size}}px" {{/if}}/></span>
+                  </li>{{/foreach}}
+             </ul>
+             <ul class="rankShopInfo2">
+             	<li><span>エリア</span>{{$value.ranking_detail.pref}}　{{$value.ranking_detail.city}}</li>
+             	<li><span>カテゴリ</span>
+             	{{if $value.ranking_detail.category !=array()}}
+                 {{foreach from=$value.ranking_detail.category key="ctlk" item="ctlv" name="category"}}
+                    {{$ctlv.category_name}}
+                 {{/foreach}}
+                {{/if}}
+             	</li>
+			</ul>
+         </div>
+         </a>
+         <div class="thumUser">
+       <a href="/user/myranking/id/{{$value.user_id}}" title="">
+       <img src="{{$value.user_photo}}"  width="60" height="60"  alt="" />
+         {{$value.user_name}}
+       </a>
+      </div>
+      <div class="thumComment">
+      {{if $value.ranking_detail.reguru}}
+        {{foreach from=$value.ranking_detail.reguru key="rgurukey" item="reguruvalue" name="reguru"}}
+	      <div class="thumUser">
+	       <a href="/user/myranking/id/{{$reguruvalue.reguru_uid}}" title="">
+	       <img src="{{$reguruvalue.user_photo}}"  width="60" height="60"  alt="" />
+	         {{$reguruvalue.user_name}}
+	       </a>
+	      </div>
+        <p class="commentBox">
+            {{if $reguruvalue.comment !=""}}
+                {{$reguruvalue.comment|escape}}
+            {{else}}
+                リグルメしました！
+            {{/if}}
+       </p>
+     {{/foreach}}
+      {{/if}}
+      </div>
+</div>
+
+{{elseif $value.tl_type == "2" or $value.tl_type == "3" or $value.tl_type == "4"}}
+
+ <div class="thumbBox01">
+         {{if $value.tl_type == "2"}}
+            <div class="decoFollow03"></div><!-- 行ったお店 -->
+         {{elseif $value.tl_type == "3"}}
+            <div class="decoFollow05"></div><!-- 行きたいお店 -->
+         {{elseif $value.tl_type == "4"}}
+            <div class="decoFollow04"></div><!-- 応援してるお店 -->
+         {{/if}}
+         <a href="/shop/detail/id/{{$value.shop_id}}" target="_blank" class="thumRankLink" title="{{$value.shop_name}}">
+         <div class="spaceThumb">
+             <p class="thumRankTitle">{{$value.shop_name}}</p>
+             <ul class="rankShopInfo2">
+             	<li><span>エリア</span>{{$value.pref}}　{{$value.city}}</li>
+             	<li><span>ジャンル</span>
+             	       {{$value.genre1_value}}
+                        {{if $value.genre2_value !=""}}
+                        ,{{$value.genre2_value}}
+                        {{/if}}
+                        {{if $value.genre3_value !=""}}
+                        ,{{$value.genre3_value}}
+                        {{/if}}
+             	</li>
+			</ul>
+         </div>
+         </a>
+         <div class="thumUser">
+       <a href="/user/myranking/id/{{$value.created_user_id}}" title="">
+       <img src="{{$value.user_photo}}"  width="60" height="60"  alt="" />
+        {{$value.user_name}}
+       </a>
+      </div>
+      <div class="thumComment">
+      {{if $value.tl_type == "2"}}
+      <!-- <div class="thumUser">
+            <a href="/user/myranking/id/{{$value.user_id}}" title="{{$value.user_name}}">
+                <img src=""  width="60" height="60"  alt="" />
+       </a>
+      </div>-->
+      <div class="commentPhoto">
+            <p><a href="/shop/detail/id/{{$value.shop_id}}">
+                {{if $value.photo !=""}}
+                    <img src="/img/pc/shop/{{$value.photo}}"  width="60" height="60"  alt="" title="{{$value.shop_name}}" />
+                {{/if}}
+            </a></p>
+      </div>
+      {{/if}}
+
+       <p class="commentBox">
+           {{if $value.tl_type == "2"}}
+               {{if $value.explain !=""}}
+                   {{$value.explain}}
+               {{else}}
+                   行きました！<!-- 行ったお店 -->
+               {{/if}}
+           {{elseif $value.tl_type == "3"}}
+              行きたいです！<!-- 行きたいお店 -->
+           {{elseif $value.tl_type == "4"}}
+               応援します！ <!-- 応援してるお店 -->
+           {{/if}}
+       </p>
+
+      </div>
+</div>
+
+{{/if}}
+
+
+

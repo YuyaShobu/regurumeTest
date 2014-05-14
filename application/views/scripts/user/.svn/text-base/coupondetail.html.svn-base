@@ -1,0 +1,177 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<script type="text/javascript" src="/js/user/coupondetail.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+<script type="text/javascript">
+{{if $keidoido}}
+var keidoido = new Array();
+
+$(document).ready(function(){
+    function attachMessage(marker, msg) {
+        google.maps.event.addListener(marker, 'click', function(event) {
+          new google.maps.InfoWindow({
+            content: msg
+          }).open(marker.getMap(), marker);
+        });
+    }
+	function init () {
+		var i = 0;
+		var data = new Array();
+		{{foreach from=$keidoido key=k item=data}}
+			{{if $k == 0}}
+	        var latlng1 = new google.maps.LatLng('{{$data.latitude}}','{{$data.longitude}}');
+	        var opts = {
+	        zoom: 11,
+	        center: latlng1,
+	        mapTypeId: google.maps.MapTypeId.ROADMAP
+	    	};
+	        map = new google.maps.Map(document.getElementById("map_canvas"), opts);
+	        {{else}}
+			data.push({position: new google.maps.LatLng('{{$data.latitude}}','{{$data.longitude}}'), content: '{{$data.shop_name}}'});
+			{{/if}}
+		{{/foreach}}
+	    for (i = 0; i < data.length; i++) {
+	        var myMarker = new google.maps.Marker({
+	          position: data[i].position,
+	          map: map
+	        });
+	        attachMessage(myMarker, data[i].content);
+	    }
+	}
+	window.onload = init();
+});
+{{/if}}
+</script>
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+
+<body>
+<div id="fb-root"></div>
+<script>
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=1392971240920479";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script>
+
+<!-- ここから -->
+
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+
+<!--#wrapper/-->
+<div id="wrapper">
+    <!--#header/-->
+    {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#contents/-->
+    <div id="container" class="wrap clearfix">
+        <div id="colomnContents">
+        	<h2 class="titleBox01"><span>:</span>{{$user_name}}さんの使える|<a href="/shop/detail/id/{{$coupon_detail_info.shop_id}}" title="{{$coupon_detail_info.shop_name}}">{{$coupon_detail_info.shop_name}}さん</a>のクーポン</h2>
+		<div class="inputStyleBox">
+            <div class="rankDate">
+                <div class="block">
+	                <div id="map_canvas" class="boxMap" ></div>
+					</div>
+					<div class="">
+		            	<div class="borderBox">
+			                   <dl class="userInfo">
+			                    <dt class="title">クーポン</dt>
+			                    <dd class="clearfix">
+			                    <form action="/user/couponpublish/" method="post">
+			                    <table class="couponTable01">
+										<thead>
+											<tr>
+												 <th>特典</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>(id:{{$coupon_detail_info.coupon_id}}){{$coupon_detail_info.title}}</td>
+											</tr>
+
+										</tbody>
+										<thead>
+											<tr>
+												 <th>利用条件</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>{{$coupon_detail_info.coupon}}</td>
+											</tr>
+
+										</tbody>
+										<thead>
+											<tr>
+												 <th>利用期限</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>{{$coupon_detail_info.public_start}}-{{$coupon_detail_info.public_end}}</td>
+											</tr>
+										{{if $follower_list}}
+										<thead>
+											<tr>
+												 <th>誰に発行しますか？</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>
+													<select name="follower">
+													{{foreach from=$follower_list key=key item=item}}
+														<option value="{{$item.user_id}}">{{$item.user_name}}</option>
+													{{/foreach}}
+													</select>
+													<input type="submit" value="送信する">
+												</td>
+											</tr>
+										</tbody>
+										{{/if}}
+											<input type="hidden" id="lantitude_regular_1" value="{{$coupon_detail_info.latitude}}">
+				                        	<input type="hidden" id="longitude_regular_1" value="{{$coupon_detail_info.longitude}}">
+				                        	<input type="hidden" id="shopname_regular_1" value="{{$coupon_detail_info.shop_name}}">
+				                        	<input type="hidden" name= "shopid_regular_1" value="{{$coupon_detail_info.shop_id}}">
+				                        	<input type="hidden" name="coupon_id" value="{{$coupon_detail_info.coupon_id}}">
+				                </form>
+								</table>
+			                    </dd>
+			                   </dl>
+			            </div>
+					</div>
+     		</div>
+        </div>
+</div>
+        <!--#右サイド/-->
+
+
+         {{include file="./common/rightside.html"}}
+
+        <!--#右サイド/-->
+
+    </div>
+    <!--/#contents-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+</div>
+<!--/#wrapper-->
+
+</body>
+</html>
+
+

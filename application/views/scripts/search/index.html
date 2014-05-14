@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>検索一覧</title>
+	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+	<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+</head>
+<body>
+こんにちは{{$user_name}}さん<a href="/login/logout/">>>ログアウト</a><br>
+カテゴリー別でみんながトップ３に選んでいるお店を検索しよう！<br>
+<br>
+{{foreach from=$category_list key="categorykey" item="categoryvalue" name="category"}}
+<div>
+      <a href="/search/category/category_id/{{$categoryvalue.category_id}}">{{$categoryvalue.category_name}}</a>
+</div>
+{{/foreach}}
+
+<br><br>
+<a href="/search/latlon/">今あなたがいる場所の近くにある名店を探す</a><br><br>
+<a href="/search/oen/">みんなに応援されているお店を探す</a><br><br>
+
+</body>
+</html>

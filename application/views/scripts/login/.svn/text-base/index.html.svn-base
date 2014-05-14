@@ -1,0 +1,73 @@
+{{include file="./common/head.html"}}
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<!--#wrapper/-->
+<div id="wrapperBg">
+    <!--#header/-->
+     {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#container/-->
+    <div id="container" class="wrap ">
+        <div id="boxEntry">
+            <h2 class="titleBox01"><span>:</span>ログイン</h2>
+            <div class="formStyleTable block">
+                {{if $errorflg}}
+                <ul class="textError">
+                {{foreach from=$error item=error_message}}
+                    <li>{{$error_message}}</li>
+                {{/foreach}}
+                </ul>
+                {{/if}}
+
+                {{if $unlogin_flg =="1"}}
+                <p class="textError">ランキングの作成・編集、リグルメする、行きたいお店・行ったお店・応援しているお店の登録はログインするとできるようになります。</p>
+                {{/if}}
+                 <form action="/index/login/" method="post" name="loginForm">
+                <table>
+                    <tr>
+                        <th>メールアドレス</th>
+                        <td><input type="text" name="email" /></td>
+                    </tr>
+                        <tr>
+				        <th>パスワード</th>
+				        <td><input type="password" name="password" >
+             			<input type="hidden" name="login_flg" value="1"></td>
+             			<input type="hidden" name="origin_url" value="{{$origin_url}}"></td>
+				    </tr>
+				    <tr>
+				        <th> </th>
+				        <td><p><input type="checkbox" /> ログイン状態を保存する</p><p><a href="/password/">　 ログイン情報を忘れた方はこちら</a></p></td>
+				    </tr>
+
+                </table>
+                 <div class="text-center"><button type="submit" class="btn btnFix">ログイン</button></div>
+                </form>
+                   </div>
+             <h2 class="titleBox01"><span>:</span>Facebookアカウントで簡単ログイン</h2>
+             <div class="formStyleTable">
+             <div class="text-center "><a href="{{$facebook_login_url}}" class="btn btnC05 btnFix">Facebookアカウントでログイン</a></div>
+            </div>
+             <h2 class="titleBox01"><span>:</span>会員登録はこちら</h2>
+             <div class="formStyleTable">
+             <div class="text-center "><a href="/login/newsignup" class="btn btnFix">無料会員登録する</a></div>
+            </div>
+        </div>
+    </div>
+
+    <!--/#container-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

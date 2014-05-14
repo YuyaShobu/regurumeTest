@@ -1,0 +1,138 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+	<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+	<script type="text/javascript">
+
+	$(document).ready(function(){
+			// 地図ページ
+		function init() {
+
+			// 初期位置
+			var top3point = new google.maps.LatLng({{$latitude}},{{$longitude}});
+			// マップ表示
+			var top3map = new google.maps.Map(document.getElementById("map"), {
+				center: top3point,
+				zoom:12,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+			// ドラッグできるマーカーを表示
+			var marker = new google.maps.Marker({
+				position: top3point,
+				title: "ポイントを移動させてください",
+				draggable: false
+			});
+			marker.setMap(top3map)	;
+
+		}
+
+		// ONLOADイベントにセット
+		window.onload = init();
+
+		//クリック先によってアクションを変更
+		 $('[actionURL]').click(function(){
+			  if($(this).attr('actionURL') != ""){
+			   $('form').attr('action', $(this).attr('actionURL'));
+			  }
+		});
+	});
+	</script>
+	<script type="text/javascript">
+		history.forward();
+	</script>
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<!--#wrapper/-->
+<div id="wrapperBg">
+    <!--#header/-->
+     {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <div class="wrap clearfix">
+            <!--#breadcrumb/-->
+            <ul id="breadcrumb" class="inline">
+                <li><a href="">リグルメ-皆でつなぐグルメランキング</a> <span class="divider">&gt;</span></li>
+                <li><a href="">お店を登録する</a> <span class="divider">&gt;</span></li>
+                <li class="active">確認する</li>
+            </ul>
+            <!--/#breadcrumb-->
+        </div>
+    </div>
+    <!--#container/-->
+    <div id="container" class="wrap ">
+        <div id="boxEntry">
+            <h2 class="titleBox01"><span>:</span>お店を登録する/確認する</h2>
+            <div class="formStyleTable block">
+                {{if $errorflg}}
+            <ul class="textAttention">
+                {{foreach from=$error item=error_message}}
+                    <li>{{$error_message}}</li>
+                {{/foreach}}
+            </ul>
+            {{/if}}
+ 		<form action="/shop/complete/" method="post" id="searchform" name="searchform">
+ 		<div class="block">
+            <table>
+            	<tr>
+            		<th><label for="type1">店名</label><span class="textrequired">*</span></th>
+            		<td>{{$shop_name}}<div id="search_results"></div></td>
+            	</tr>
+            	<tr>
+            		<th><label for="type1">住所</label><span class="textrequired">*</span></th>
+            		<td>
+            		<div id="map" class="boxMap block"></div>
+            		{{$address}}
+            		</td>
+            	</tr>
+            	<tr>
+            		<th><label for="flip-a">お店のURL</label></th>
+            		<td>{{$shop_url}}</td>
+            	</tr>
+            	<tr>
+            		<th><label for="flip-a">営業時間</label></th>
+            		<td>{{$business_day}}</td>
+            	</tr>
+            	<tr>
+            		<th><label for="flip-a">定休日</label></th>
+            		<td>{{$regular_holiday}}</td>
+            	</tr>
+            </table>
+       </div>
+       <div class="text-center">
+       <input type="hidden" name="shop_name" value="{{$shop_name}}">
+					<input type="hidden" name="address" value="{{$address}}">
+					<input type="hidden" name="shop_url" value="{{$shop_url}}">
+					<input type="hidden" name="latitude" value="{{$latitude}}">
+					<input type="hidden" name="longitude" value="{{$longitude}}">
+					<input type="hidden" name="business_day" value="{{$business_day}}">
+					<input type="hidden" name="regular_holiday" value="{{$regular_holiday}}">
+                    <input type="hidden" name="pref_code" value="{{$pref_code}}">
+                    <input type="hidden" name="city_code" value="{{$city_code}}">
+					<input type="hidden" name="backflg" value="1" size="20" />
+					<ul>
+						<li></li>
+					</ul>
+					<input type="submit" value="戻る" actionURL="/shop/regist/" class="btn" /><br>
+					<input type="submit" value="登録" actionURL="/shop/complete" class="btn btnFix" />
+
+      </div>
+	</form>
+        </div>
+    </div>
+ </div>
+
+    <!--/#container-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

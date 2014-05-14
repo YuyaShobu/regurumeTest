@@ -1,0 +1,23 @@
+#Wed May 14 08:41:58 JST 2014
+eclipse.preferences.version=1
+encoding//application/Bootstrap.php=UTF-8
+encoding//application/controllers/PasswordController.php=UTF-8
+encoding//application/views=UTF-8
+encoding//application/views/scripts/about/index.html=UTF-8
+encoding//application/views/scripts/common/header.html=UTF-8
+encoding//application/views/scripts/common/pankuzu.html=UTF-8
+encoding//application/views/scripts/index/common.html=UTF-8
+encoding//application/views/scripts/index/index.html=UTF-8
+encoding//application/views/scripts/index/indextab.html=UTF-8
+encoding//application/views/scripts/ranking/comfirm.html=UTF-8
+encoding//application/views/scripts/ranking/complete.html=UTF-8
+encoding//application/views/scripts/ranking/detail.html=UTF-8
+encoding//application/views/scripts/ranking/edit.html=UTF-8
+encoding//application/views/scripts/ranking/index.html=UTF-8
+encoding//application/views/scripts/ranking/input.html=UTF-8
+encoding//application/views/scripts/ranking/list.html=UTF-8
+encoding//application/views/scripts/ranking/sort.html=UTF-8
+encoding//application/views/scripts/test/index.html=UTF-8
+encoding//application/views/scripts/top/index.html=UTF-8
+encoding//public/index.php=UTF-8
+encoding/<project>=UTF-8

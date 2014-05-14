@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Smarty Test</title>
+</head>
+<body>
+<div>
+{$str}
+<form action="./fullcourse/index" method="post">
+        <input type="submit" value="fullcourse登録" id="fullcourse_insert_btn" />
+    </form>
+</div>
+
+</body>
+</html>

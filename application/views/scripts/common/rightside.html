@@ -1,0 +1,153 @@
+{{if $user_id !=null}}
+<div id="colomnSide">
+    <div class="block borderBox">
+       <div class="space01 clearfix">
+            <p class="sideProfileL"><a href="/user/myranking/id/{{$user_id}}"><img src="{{$side_info.user_detail.photo}}" alt="" title="{{$user_name}}" /></a></p>
+            <p class="sideProfileR"><a href="/user/myranking/id/{{$user.user_id}}">{{$user_name}}</a></p>
+            <ul class="sideProfileFollow">
+				<li><a href="/user/follow/id/{{$user.user_id}}">フォロー（{{$side_info.follow}}）</a></li>
+				<li><a href="/user/follower/id/{{$user.user_id}}">フォロワー（{{$side_info.follower}}）</a></li>
+            </ul>
+        </div>
+        <dl class="userInfo">
+
+            <dt>
+                <a href="/user/myranking/id/{{$user.user_id}}"><img src="/img/pc/common/icon_myranking.png">
+                マイランキング
+                （{{if $side_info.rank_list}}{{$side_info.rank_list|@count}}{{else}}0{{/if}}）
+                </a>
+            </dt>
+            <dd>
+            {{if $side_info.rank_list !=array()}}
+                <ul class="listStyle1">
+                {{foreach from=$side_info.rank_list key="k_ranklist" item="v_ranklist" name="rank_list"}}
+                    {{if $smarty.foreach.rank_list.index < 3 }}
+                        <li><a href="/ranking/detail/id/{{$v_ranklist.rank_id}}">{{$v_ranklist.title}}</a></li>
+                    {{/if}}
+                {{/foreach}}
+                </ul>
+            {{else}}
+            <p class="caption linkArrow"><a href="/ranking/input">あなたの基準で使えるお店ランキングを作りましょう！</a></p>
+            {{/if}}
+            </dd>
+
+
+            <dt>
+                <a href="/user/regururanking/id/{{$user.user_id}}"><img src="/img/pc/common/icon_regurume.png">
+                リグルメランキング（{{if $side_info.reguru_list}}{{$side_info.reguru_list|@count}}{{else}}0{{/if}}）
+                </a>
+                </dt>
+            <dd>
+            {{if $side_info.reguru_list !=array()}}
+                <ul class="listStyle1">
+                {{foreach from=$side_info.reguru_list key="k_regurulist" item="v_regurulist" name="reguru_list"}}
+                    {{if $smarty.foreach.reguru_list.index < 3 }}
+                        <li><a href="/ranking/detail/id/{{$v_regurulist.rank_id}}">{{$v_regurulist.title}}</a></li>
+                    {{/if}}
+                {{/foreach}}
+                </ul>
+           {{else}}
+           <p class="caption txtCaption">みんなが作ったオリジナルランキングをリグルメしましょう！</p>
+           {{/if}}
+            </dd>
+
+
+           <dt>
+            <a href="/user/wanttoshop/id/{{$user.user_id}}"><img src="/img/pc/common/icon_ikitai.png">
+                行きたいお店（{{if $side_info.wantto_list}} {{$side_info.wantto_list|@count}} {{else}}0{{/if}}）</a>
+           </dt>
+           <dd>
+           {{if $side_info.wantto_list !=array()}}
+                <ul class="listStyle1">
+                {{foreach from=$side_info.wantto_list key="k_wanttolist" item="v_wanttolist" name="wantto_list"}}
+                    {{if $smarty.foreach.wantto_list.index < 3 }}
+                        <li><a href="/shop/detail/id/{{$v_wanttolist.shop_id}}">{{$v_wanttolist.shop_name}}</a></li>
+                    {{/if}}
+                {{/foreach}}
+                </ul>
+            {{else}}
+			<p class="caption txtCaption"">お店ページの「行きたい」をクリックするとここに保存されます！</p>
+            {{/if}}
+            </dd>
+
+            <dt>
+                <a href="/user/beentoshop/id/{{$user.user_id}}"><img src="/img/pc/common/icon_itta.png">
+                    行ったお店（{{if $side_info.beento_list}} {{$side_info.beento_list|@count}}{{else}}0{{/if}}）
+                </a></dt>
+            <dd>
+           {{if $side_info.beento_list !=array()}}
+                <ul class="listStyle1">
+                {{foreach from=$side_info.beento_list key="k_beentolist" item="v_beentolist" name="beento_list"}}
+                    {{if $smarty.foreach.beento_list.index < 3 }}
+                        <li><a href="/shop/detail/id/{{$v_beentolist.shop_id}}">{{$v_beentolist.shop_name}}</a></li>
+                    {{/if}}
+                {{/foreach}}
+                </ul>
+            {{else}}
+			<p class="caption txtCaption"">お店ページの「行った」をクリックするとここに保存されます！</p>
+            {{/if}}
+            </dd>
+
+            <dt>
+                <a href="/user/oenshop/id/{{$user.user_id}}"><img src="/img/pc/common/icon_oen.png">
+                    応援しているお店（{{if $side_info.oen_list}}{{$side_info.oen_list|@count}}{{else}}0{{/if}}）
+                </a>
+                </dt>
+            <dd>
+           {{if $side_info.oen_list !=array()}}
+                <ul class="listStyle1">
+                {{foreach from=$side_info.oen_list key="k_oenlist" item="v_oenlist" name="oen_list"}}
+                    {{if $smarty.foreach.oen_list.index < 3 }}
+                        <li><a href="/shop/detail/id/{{$v_oenlist.shop_id}}">{{$v_oenlist.shop_name}}</a></li>
+                    {{/if}}
+                {{/foreach}}
+                </ul>
+           {{else}}
+			<p class="caption txtCaption"">お店を応援しよう！お店ページの「応援」をクリックするとお店からお得なクーポンがもらえるようになります！</p>
+           {{/if}}
+            </dd>
+        </dl>
+</div>
+{{if $news_list}}
+<div class="block borderBox space01">
+     <p class="titleType01">お知らせ</p>
+     <ul class="boxNews">
+        {{foreach from=$news_list key="k_news" item="v_news" name="news_list"}}
+            <li>
+                {{$v_news.created_at|date_format:'%Y/%m/%d'}}　<span>New!</span>
+            </li>
+            <li>
+                <a href="/news/index/id/{{$v_news.news_id}}">{{$v_news.title}}</a>
+            </li>
+        {{/foreach}}
+     </ul>
+</div>
+{{/if}}
+
+</div>
+{{else}}
+	<div id="colomnSide">
+		<div class="block">
+			<ul>
+				<li>
+			    	<a href="/login/newsignup"><img src="/img/pc/common/ban_entry.png" /></a>
+				</li>
+			</ul>
+		</div>
+	{{if $news_list}}
+		<div class="block borderBox space01">
+		     <p class="titleType01">お知らせ</p>
+		     <ul class="boxNews">
+	        {{foreach from=$news_list key="k_news" item="v_news" name="news_list"}}
+	            <li>
+	                {{$v_news.created_at|date_format:'%Y/%m/%d'}}<span>New!</span>
+	            </li>
+	            <li>
+	                <a href="/news/index/id/{{$v_news.news_id}}">{{$v_news.title}}</a>
+	            </li>
+	        {{/foreach}}
+	     </ul>
+		</div>
+    {{/if}}
+	</div>
+{{/if}}

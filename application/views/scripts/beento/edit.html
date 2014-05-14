@@ -1,0 +1,110 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<style type="text/css">
+    #destination{filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(true,sizingMethod=scale);}
+</style>
+<script type="text/javascript" src="/js/user/beento.js"></script>
+<script type="text/javascript" src="/js/user/destination.js"></script>
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<!--#wrapper/-->
+<div id="wrapper">
+    <!--#header/-->
+    {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+
+    <!--#contents/-->
+    <div id="container" class="wrap clearfix">
+        <div id="colomnContents">
+
+            <!--登録/-->
+            <div class="block01">
+                <form enctype="multipart/form-data" id="form_search" name="form_search" action="/beento/insert/" method="post">
+                    <div class="boxGotoshop space01">
+                        <div class="clearfix">
+                            <div class="column1-1"> <img src="/img/pc/common/serach_img3.png" alt="" width="80" height="80" /></div>
+                            <div class="column1-2">
+                                <ul class="textError">
+                                    {{foreach from=$error item=error_message}}
+                                    <li>{{$error_message}}</li>
+                                    {{/foreach}}
+                                </ul>
+                                <dl class="listDl1">
+                                    <dt class="title">「行ったお店」を編集</dt>
+                                    <dd>
+                                        <div class="">
+                                            {{$detail.shop_name}}
+                                            <input type="hidden"   name="bt_id" id="bt_id"  value="{{$detail.bt_id}}"/>
+                                            <input type="hidden"   name="shop_id" id="shop_id"  value="{{$detail.shop_id}}"/>
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <div class="">
+                                    <dl class="listDl1">
+	                                    <dt>感想をどうぞ！</dt>
+	                                    <dd>
+	                                       <textarea name="explain" id="explain" class="explain" rows="4" placeholder="お店の良かったところや、美味しかった料理を書いてください＾＾">{{$detail.explain}}</textarea>
+	                                    </dd>
+	                                    <dt>撮影した写真を記録に残そう！</dt>
+	                                    <dd>
+	                                        <div class="file">
+	                                         <input name="photo"  id="photo" type="file"/>
+	                                         <div id="destination">
+                                                {{if $photo !=""}}
+                                                    <img alt="" src="{{$photo}}" />
+                                                {{elseif $detail.photo !=""}}
+                                                    <img alt="" src="{{$detail.photo}}" />
+                                                {{else}}
+                                                    <p class="fileCaption"> </p>
+                                                {{/if}}
+	                                         </div>
+	                                        </div>
+	                                        <br />
+	                                        <div id="showdelphoto" {{if $detail.photo == ""}}class="disnon"{{/if}}>
+	                                            <a href="" id="delphoto"  class="linkArrow">画像を削除</a>
+                                                <input type="hidden" name="photo_delflg"   id="photo_delflg"  value=""/>
+                                                <input type="hidden" name="old_photo_path" value="{{$detail.photo}}"/>
+	                                        </div>
+	                                    </dd>
+                                    </dl>
+                                    <div class=" text-center space02">
+	                                    <div>
+	                                        <button class="btn btnL" type="submit">変更する</button>
+	                                    </div>
+                                   </div>
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!--/登録-->
+
+        </div>
+
+        <!--#ログイン右サイド/-->
+        {{include file="./common/rightside.html"}}
+        <!--#ログイン右サイド/-->
+    </div>
+    <!--#contents/-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+</div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

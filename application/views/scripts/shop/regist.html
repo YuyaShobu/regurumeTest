@@ -1,0 +1,338 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<!-- <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script> -->
+<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+<script type="text/javascript">
+	var geocoder;
+	var map;
+	$(document).ready(function(){
+			// 地図ページ
+		function init() {
+			  geocoder = new google.maps.Geocoder();
+			  // 仙台市青葉区角五郎1-5-40
+			  var latlng = new google.maps.LatLng(38.2667202,140.8516019);
+			  var opts = {
+			    zoom: 15,
+			    center: latlng,
+			    mapTypeId: google.maps.MapTypeId.ROADMAP
+			  }
+			    map = new google.maps.Map
+			    (document.getElementById("map"), opts);
+			    //codeAddress();
+		}
+		// ONLOADイベントにセット
+		window.onload = init();
+
+		$('#regist-pref').change(function(){
+			$.ajax({
+				url: '/search/ajaxgetcity/',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					'pref_code': $(this).val()
+				},
+				success: function(cdata) {
+					if(cdata != false) {
+						$('#regist-city').empty();
+						$('#regist-city').append('<option value="-1">--市/区/町/村</option>');
+						$.each(cdata,function(key,v){
+							$('#regist-city').append('<option value="'+v.city_code+'">'+v.value+'</option>');
+						});
+					}
+				}
+			});
+		});
+
+		$('.regist-genre').change(function(){
+			var _this = $(this);
+			var parent_id = $(this).val();
+			var name = $(this).attr('name');
+			if(parent_id > -1) {
+				$.ajax({
+					url: '/shop/getgenreajax',
+					type: 'post',
+					dataType :'json',
+					data: {
+						id : parent_id,
+					},
+					success: function( data ) {
+						if(data!=false && data!=''){
+							var no = _this.attr('data-no');
+							_this.parent().find('.'+name+'-ko').remove();
+							var html='<select class="'+name+'-ko'+'" name="'+name+'-ko'+'"><option value="-1">--詳細ジャンル'+no+'</option>';
+							 $.each(data, function(key,v){
+						    	html+='<option value="'+v.genre_id+'">'+v.value+'</option>';
+						    });
+						    html+='</select>';
+						    _this.after('<div class="'+name+'-ko'+'"><br/><label>詳細ジャンル'+no+'</label>'+html+'</div>');
+						}
+					}
+				});
+			}
+		});
+	});
+
+	function codeAddress() {
+		  var address = document.getElementById("address").value;
+		  if (geocoder) {
+		    geocoder.geocode( { 'address': address,'region': 'jp'},
+		    function(results, status) {
+		      if (status == google.maps.GeocoderStatus.OK) {
+		        map.setCenter(results[0].geometry.location);
+		        var bounds = new google.maps.LatLngBounds();
+		        for (var r in results) {
+		          if (results[r].geometry) {
+		            var latlng = results[r].geometry.location;
+		            bounds.extend(latlng);
+		            new google.maps.Marker({
+		              icon:{ url:'http://regurume.com/img/pc/common/icon_clip.png' },
+		              title:'リグルメ',
+		              position: latlng,map: map
+		            });
+		          document.getElementById('latitude').value = latlng.lat();
+		          document.getElementById('longitude').value = latlng.lng();
+		          }
+		       }
+		     }else{
+		       alert("Geocode 取得に失敗しました reason: "
+		         + status);
+		     }
+		   });
+		  }  // if (geocoder)
+		}
+
+	function getOutSiteInfo() {
+		var url = document.getElementById("site_url").value;
+		$.ajax({
+			url: '/shop/ajaxgettabeloginfo/',
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				'url': url
+			},
+			success: function(data) {
+			    $("#shopname").val(data.shop_name);
+			    $("#longitude").val(data.lng);
+			    $("#latitude").val(data.lat);
+			    $("#address").val(data.address);
+			    $("#shop_url").val(data.homepage);
+			    if(data.region != '') {
+			         $("#regist-pref").children("option").each(function(){
+						if($(this).text() == data.region) {
+							$(this).attr("selected",true);
+							$.ajax({
+								url: '/search/ajaxgetcity/',
+								type: 'POST',
+								dataType: 'json',
+								data: {
+									'pref_code': $(this).val()
+								},
+								success: function(cdata) {
+									if(cdata != false && data.locality != '') {
+										$('#regist-city').empty();
+										$('#regist-city').append('<option value="-1">--市/区/町/村</option>');
+										$.each(cdata,function(key,v){
+											var temp = '';
+											if(data.locality == v.value) {
+												temp = 'selected="selected"';
+											}
+											$('#regist-city').append('<option '+temp+' value="'+v.city_code+'">'+v.value+'</option>');
+										});
+									}
+								}
+							});
+						}
+			         });
+			    }
+			    if(data.genre!='') {
+			    	var genre = '';
+			    	var count = 0;
+			    	$.each(data.genre,function(key,v){
+			    		if(count < 3) {
+			    			genre+= v+'|';
+			    		}
+			    		count++;
+			    	});
+					$.ajax({
+						url: '/shop/genreajax',
+						type: 'post',
+						dataType :'json',
+						data: {
+							value : genre,
+						},
+						success: function( gdata ) {
+							if(gdata!=''){
+								$.each(gdata,function(i,j){
+								   if(j.oya != false) {
+									   $('.regist-genre').eq(i).val(j.oya);
+									   _this = $('.regist-genre').eq(i);
+									   var name = _this.attr('name');
+									   _this.parent().find('.'+name+'-ko').remove();
+									   if(j.ko != false) {
+											$.ajax({
+												url: '/shop/genreajax',
+												type: 'post',
+												dataType :'json',
+												data: {
+													id : j.oya,
+												},
+												success: function( data ) {
+													var no = i+1;
+													var html='<select style="margin-left:5px;" class="'+name+'-ko'+'" name="'+name+'-ko'+'"><option value="-1">--詳細ジャンル'+no+'</option>';
+													if(data!=false){
+													    $.each(data, function(key,v){
+													    	var temp = '';
+													    	if(v.genre_id == j.ko) {
+													    		temp = 'selected="selected"';
+													    	}
+													    	html+='<option '+temp+' value="'+v.genre_id+'">'+v.value+'</option>';
+													    });
+													    html+='</select>';
+													    _this.after('<div class="'+name+'-ko'+'"><br/><label>詳細ジャンル'+no+'</label>'+html+'</div>');
+													}
+												}
+											});
+									   }
+								   }
+								});
+							}
+						}
+					});
+			    }
+			}
+		});
+	}
+
+	</script>
+
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+{{include file="./common/head_part_css.html"}}
+<style>
+        #map {
+          width: 100%;
+          height: 300px;
+          border: 8px solid #ccc;
+          -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+        }
+</style>
+{{include file="./common/head_part_end.html"}}
+<body>
+<!--#wrapper/-->
+<div id="wrapperBg">
+    <!--#header/-->
+     {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#container/-->
+    <div id="container" class="wrap ">
+        <div id="boxEntry">
+            <h2 class="titleBox01"><span>:</span>お店を登録する
+
+            {{if $admin_flg == true}}
+                <input type="text" id="site_url" name="site_url"  value="" placeholder="食べログのＵＲＬを張ると反映されます。">
+                <button type ="button" onClick="getOutSiteInfo(); return(false);" value="情報取得" class="searchIconBtn" >取得</button>
+            {{/if}}
+
+            </h2>
+            <div class="formStyleTable block">
+                {{if $errorflg}}
+            <ul class="textError">
+                {{foreach from=$error item=error_message}}
+                    <li>{{$error_message}}</li>
+                {{/foreach}}
+            </ul>
+            {{/if}}
+ 		<form action="/shop/conform/" method="post" id="searchform">
+ 		<input id="latitude" type="hidden" name="latitude">
+		<input id="longitude" type="hidden" name="longitude">
+ 		<div class="block">
+            <table>
+            	<tr>
+            		<th><label for="type1">店名</label><span class="textrequired">*</span></th>
+            		<td><input type="text" name="shop_name" id="shopname" value="{{$shop_name}}"  placeholder="" /></td>
+            	</tr>
+            	<tr>
+            		<th><label for="type1">住所</label><span class="textrequired">*</span></th>
+            		<td><input type='text' id='address' name="address" value="{{$address}}"   placeholder="住所 or ランドマークを入力して検索を" style="width:89%;">
+            		    <select name="pref" id="regist-pref">
+                            <option value="-1">--都/道/府/県</option>
+                            {{foreach from=$city_list key="key" item="v"}}
+                            <option value="{{$v.pref_code}}" {{if $info.pref == $v.pref_code}}selected{{/if}}>{{$v.value}}</option>
+                            {{/foreach}}
+                        </select>
+                        <select id="regist-city" name="city" >
+                            <option value="-1">--市/区/町/村</option>
+                        </select>
+                        <br/>
+						<button type ="button" onClick="codeAddress(); return(false);" value="住所検索" class="searchIconBtn" >住所検索</button>
+						<!-- <input type ="button" onClick="codeAddress(); return(false);" value="住所検索"> -->
+            		<div id="map" class="boxMap block"></div>
+
+
+            		</td>
+            	</tr>
+            	<tr>
+            		<th><label for="flip-a">お店のURL</label></th>
+            		<td><input id="shop_url" type="text"  name="shop_url" value="{{$shop_url}}"  placeholder="http://～"></td>
+            	</tr>
+            	<tr>
+            		<th><label for="flip-a">ジャンル</label></th>
+            		<td>
+            			<label>ジャンル１</label>
+            			<select data-no="1" class="regist-genre" name="genre1">
+            				<option value="-1">--ジャンル１</option>
+            				{{foreach from=$genre_parent item=g}}
+            				<option value="{{$g.genre_id}}">{{$g.value}}</option>
+            				{{/foreach}}
+            			</select><br/>
+            			<label>ジャンル2</label>
+            			<select data-no="2" class="regist-genre" name="genre2">
+            				<option value="-1">--ジャンル2</option>
+            				{{foreach from=$genre_parent item=g}}
+            				<option value="{{$g.genre_id}}">{{$g.value}}</option>
+            				{{/foreach}}
+            			</select><br/>
+            			<label>ジャンル3</label>
+            			<select data-no="3" class="regist-genre" name="genre3">
+            				<option value="-1">--ジャンル3</option>
+            				{{foreach from=$genre_parent item=g}}
+            				<option value="{{$g.genre_id}}">{{$g.value}}</option>
+            				{{/foreach}}
+            			</select>
+            		</td>
+            	</tr>
+            	<tr>
+            		<th><label for="flip-a">営業時間</label></th>
+            		<td><input type="text" name="business_day" value="{{$business_day}}"  placeholder="[月～土]11:30～15:00(L.O.14:00)"></td>
+            	</tr>
+            	<tr>
+            		<th><label for="flip-a">定休日</label></th>
+            		<td><input type="text"  name="regular_holiday" value="{{$regular_holiday}}" placeholder="日曜日"></td>
+            	</tr>
+            </table>
+       </div>
+       <div class="text-center"><input type="submit" value="お店を登録する" class="btn btnFix"></div>
+	</form>
+        </div>
+    </div>
+ </div>
+
+    <!--/#container-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

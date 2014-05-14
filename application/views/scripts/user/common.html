@@ -1,0 +1,59 @@
+<!--TOP SLIDE/-->
+<div class="myCommonBox clearfix">
+        <div class="myPhotoBox">
+           	<img src="{{$user_cominfo.user_detail.photo}}" alt="" width="150" height="150" title="{{$user_cominfo.user_detail.user_name}}" />
+            </div>
+		<div class="myInfobBox" >
+
+            <div class="clearfix">
+
+        {{if $user_cominfo.user_detail.user_id != $user_id}}
+	        <div class="myInfobBoxInner1" id="follow" >
+	            <input type="hidden" id="f_user_id" name="f_user_id" value="{{$user_cominfo.user_detail.user_id}}" />
+	            <input type="hidden" id="user_id" name="user_id" value="{{$user_id}}" />
+	            {{if $follow_flg == false}}
+	                <button type="button" class="btn btnM" id="bt_follow" onclick="ajax_follow('follow','/user/ajaxfollow/',{{$user_cominfo.user_detail.user_id}});">フォローする</button>
+	            {{else}}
+	                <button type="button" class="btn btnM" id="bt_follow" onclick="ajax_follow('follow','/user/ajaxunfollow/',{{$user_cominfo.user_detail.user_id}});">フォロー解除</button>
+	            {{/if}}
+	        </div>
+        {{/if}}
+
+	            	<div class="myInfobBoxInner2">
+		                <p class="myName">{{$user_cominfo.user_detail.user_name|escape}}</p>
+		                 <p><a href="/user/follow/id/{{$user_cominfo.user_detail.user_id}}">フォロー[{{$user_cominfo.follow}}]</a> <a href="/user/follower/id/{{$user_cominfo.user_detail.user_id}}">フォロワー[{{$user_cominfo.follower}}]</a></p>
+	                 </div>
+                 </div>
+         <div>
+
+         <ul class="rankShopInfo">
+            <li><span>出没エリア</span>{{$user_cominfo.user_detail.pref}}</li>
+            <li><span>投稿の多いジャンル</span>
+            {{if $user_cominfo.genre.genre1_value !="" or $user_cominfo.genre.genre2_value!="" or $user_cominfo.genre.genre3_value !=""}}
+                {{$user_cominfo.genre.genre1_value}}
+                {{if $user_cominfo.genre.genre2_value !=""}}
+                    ,{{$user_cominfo.genre.genre2_value}}
+                {{/if}}
+                {{if $user_cominfo.genre.genre3_value !=""}}
+                ,{{$user_cominfo.genre.genre3_value}}
+                {{/if}}
+             {{else}}
+                --
+             {{/if}}
+            </li>
+        </ul>
+        <p class="myCommentBox">{{$user_cominfo.user_detail.self_intro|escape}}</p>
+        <hr></hr>
+        <ul class="inline myList">
+            <li><a href="/user/myranking/id/{{$user_cominfo.user_detail.user_id}}">マイランキング[{{if $user_cominfo.rank_list}}{{$user_cominfo.rank_list|@count}}{{else}}0{{/if}}]</a></li>
+            <li><a href="/user/regururanking/id/{{$user_cominfo.user_detail.user_id}}">リグルメランキング[{{if $user_cominfo.reguru_list}}{{$user_cominfo.reguru_list|@count}}{{else}}0{{/if}}]</a></li>
+            <li><a href="/user/wanttoshop/id/{{$user_cominfo.user_detail.user_id}}">行きたいお店[{{if $user_cominfo.wantto_list}}{{$user_cominfo.wantto_list|@count}}{{else}}0{{/if}}]</a></li>
+            <li><a href="/user/beentoshop/id/{{$user_cominfo.user_detail.user_id}}">行ったお店[{{if $user_cominfo.beento_list}}{{$user_cominfo.beento_list|@count}}{{else}}0{{/if}}]</a></li>
+            <li><a href="/user/oenshop/id/{{$user_cominfo.user_detail.user_id}}">応援しているお店[{{if $user_cominfo.oen_list}}{{$user_cominfo.oen_list|@count}}{{else}}0{{/if}}]</a></li>
+        </ul>
+    </div>
+
+
+	</div>
+</div>
+<!--/TOP SLIDE-->

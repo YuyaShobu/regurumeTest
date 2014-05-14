@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>フルコース登録</title>
+	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+	<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+	<style>
+		#map {
+		  width: 100%;
+		  height: 300px;
+		  border: 8px solid #ccc;
+		  -webkit-box-sizing: border-box;
+		  box-sizing: border-box;
+		}
+	</style>
+	<script type="text/javascript">
+
+	$(document).ready(function(){
+		function init() {
+			  var latlng = new google.maps.LatLng({{$latitude}},{{$longitude}});
+			  var opts = {
+			    zoom: 18,
+			    center: latlng,
+			    mapTypeId: google.maps.MapTypeId.ROADMAP
+
+			  };
+			  map = new google.maps.Map(document.getElementById("map_canvas"), opts);
+			  // マーカーの生成
+		      var marker = createMarker(latlng);
+		      // 中心位置の移動
+		      map.setCenter(latlng);
+		}
+
+		// ONLOADイベントにセット
+		window.onload = init();
+
+		$("#search_results").slideUp();
+	    $("#search_button").click(function(e){
+	        e.preventDefault();
+	        ajax_search();
+	    });
+	   // $("#shop_name").keyup(function(e){
+	   //     e.preventDefault();
+	   //     ajax_search();
+	   // });
+	    $("#shop_name").bind('blur keyup',function(e){
+	    	 e.preventDefault();
+	         ajax_search();
+	    });
+
+	    function ajax_search(){
+	    	$("#search_results").show();
+    		var search_val=$("#shop_name").val();
+   			$.post("/shop/ajaxgetshoplist/", {shopname : search_val}, function(data){
+   	 	    	if (data.length>0){
+   	    			$("#search_results").html(data);
+   				}
+   			})
+	    }
+	});
+	function SelectChange() {
+    	var shopname
+    	var latitude
+    	var longitude
+	    //$('#searchshop').change(function(){
+		$('#searchshop').click(function(){
+	    	var obj = $("select[name='shop_id']").val()
+	    	var term = obj.split( '_' );
+	    	 shopname = term[0];
+	    	 latitude = term[1];
+	         $("#shop_id").val(obj);
+
+	    	 //時々改行コードが入ってることがあるので対応
+	    	 var stringcheck = term[2].indexOf('\n');
+	    	 if (stringcheck == -1) {
+	    		 longitude = term[2];
+	    	 } else {
+		    	 longitude_n = term[2].split( '\n' );
+		    	 longitude = longitude_n[0];
+	    	 }
+	    	 var mapinstance = new google.maps.LatLng(latitude,longitude);
+	    	 map.panTo(mapinstance);
+	    	 // マーカーの生成
+	    	 var marker = createMarker(mapinstance);
+	    	 // 中心位置の移動
+	    	 map.setCenter(mapinstance);
+
+	    });
+	    //map.panTo(new google.maps.LatLng(latitude,longitude));
+	}
+
+	// Google Mapsマーカーの表示
+	function createMarker(loc) {
+
+	    var marker = new google.maps.Marker({
+	        position: loc,
+	        map: map
+	    });
+	    return marker;
+	}
+
+	</script>
+</head>
+<body>
+
+{{if $errorflg}}
+    <ul>
+        {{foreach from=$error item=error_message}}
+        <li>要素:{{$error_message}}</li>
+        {{/foreach}}
+    </ul>
+{{/if}}
+
+<form id="form_main" name="form_main" action="/fullcourse/insert" method="post" enctype="multipart/form-data">
+
+<p>
+    {{$detail.course_name}}を入力してください。
+</p>
+ <div id="map_canvas" style="width:500px; height:300px"></div>
+<!-- ▼マップはここ -->
+<table class="">
+<tr>
+    <th width="150">メニュー名</th>
+    <td><input type="text" name="menu"   id="menu"  value="{{$detail.menu}}" size="40"/></td>
+</tr>
+<tr>
+    <th>店名</th>
+    <td>
+		<input type="text" name="shop_name" id="shop_name" value="{{$detail.shop_name}}" size="40"/>
+		<input type="submit" value="お店を検索" id="search_button" /><span class="new_shop_regist">>><a href="/shop/regist/" target="_blank">お店を登録する場合はこちら</a></span><br>
+		<div id="search_results"></div>
+    </td>
+</tr>
+
+<tr>
+    <th>一言</th>
+    <td>
+       <input type="text" name="explain"   id="explain"  value="{{$detail.explain}}" size="40"/>
+    </td>
+</tr>
+<tr>
+    <th>画像</th>
+    <td>
+        <input name="photo"  id="photo" type="file" size="40">
+    </td>
+</tr>
+<tr>
+    <th colspan="2">
+        <img alt="" src="/img/sp/shop/{{$detail.photo}}">
+    </th>
+</tr>
+
+</table>
+<input type="hidden" name="course_id"   id="course_id"  value="{{$course_id}}"/>
+<input type="hidden" name="course_name"   id="course_name"  value="{{$detail.course_name}}"/>
+<input type="hidden" name="shop_id"   id="shop_id"  value="{{$detail.shop_id}}_{{$detail.latitude}}_{{$detail.longitude}}"/>
+<input type="hidden" name="latitude"   id="latitude"  value="{{$latitude}}"/>
+<input type="hidden" name="longitude"   id="longitude"  value="{{$longitude}}"/>
+<input type="hidden" name="photo"    value="{{$detail.photo}}"/>
+<input type="submit"  value="登録"/>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+{{include file="./common/head_part_js.html"}}
+<script type="text/javascript" >
+    window.onload = window.opener.location.reload();
+
+    //ランキング順位変更
+    function sort_ranking(no,url) {
+        if(no !="" && url != ""){
+            $('#rank_no').val(no);
+            $('#form_sortranking').attr('action', url);
+            $('#form_sortranking').submit();
+        }
+    }
+    function window_close() {
+    	window.opener.location.reload();
+    	window.close();
+        //opener.location.href = "/ranking/detail/id/{{$detail.rank_id}}";
+    }
+
+</script>
+
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+
+<body>
+<div id="fb-root"></div>
+
+<!-- ここから -->
+
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+
+<!--#wrapper/-->
+<div id="wrapper">
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#contents/-->
+    <div id="container" class="wrap clearfix">
+        <div id="colomnContents">
+
+        <form id="form_sortranking" name="form_sortranking" action="" method="post">
+
+		<div class="inputStyleBox">
+
+        <div class="boxDetailTitle" >
+            <h1 class="rankTitle">
+                {{$detail.title}}<span>Best3</span>
+            </h1>
+
+            <div class="">
+                <ul class="inline thumCategory">
+                {{if $detail.category !=array()}}
+                 {{foreach from=$detail.category key="ck" item="cv" name="category"}}
+                        <li><span href="" class="cate0{{$cv.large_id}}">{{$cv.category_name}}</span></li>
+                 {{/foreach}}
+                 {{/if}}
+                </ul>
+            </div>
+            <div id="close_window" style="text-align:right">
+                <input type="button" value="閉じる" onclick="window_close();return false;" src="" alt="閉じる" />
+            </div>
+           </div>
+            <div class="rankDate">
+
+                <div class="block">
+                    <div class="clearfix rank1">
+	                    <table class="rankShopTable" id="sorttable">
+	                        <tr>
+	                            <th><img src="/img/pc/common/icon_rank1_b.png" alt="" width="98" height="79" /></th>
+	                            <th>
+                                    <button type="submit" class=""  onclick="sort_ranking('1','/ranking/downlist');return false;">下へ</button>　
+	                            </th>
+	                            <td class="rankShopName">
+	                                {{if $detail.shop_id_1 !="" and $detail.shop_id_1 != 0 and $detail.shop_name_1 !=""}}
+	                                   <a href="/shop/detail/id/{{$detail.shop_id_1}}">{{$detail.shop_name_1}}</a>
+	                                {{else}}
+	                                   未設定
+	                                {{/if}}
+	                            </td>
+	                        </tr>
+                            <tr>
+                                <th><img src="/img/pc/common/icon_rank2_b.png" alt="" width="98" height="79" /></th>
+                                <th>
+                                    <button type="submit" class=""  onclick="sort_ranking('2','/ranking/uplist');return false;">上へ　</button>　
+                                    <button type="submit" class=""  onclick="sort_ranking('2','/ranking/downlist');return false;">下へ</button>　
+                                </th>
+                                <td class="rankShopName">
+                                    {{if $detail.shop_id_2 !="" and $detail.shop_id_2 != 0 and $detail.shop_name_2 !=""}}
+                                        <a href="/shop/detail/id/{{$detail.shop_id_2}}">{{$detail.shop_name_2}}</a>
+                                    {{else}}
+                                        未設定
+                                    {{/if}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><img src="/img/pc/common/icon_rank3_b.png" alt="" width="98" height="79" /></th>
+                                <th>
+                                    <button type="submit" class=""  onclick="sort_ranking('3','/ranking/uplist');return false;">上へ　</button>　
+                                </th>
+                                <td class="rankShopName">
+                                    {{if $detail.shop_id_3 !="" and $detail.shop_id_3 != 0 and $detail.shop_name_3 !=""}}
+                                    <a href="/shop/detail/id/{{$detail.shop_id_3}}">{{$detail.shop_name_3}}</a>
+                                    {{else}}
+                                        未設定
+                                    {{/if}}
+                                </td>
+                            </tr>
+
+	                    </table>
+                    </div>
+                </div>
+    </div>
+    <input type="hidden" id="rank_id" name="rank_id" value="{{$detail.rank_id}}" />
+    <input type="hidden" id="rank_no" name="rank_no" value="" />
+
+    </div>
+
+    </form>
+	</div>
+    </div>
+    <!--/#contents-->
+</div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>
+
+

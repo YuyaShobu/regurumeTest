@@ -1,0 +1,112 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<style type="text/css">
+    #destination{filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(true,sizingMethod=scale);}
+</style>
+<script type="text/javascript" src="/js/user/beento.js"></script>
+<script type="text/javascript" src="/js/user/destination.js"></script>
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<!--#wrapper/-->
+<div id="wrapper">
+    <!--#header/-->
+    {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+
+    <!--#contents/-->
+    <div id="container" class="wrap clearfix">
+        <div id="colomnContents">
+
+            <!--登録/-->
+            <div class="block01">
+                <form enctype="multipart/form-data" id="form_search" name="form_search" action="/beento/insert/" method="post">
+                    <div class="boxGotoshop space01">
+                        <div class="clearfix">
+                            <div class="column1-1"> <img src="/img/pc/common/serach_img3.png" alt="" width="80" height="80" /></div>
+                            <div class="column1-2">
+                                <ul class="textError">
+                                    {{foreach from=$error item=error_message}}
+                                    <li>{{$error_message}}</li>
+                                    {{/foreach}}
+                                </ul>
+                                <dl class="listDl1">
+                                    <dt class="title">「行ったお店」にお店を登録しよう！</dt>
+                                    <dd>
+                                        <select name="pref" id="beento_pref" class="show03">
+                                            <option value="-1">お店の場所を選んでください</option>
+                                        {{foreach from=$pref key="key" item="v"}}
+                                            <option value="{{$v.pref_code}}" {{if $detail.pref == $v.pref_code}}selected{{/if}}>{{$v.value}}</option>
+                                        {{/foreach}}
+                                        </select>
+                                        <div class="show03_inner">
+                                            <input type="text"   name="shop_name" id="shop_name" placeholder="お店の名前を入力して、「店舗を検索」ボタンを押してください。" value="{{$detail.shop_name}}"/>
+                                            <input type="button"  value="店舗を検索" id="search_button" class="btn btnF btnC01 show01" />
+                                        </div>
+                                        <div id="search_results"></div>
+                                    </dd>
+                                </dl>
+                                <div class="show01_inner">
+                                    <dl class="listDl1">
+	                                    <dt>感想をどうぞ！</dt>
+	                                    <dd>
+	                                       <textarea name="explain" id="explain" class="explain" rows="4" placeholder="お店の良かったところや、美味しかった料理を書いてください＾＾">{{$detail.explain}}</textarea>
+	                                    </dd>
+	                                    <dt>撮影した写真を記録に残そう！</dt>
+	                                    <dd>
+	                                        <div class="file">
+	                                         <input name="photo"  id="photo" type="file"/>
+	                                         <div id="destination">
+	                                            <p class="fileCaption"> </p>
+	                                         </div>
+	                                        </div>
+	                                        <br />
+	                                        <div id="showdelphoto" class="disnon">
+	                                            <a href="" id="delphoto"  class="linkArrow">画像を削除</a>
+	                                        </div>
+	                                    </dd>
+                                    </dl>
+                                    <div class=" text-center space02">
+	                                    <div>
+	                                        <button class="btn btnL" type="submit">登録する</button>
+	                                    </div>
+	                                    {{if $fb_connect_flg}}
+	                                    <input id="facebook" type="checkbox"  name="fb_feed_flg" value="1"/>
+	                                    <label for="facebook"> Facebookにも投稿</label>
+	                                    {{/if}}
+                                   </div>
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!--/登録-->
+
+        </div>
+
+        <!--#ログイン右サイド/-->
+        {{include file="./common/rightside.html"}}
+        <!--#ログイン右サイド/-->
+    </div>
+    <!--#contents/-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+</div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

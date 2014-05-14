@@ -1,0 +1,52 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<!--#wrapper/-->
+<div id="wrapper">
+    <!--#header/-->
+    {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#contents/-->
+    <div id="container" class="wrap clearfix">
+        <div id="colomnContents">
+        <h2 class="titleBox01"><span>:</span>ブックマークレット</h2>
+
+            <!--登録/-->
+            <div class="inputStyleBox space01 boxBookmartletAdd">
+            	<p>リグルメのブックマークレットとは、食べログやぐるナビを見ているときに「この店に行きたい！」と思ったら、リグルメの「行きたい」リストに追加するときに使う、便利なポップアップ画面です。<br />ブラウザのブックマークバーにブックマークレットを設置する事で、Webサイト上でいつでも簡単に、行きたいお店を「行きたいリスト」に保存※することが出来ます。</p>
+            	<p class="textAttention">※ログインをしていないと、行ったお店に登録されません。</p>
+            	<p class="text-center"><a href="javascript:void((function(){window.open('http://regurume.com/bookmarklet/bookmarklet?url='+encodeURIComponent(location.href),'','top='+(screen.height-400)/2+',left='+(screen.width-500)/2+',width=500,height=400,toolbar=no,menubar=no,scrollbars=yes,resizable=no,location=no,status=no');})())"><img src="/img/pc/common/bookmarkletikitai.png" alt="行きたい店メモ！" /></a></p>
+            	<p class="expBookmartletAdd">上の「行きたい」画像をブックマークバーにドラッグ＆ドロップして下さい。<br />あとは「食べログ」「ぐるなび」上で行きたいお店を見つけたら、この「行きたい」ボタンを押すだけです。</p>
+            	<p class="textAttention">※Internet Explorerはブックマークレット機能未対応です 。<br />※現在、ブックマークレットを使って「行きたい」リストに登録できるお店は「食べログ」と「ぐるナビ」上で表示したお店のみになっております。今後増やしていく予定です。</p>
+            </div>
+            <!--/登録-->
+
+        </div>
+
+        <!--#右サイド/-->
+        {{include file="./common/rightside.html"}}
+        <!--#右サイド/-->
+    </div>
+
+    <!--/#container-->
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+    </div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

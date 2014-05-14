@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!DOCTYPE html>
+
+<head lang="ja">
+<meta charset="UTF-8">
+<meta name="language" content="Japanese" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Re:gurume 店舗情報管理画面</title>
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+<meta name="robots" content="INDEX,FOLLOW,NOYDIR,NOODP" />
+<meta name="copyright" content="Copyright (C)regurume.com" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta property="og:title" content="皆でつなぐグルメランキング"/>
+<meta property="og:type" content="website"/>
+<meta property="og:description" content=""/>
+<meta property="og:url" content="http://regurume.com"/>
+<meta property="og:image" content="http://regurume.com/img/common/fb.png"/>
+<meta property="og:site_name" content="Re:gurume[リグルメ]"/>
+<meta property="og:email" content="info@regurume.com"/>
+<meta property="fb:app_id" content="1392971240920479"/>
+<meta property="og:locale" content="ja_JP" />
+<meta property="article:author" content="https://www.facebook.com/Regurume" />
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<link rel="icon" type="img/gif" href="/img/pc/client/favicon.gif" />
+<link rel="shortcut icon" sizes="16x16" href="/img/pc/client/favicon.ico" />
+<link rel="apple-touch-icon" href="/img/pc/client/apple-touch-icon.png" />
+<link href="/css/client/style.css" rel="stylesheet" media="all">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js?ver=1.8.3"></script>
+<script type="text/javascript" src="/js/client/smoothScroll.js"></script>
+<script type="text/javascript" src="/js/client/function.js"></script>
+<script type="text/javascript" src="/js/client/client.js"></script>
+</head>
+<body>
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+<!--#wrapper/-->
+ {{if $shop_id}}
+<div id="wrapper">
+    <!--#header/----------------------------------------------------------->
+    <div id="header">
+        <div class="wrap">
+            <div class="left">
+                <h1><a href="/client/index"><img src="/img/pc/client/header_logo.png" alt="Re:gurume ソーシャル私的グルメランキング" /></a></h1>
+            </div>
+            <div class="right text-right">
+                <p>{{$shop_name}} 様</p>
+                <ul class="inline">
+                    <li><a href="/client/index">店舗ページ</a></li>
+                    <li>|</li>
+                    <li><a href="/client/logout">ログアウト</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--/#header----------------------------------------------------------->
+    <!--#headerUneder/----------------------------------------------------------->
+    <div id="headerUneder">
+        <div class="wrap">
+            <ul id="navGloval" class="clearfix">
+                <li class="navG1 current"><a href="/client/index"><span>管理画面トップ</span></a></li>
+                <li class="navG2">
+                	<form id="coupon_info_form" action="/client/couponinfo" method="post">
+				        <input type="hidden" name="shop_id" value="{{$shop_id}}">
+				        <a class="client_submit" id="coupon_info" href="javascript:;"><span>クーポン管理</span></a>
+				    </form>
+                </li>
+                <li class="navG3">
+                	<form id="shop_info_form" action="/client/shopinfo" method="post">
+                		<input type="hidden" name="shop_id" value="{{$shop_id}}">
+						<a class="shop_info" href="javascript:;"><span>店舗情報</span></a>
+					</form>
+                </li>
+                <li class="navG4" id="navList">
+                    <a href=""><span>設定</span> <img src="/img/pc/client/icon_arrow2.png" alt=""></a>
+                    <ul class="navGInner">
+                        <li>
+                            <form id="staff_info_form" action="/client/staffinfo" method="post">
+				            	<input type="hidden" name="shop_id" value="{{$shop_id}}" />
+				            	<a class="client_submit" id="staff_info" href="javascript:;">担当者情報設定</a>
+				            </form>
+                        </li>
+                        <li><a href="index.html">パスワード設定</a></li>
+                   </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--/#headerUneder----------------------------------------------------------->
+    <!--#contents/----------------------------------------------------------->
+    <div class="wrap clearfix">
+            <div id="colomnContents">
+                <p class=" titleType01">現在表示されているクーポン</p>
+                <p class="titleType02"><span>・</span>店舗ページに表示されているクーポン</p>
+                <div class="block">
+                    <table class="table02">
+                        <tr>
+                            <th class="celW1">クーポン内容</th>
+                            <th class="celW2">利用条件</th>
+                            <th>有効期限</th>
+                        </tr>
+                        {{if $coupon_info}}
+	                        {{foreach from=$coupon_info item=data}}
+	                        <tr>
+	                            <td>
+	                            	<form action="/client/couponinfoedit" method="post">
+		                            	<input type="hidden" name="shop_id" value="{{$shop_id}}" />
+		                            	<input type="hidden" value="update" name="update" />
+		                            	<input value="{{$data.coupon_id}}" name="coupon_id" type="hidden"/>
+		                            	<a href="javascript:;" class="client_td_submit">{{$data.title}}</a>
+	                            	</form>
+	                            </td>
+	                            <td>{{$data.coupon}}</td>
+	                            <td>{{$data.public_start|date_format:"%Y年%m月%d日"}}～{{$data.public_end|date_format:"%Y年%m月%d日"}}</td>
+	                        </tr>
+	                        {{/foreach}}
+                        {{/if}}
+                    </table>
+                <form id="coupon_inert_form" action="/client/couponinfoedit" method="post">
+					<input type="hidden" name="shop_id" value="{{$shop_id}}" />
+					<input type="hidden" name="insert" value="insert" />
+					<p class="link">
+	                	<a class="client_submit" id="coupon_inert" href="javascript:;">クーポンを作成する</a>
+	                </p>
+				</form>
+                </div>
+                <div class="block clearfix followerBox">
+                    <div class="col3-1">
+                        <p class=" titleType01">行った（{{$beento_count}}人）</p>
+                        {{if $beento_user_list}}
+                        <ul class="inline">
+                        	{{foreach from=$beento_user_list item=data}}
+                            <li><a href="/user/myranking/id/{{$data.user_id}}" target="_blank"><img src="/img/pc/user/{{$data.user_id}}.jpg" alt="" width="50" height="50" /></a></li>
+                            {{/foreach}}
+                        </ul>
+                        {{/if}}
+                    </div>
+                    <div class="col3-1">
+                        <p class=" titleType01">行きたい（{{$ikitai_list_count}}人）</p>
+                        {{if $ikitai_List}}
+                        <ul class="inline">
+                        	{{foreach from=$ikitai_List item=data}}
+                            <li><a href="/user/myranking/id/{{$data.user_id}}" target="_blank"><img src="/img/pc/user/{{$data.user_id}}.jpg" alt="" /></a></li>
+                            {{/foreach}}
+                        </ul>
+                        {{/if}}
+                    </div>
+                    <div class="col3-1">
+                        <p class=" titleType01">応援してます（{{$oen_count}}人）</p>
+                        {{if $oen_user_list}}
+                        <ul class="inline">
+                        	{{foreach from=$oen_user_list item=data}}
+                            <li><a href="/user/myranking/id/{{$data.user_id}}" target="_blank"><img src="/img/pc/user/{{$data.user_id}}.jpg" alt="" /></a></li>
+                            {{/foreach}}
+                        </ul>
+                        {{/if}}
+
+                    </div>
+                </div>
+                    <div class="block">
+                        <p class="titleType01">{{$shop_name}} 様が入っているランキング 全{{$top3_list_count}}件</p>
+            			{{if $top3_list}}
+            			{{foreach from=$top3_list item=data}}
+                        <div class="followerRanking">
+                            <p><a href="/ranking/detail/id/{{$data.rank_id}}" target="_blank">{{$data.title}}</a><br>{{$data.explain}}</p>
+                            <ul class="inline">
+                                <li>{{$data.created_at}}</li>
+                                <li>PV数:{{if $data.pv==''}}0{{else}}{{$data.pv}}{{/if}}</li>
+                                <li>コメント数:{{if $data.com==''}}0{{else}}{{$data.com}}{{/if}}</li>
+                            </ul>
+                        </div>
+                        {{/foreach}}
+                        {{/if}}
+                         <p class="link"><a href="#">もっと見る</a></p>
+                    </div>
+
+
+            </div>
+            <!--SIDE-->
+            <div id="colomnSide">
+                <div class="block">
+                    <p class="titleType01">店舗登録情報</p>
+                    <dl class="boxInfo">
+                        <dt><span>・</span>住所</dt>
+                        <dd>{{if $shop_address}}{{$shop_address}}{{/if}}</dd>
+                        <dt><span>・</span>営業時間</dt>
+                        <dd>{{if $shop_business_day}}{{$shop_business_day}}{{/if}}</dd>
+                        <dt><span>・</span>URL</dt>
+                        <dd>{{if $shop_url}}{{$shop_url}}{{/if}}</dd>
+                    </dl>
+                   	<p class="link">
+                    	<a href="javascript:;" class="shop_info">店情報を確認する</a>
+                   	</p>
+                </div>
+                <div class="block">
+                    <p class="titleType01">お知らせ</p>
+                    <ul class="boxNews">
+                        <li>2013/10/01</li>
+                        <li>リグルメをリリースしました。まだ多くのバグがありますが、地道に修正していきます。<span>New!</span></li>
+                    </ul>
+                </div>
+            </div>
+    </div>
+    <!--/#contents----------------------------------------------------------->
+
+    <!--#footer/----------------------------------------------------------->
+    <div id="footer">
+        <div class="wrap clearfix">
+            <div class="footerLogo"><a href="index.html"><img src="/img/pc/client/header_logo.png" alt="Re:gurume ソーシャル私的グルメランキング" width="235" height="45" /></a></div>
+            <div class="footerNav">
+            <ul class="inline">
+                <li><a href="/client/index">店舗会員トップ</a>｜</li>
+                <li><a href="">FAQ</a>｜</li>
+                <li><a class="client_submit" id="coupon_info" href="javascript:;">クーポン管理</a>｜</li>
+                <li><a class="shop_info" href="javascript:;">店舗情報</a>｜</li>
+                <li><a href="">設定</a>｜</li>
+                <li><a href="">利用規約</a>｜</li>
+                <li><a href="">プライバシーポリシー</a>｜</li>
+                <li><a href="">お問合わせ</a>｜</li>
+                <li><a href="">運営会社</a></li>
+            </ul>
+            <p class="copy">&copy; Re:gurume</p></div>
+        </div>
+    </div>
+    <!--/#footer----------------------------------------------------------->
+</div>
+<!--/#wrapper----------------------------------------------------------->
+
+<!-- ログイン画面 -->
+<script type="text/javascript" src="/js/client/tag/tracking.js"></script>
+    {{else}}
+        {{if $massage}}
+        	<p class="messageLogin">{{$massage}}</p>
+        {{/if}}
+		<div class="boxLogin">
+		  <h1><img src="/img/pc/client/header_logo.png" alt="Re:gurume 店舗情報管理画面" /></h1>
+          <form action="/client/login/" method="post" name="loginForm">
+		    <table summary="ログインフォーム">
+		      <thead></thead><tfoot></tfoot>
+		      <tbody>
+		        <tr>
+		          <th>メールアドレス</th>
+		          <td>
+		            <input type="text" name="email">
+		          </td>
+		        </tr>
+		        <tr>
+		          <th>パスワード</th>
+		          <td>
+		            <input type="password" name="password">
+		            <input type="hidden" name="login_flg" value="1">
+		          </td>
+		        </tr>
+
+		      </tbody>
+		    </table>
+		    <p class="btnLogin"><input class="btn btnC03 btnL" type="submit" value="ログイン" /></p>
+		    <p class="link"><a href="/" target="_blank">リグルメのトップページへ</a></p>
+		  </form>
+		</div>
+	<!-- /ログイン画面 -->
+	{{/if}}
+</body>
+</html>

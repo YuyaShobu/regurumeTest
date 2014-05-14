@@ -1,0 +1,50 @@
+{{include file="./common/head.html"}}
+<body>
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+
+<!--#wrapper/-->
+<div id="wrapperBg">
+    <!--#header/-->
+    {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#contents/-->
+    <div id="container" class="wrap clearfix">
+    	<div id="colomnContents">
+            <h2 class="titleBox01"><span>:</span>ランキングを作る／完了</h2>
+        <div class="inputStyleBox">
+
+{{$msg}}
+<p>
+    {{if $rank_id !=""}}
+    <p class="caption linkArrow"><a href="/ranking/detail/id/{{$rank_id}}">ランキング詳細へ</a></p>
+    {{/if}}
+    <p class="caption linkArrow"><a href="/user/myranking/id/{{$user.user_id}}">マイランキングへ戻る</a></p>
+
+</p>
+</div>
+            </div>
+
+        <!--#右サイド/-->
+            {{include file="./common/rightside.html"}}
+        <!--#右サイド/-->
+
+    </div>
+    <!--/#contents-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+</div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>
+

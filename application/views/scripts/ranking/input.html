@@ -1,0 +1,289 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+<script type="text/javascript"  src="/js/user/ranking.js"></script>
+<style type="text/css">
+#destination_1{filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(true,sizingMethod=scale);}
+#destination_2{filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(true,sizingMethod=scale);}
+#destination_3{filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(true,sizingMethod=scale);}
+</style>
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}
+<body>
+<noscript>
+<div class="noScript">サイトを快適に利用するためには、JavaScriptを有効にしてください。</div>
+</noscript>
+
+<!--#wrapper/-->
+<div id="wrapperBg">
+    <!--#header/-->
+    {{include file="./common/header.html"}}
+    <!--/#header-->
+    <div id="headerUneder">
+        <!--#pankuzu/-->
+        {{include file="./common/pankuzu.html"}}
+        <!--#pankuzu/-->
+    </div>
+    <!--#contents/-->
+    <div id="container" class="wrap clearfix">
+        <div id="colomnContents">
+            <h2 class="titleBox01"><span>:</span>ランキングを作る</h2>
+        <div class="inputStyleBox">
+        {{if $errorflg}}
+        <ul class="textError">
+            {{foreach from=$error item=error_message}}
+            <li>{{$error_message}}</li>
+            {{/foreach}}
+        </ul>
+        {{/if}}
+
+        <form enctype="multipart/form-data" id="form_main" name="form_main" action="/ranking/comfirm" method="post">
+        <div class="editRankStyle">
+            <p class="stepTitle"><span class="step">STEP1</span><br />ランキングのタイトルを入れます <span class="textAttention">必須</span></p>
+            <div class="rankingInput"><input type="text" name="title"   id="title"  size="60" value="{{$detail.title}}" placeholder="（例）●●なお店、●●のお店" /><span>Best3</span></div>
+            <p class="stepTitle"><span class="step">STEP2</span><br />重視していることにチェックを入れます <span class="textAttention">必須（1個以上）</span></p>
+            <div class="pointRankinginput">
+            <ul class="listCategory1">
+             {{foreach from=$list key="k" item="v" name="category"}}
+             <li>
+               <span><input type="checkbox" name="large_id[]" value="{{$v.large_id}}" id="largecategory_{{$v.large_id}}" onClick="large_category_checked(this,{{$v.large_id}});"
+                   {{foreach from=$check_list key="l_id" item="l_value" name="large"}}
+                       {{if $v.large_id == $l_value.large_id}} checked="checked"{{/if}}
+                   {{/foreach}}
+                >{{$v.large_value}}</span>
+
+                <ul id="category_samll_list_{{$v.large_id}}" class="catesmallRankinginput">
+
+                {{foreach from=$v.smalllist item="small_value" name="large"}}
+                 <li>
+                     <input type="radio" name="smalllist_{{$v.large_id}}"  value="{{$small_value.small_id}}" onclick="small_category_checked(this,{{$v.large_id}});"
+                     {{foreach from=$check_list key="l_id" item="l_value" name="large"}}
+                        {{if $v.large_id == $l_value.large_id && $small_value.small_id == $l_value.small_id}} checked="checked"{{/if}}
+                     {{/foreach}}
+                 >{{$small_value.small_value}}
+                 </li>
+                 {{/foreach}}
+                  </ul>
+            </li>
+            {{/foreach}}
+            </ul>
+            </div>
+            <p class="stepTitle"><span class="step">STEP3</span><br />お店を登録します <span class="textAttention">必須(一店舗以上)</span></p>
+            <div class="shopRankinginput">
+            <div class="shopPosting clearfix">
+	            <p class="rankNumber">1位</p>
+	            <dl class="listDl1">
+	                <dt>店名を入れよう！</dt>
+	                <dd>
+                       <select name="pref_1" id="pref_1" class="show03">
+                           <option value="-1">お店の場所を選んでください</option>
+                       {{foreach from=$pref key="key" item="v"}}
+                           <option value="{{$v.pref_code}}"
+                           {{if $detail.pref_code_1 == $v.pref_code}}
+                                selected
+                           {{elseif $detail.pref_1 == $v.pref_code}}
+                                selected
+                           {{/if}}
+                           >{{$v.value}}</option>
+                       {{/foreach}}
+                       </select>
+                       <div class="pref_inner_1 shoprefRankinginput">
+		                   <input type="text" name="shop_name_1" id="shop_name_1" class="textInput_shopRankinginput" value="{{$detail.shop_name_1}}" placeholder="お店の名前を入力して、「店舗を検索」ボタンを押してください。" />
+	                       <input type="button"  value="店舗を検索" id="search_button_1" class="btn btnF btnC01" />
+                       </div>
+	                   <div id="search_results_1"></div>
+	                </dd>
+  		        </dl>
+
+		        <dl class="listDl1 show_inner_1">
+	                    <dt>感想をどうぞ！</dt>
+	                    <dd><textarea name="explain_1" id="explain_1" rows="5" placeholder="料理の感想や店内や接客、心に残った点等、ランキングタイトルに沿った感想を入れてください"/>{{$detail.explain_1}}</textarea></dd>
+	                    <dt>撮影した写真を記録に残そう！</dt>
+	                    <dd><div class="file">
+	                    <input name="photo_1" id="photo_1" type="file" size="40" >
+	                    <div id="destination_1">
+	                        {{if $photo_1 !=""}}
+	                            <img alt="" src="/img/tmp/ranking/{{$user_id}}/{{$photo_1}}" />
+                                <p><a href="" onclick="javascript:deletephoto(1);">画像を削除</a></p>
+	                        {{elseif $detail.photo_1 !=""}}
+	                            <img alt="" src="{{$detail.photo_1}}" />
+                                <p><a href="" onclick="javascript:deletephoto(1);">画像を削除</a></p>
+	                        {{else}}
+	                            <p class="fileCaption">写真をアップしましょう</p>
+	                        {{/if}}
+	                    </div>
+	                </div>
+	                </dd>
+	            </dl>
+
+            </div>
+
+            <div class="shopPosting clearfix">
+	            <p class="rankNumber">2位</p>
+	            <dl class="listDl1">
+	                <dt>店名を入れよう！</dt>
+	                <dd>
+                       <select name="pref_2" id="pref_2">
+                           <option value="-1">お店の場所を選んでください</option>
+                       {{foreach from=$pref key="key" item="v"}}
+                           <option value="{{$v.pref_code}}"
+                           {{if $detail.pref_code_2 == $v.pref_code}}
+                                selected
+                           {{elseif $detail.pref_2 == $v.pref_code}}
+                                selected
+                           {{/if}}
+                           >{{$v.value}}</option>
+                       {{/foreach}}
+                       </select>
+                       <div class="pref_inner_2 shoprefRankinginput">
+	                       <input type="text" name="shop_name_2" id="shop_name_2" class="textInput_shopRankinginput" value="{{$detail.shop_name_2}}" placeholder="お店の名前を入力して、「店舗を検索」ボタンを押してください。" />
+	                       <input type="button"  value="店舗を検索" id="search_button_2" class="btn btnF btnC01" />
+                       </div>
+	                   <div id="search_results_2"></div>
+	                </dd>
+  		        </dl>
+
+		        <dl class="listDl1 show_inner_2">
+	                    <dt>感想をどうぞ！</dt>
+	                    <dd><textarea name="explain_2" id="explain_2" rows="5"/>{{$detail.explain_2}}</textarea></dd>
+	                    <dt>撮影した写真を記録に残そう！</dt>
+	                    <dd><div class="file">
+	                    <input name="photo_2" id="photo_2" type="file" size="40" >
+	                    <div id="destination_2">
+	                        {{if $photo_2 !=""}}
+	                            <img alt="" src="/img/tmp/ranking/{{$user_id}}/{{$photo_2}}" />
+                                <p><a href="" onclick="javascript:deletephoto(2);">画像を削除</a></p>
+	                        {{elseif $detail.photo_2 !=""}}
+	                            <img alt="" src="{{$detail.photo_2}}" />
+                                <p><a href="" onclick="javascript:deletephoto(2);">画像を削除</a></p>
+	                        {{else}}
+	                            <p class="fileCaption">写真をアップしましょう</p>
+	                        {{/if}}
+	                    </div>
+	                </div>
+	                </dd>
+	            </dl>
+            </div>
+
+            <div class="shopPosting clearfix">
+	            <p class="rankNumber">3位</p>
+	            <dl class="listDl1">
+	                <dt>店名を入れよう！</dt>
+	                <dd>
+                       <select name="pref_3" id="pref_3">
+                           <option value="-1">お店の場所を選んでください</option>
+                       {{foreach from=$pref key="key" item="v"}}
+                           <option value="{{$v.pref_code}}"
+                           {{if $detail.pref_code_3 == $v.pref_code}}
+                                selected
+                           {{elseif $detail.pref_3 == $v.pref_code}}
+                                selected
+                           {{/if}}
+                           >{{$v.value}}</option>
+                       {{/foreach}}
+                       </select>
+                       <div class="pref_inner_3 shoprefRankinginput">
+	                       <input type="text" name="shop_name_3" id="shop_name_3" class="textInput_shopRankinginput" value="{{$detail.shop_name_3}}" placeholder="お店の名前を入力して、「店舗を検索」ボタンを押してください。" /><input type="button" value="店舗を検索" id="search_button_3" class="btn btnF btnC01" />
+	                   </div>
+	                   <div id="search_results_3"></div>
+	                </dd>
+  		        </dl>
+
+		        <dl class="listDl1 show_inner_3">
+	                    <dt>感想をどうぞ！</dt>
+	                    <dd><textarea name="explain_3" id="explain_3" rows="5"/>{{$detail.explain_3}}</textarea></dd>
+	                    <dt>撮影した写真を記録に残そう！</dt>
+	                    <dd>
+	                    <div class="file">
+	                    <input name="photo_3" id="photo_3" type="file" size="40" >
+	                    <div id="destination_3">
+	                        {{if $photo_3 !=""}}
+	                            <img alt="" src="/img/tmp/ranking/{{$user_id}}/{{$photo_3}}" />
+                                <p><a href="" onclick="javascript:deletephoto(3);">画像を削除</a></p>
+	                        {{elseif $detail.photo_3 !=""}}
+	                            <img alt="" src="{{$detail.photo_3}}" />
+                                <p><a href="" onclick="javascript:deletephoto(3);">画像を削除</a></p>
+	                        {{else}}
+	                            <p class="fileCaption">写真をアップしましょう</p>
+	                        {{/if}}
+	                    </div>
+	                </div>
+
+	                </dd>
+	            </dl>
+            </div>
+        </div>
+
+             <div class="boxTag" id="area">
+              <p>タグづけ <span>同じ話題のランキングを他のユーザーから見つけやすくするという機能です</span></p>
+                <dl>
+                <dt>
+                    <input type="text" placeholder="魚が旨い" id="tagtxt" style="width:100px;" />
+                    <input type="button" value="追加" class="btnCommon" onclick="addInput(this.form);"/>
+                </dt>
+                <dd>
+                    <ul class="inline" id="rankingtag">
+                        {{if $tag_list != ""}}
+                            {{foreach from=$tag_list key="k" item="v" name="tag"}}
+                                <span id="group{{$smarty.foreach.tag.iteration}}">
+                                <li>
+                                    {{$v.tag_name}} <button type="button" onclick="delInput({{$smarty.foreach.tag.iteration}})">×</button>
+                                    <input type="hidden" name="tag[]" value="{{$v.tag_name}}" />
+                                </li>
+                                </span>
+                            {{/foreach}}
+                        {{elseif $detail.tag != ""}}
+                            {{foreach from=$detail.tag key="kk" item="vv" name="d_tag"}}
+                            <span id="group{{$smarty.foreach.d_tag.iteration}}">
+                                <li>
+                                    {{$vv}} <button type="button" onclick="delInput({{$smarty.foreach.d_tag.iteration}})">×</button>
+                                    <input type="hidden" name="tag[]" value="{{$vv}}" />
+                                </li>
+                            </span>
+                            {{/foreach}}
+                         {{/if}}
+                     </ul>
+                </dd>
+                </dl>
+            </div>
+            <input type="hidden" id="shop_id_1" name="shop_id_1"    value="{{$detail.shop_id_1}}"/>
+            <input type="hidden" id="shop_id_2" name="shop_id_2"    value="{{$detail.shop_id_2}}"/>
+            <input type="hidden" id="shop_id_3" name="shop_id_3"    value="{{$detail.shop_id_3}}"/>
+
+            <input type="hidden" name="photo_1"     value="{{$detail.photo_1}}"/>
+            <input type="hidden" name="photo_2"     value="{{$detail.photo_2}}"/>
+            <input type="hidden" name="photo_3"     value="{{$detail.photo_3}}"/>
+
+            <input type="hidden" name="photo_delflg_1"   id="photo_delflg_1"  value="{{$detail.photo_delflg_1}}"/>
+            <input type="hidden" name="photo_delflg_2"   id="photo_delflg_2"  value="{{$detail.photo_delflg_2}}"/>
+            <input type="hidden" name="photo_delflg_3"   id="photo_delflg_3"  value="{{$detail.photo_delflg_3}}"/>
+            <input type="hidden" name="input_flg"   id="input_flg"  value="1"/>
+            <input type="hidden" name="rank_id"   id="rank_id"  value="{{$detail.rank_id}}"/>
+            <div class="text-center">
+            <input type="submit"  name="input" value="確認画面へ" actionURL="/ranking/comfirm/" class="btn btnFix" style="width:300px;" />
+            </div>
+            </form>
+
+            </div>
+            </div>
+
+            </div>
+
+        <!--#右サイド/-->
+            {{include file="./common/rightside.html"}}
+        <!--#右サイド/-->
+
+
+
+    </div>
+    <!--/#contents-->
+
+    <!--#footer/-->
+    {{include file="./common/footer.html"}}
+    <!--/#footer-->
+    {{include file="./common/pagetop.html"}}
+</div>
+<!--/#wrapper-->
+{{include file="./common/tag.html"}}
+</body>
+</html>

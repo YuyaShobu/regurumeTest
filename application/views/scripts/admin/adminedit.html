@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+{{if $error_flg}}
+	<ul>
+		{{foreach from=$error item=error_message}}
+		<li>要素:{{$error_message}}</li>
+		{{/foreach}}
+	</ul>
+{{/if}}
+<form action="/admin/adminconfom" method="post">
+	name<input type="text" name="name" value="{{$name}}" /><br/>
+	email<input type="text" name="email" value="{{$email}}" /><br/>
+	encrypted_password<input type="password" name="encrypted_password" value="{{$encrypted_password}}"><br/>
+	encrypted_password2<input type="password" name="kpassword" value="{{$kpassword}}"><br/>
+	<input type="hidden" name="admin_id" value="{{$admin_id}}" />
+	<input type="hidden" name="{{$action}}" value="{{$action}}" />
+	<input type="submit" value="確認" />
+</form>
+</body>
+</html>

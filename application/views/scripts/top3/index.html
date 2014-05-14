@@ -1,0 +1,21 @@
+
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>TOP3</title>
+</head>
+<body>
+<p>TOP3カテゴリ一覧</p>
+
+{{foreach from=$list key="categorykey" item="categoryvalue" name="category"}}
+<div>
+    <form action="./list" method="post">
+        <input name="category_id" type="hidden" value="{{$categoryvalue.category_id}}">
+        <input name="category_name" type="hidden" value="{{$categoryvalue.category_name}}">
+        <input type="submit" value="{{$categoryvalue.category_name}}登録" />
+    </form>
+</div>
+{{/foreach}}
+</body>
+</html>

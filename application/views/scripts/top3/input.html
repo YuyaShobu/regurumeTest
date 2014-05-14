@@ -1,0 +1,55 @@
+{{include file="./common/shopsearch.html"}}
+
+{{if $errorflg}}
+    <ul>
+        {{foreach from=$error item=error_message}}
+        <li>要素:{{$error_message}}</li>
+        {{/foreach}}
+    </ul>
+{{/if}}
+
+<form id="form_main" name="form_main" action="/top3/insert" method="post" enctype="multipart/form-data">
+
+<p>{{$category_name}}のTOP{{$param.top3_no}}を入力してください。</p>
+ <div id="map_canvas" style="width:500px; height:300px"></div>
+<!-- ▼マップはここ -->
+
+<table class="">
+<tr>
+    <th>店名</th>
+    <td>
+       <input type="text" name="shop_name"   id="shop_name"  value="{{$detail.shop_name}}" size="40"/>
+        <input type="submit" value="お店を検索" id="search_button" /><br>
+        <div id="search_results"></div>
+    </td>
+</tr>
+<tr>
+    <th>一言</th>
+    <td>
+       <input type="text" name="explain"   id="explain"  value="{{$detail.explain}}" size="40"/>
+    </td>
+</tr>
+<tr>
+    <th>画像</th>
+    <td>
+        <input name="photo"  id="photo" type="file" size="40">
+    </td>
+</tr>
+<tr>
+    <th colspan="2">
+        <img alt="" src="/img/sp/shop/{{$detail.photo}}">
+    </th>
+</tr>
+
+</table>
+<input type="hidden" name="category_id"   id="category_id"  value="{{$param.category_id}}"/>
+<input type="hidden" name="top3_no"   id="top3_no"  value="{{$param.top3_no}}"/>
+<input type="hidden" name="shop_id"   id="shop_id"  value="{{$detail.shop_id}}_{{$detail.latitude}}_{{$detail.longitude}}"/>
+<input type="hidden" name="latitude"   id="latitude"  value="{{$latitude}}"/>
+<input type="hidden" name="longitude"   id="longitude"  value="{{$longitude}}"/>
+<input type="hidden" name="photo"    value="{{$detail.photo}}"/>
+
+<input type="submit"  value="登録"/>
+</form>
+
+{{include file="./common/footer.html"}}

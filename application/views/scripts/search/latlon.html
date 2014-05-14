@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<html>
+<head>
+<title>今いる場所の近くのトップ３</title>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    google.load("jquery", "1.6.4");
+</script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&region=ja&language=ja"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+
+	$("#search_results").slideUp();
+    $("#search_button").click(function(e){
+        e.preventDefault();
+        ajax_search();
+    });
+
+    function ajax_search(){
+    	$("#search_results").show();
+		var latitude =$("#latitude").val();
+		var longitude =$("#longitude").val();
+		var ctg =$(".ctg").val();
+
+
+			$.post("/shop/ajaxgetshoplistfromlatlon/", {latitude : latitude, longitude : longitude , ctg : ctg }, function(data){
+	 	    	if (data.length>0){
+	    			$("#search_results").html(data);
+				}
+			})
+    }
+    var showMap = function(position) {
+
+        var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        var options = {
+            zoom: 16,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map($("#map_canvas").get(0), options);
+        var marker = new google.maps.Marker({
+                        map: map,
+                        position: latlng
+                    });
+
+    	getAddress(marker);
+    	document.getElementById('latitude').value = position.coords.latitude;
+    	document.getElementById('longitude').value = position.coords.longitude;
+    }
+
+
+	function getAddress(marker) {
+
+		new google.maps.Geocoder().geocode({
+    		latLng: marker.getPosition()
+  		}, function(result, status) {
+    		if (status == google.maps.GeocoderStatus.OK) {
+    			str= result[0].formatted_address.replace("日本, ","");
+			document.getElementById('address').value = str;
+    		}
+  		});
+
+	}
+
+	$("#abtn").click(function() {
+        navigator.geolocation.getCurrentPosition(showMap);
+        var i=0;
+
+         if(i%2==0)
+          document.getElementById("visible").style.display="block";
+         else
+          document.getElementById("visible").style.display="none";
+         i++;
+        return false;
+	});
+});
+</script>
+</head>
+<body>
+<div align="center">
+<p><input type="button" id="abtn" value="まずはクリックで現在地を取得しよう" /></p>
+<div id ="visible" style="display:none;">
+<div id="map_canvas" style="width:100%; height:250px;"></div>
+
+<label for="type1">あなたが今いるだいたいの場所</label><br>
+<input type="text" id="address" name="address"><br>
+<input type="hidden" name="latitude" id="latitude" size="20" /><br>
+<input type="hidden" name="longitude" id="longitude" size="20" /><br>
+<input type="radio"  class="ctg" name="ctg" value="1">ラーメン
+<input type="radio"  class="ctg" name="ctg" value="2">魚介系
+<input type="radio"  class="ctg" name="ctg" value="3">イタリアン
+<input type="radio"  class="ctg" name="ctg" value="4">お寿司
+<input type="radio"  class="ctg" name="ctg" value="0">全て
+<input type="submit" value="お店を検索" id="search_button" />
+<div id="search_results"></div>
+</div>
+</div>
+</body>
+</html>

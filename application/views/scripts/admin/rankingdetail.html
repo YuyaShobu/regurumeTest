@@ -1,0 +1,17 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+{{if $detail_list}}
+<table>
+<tr><td>rank_no</td><td>shop_id</td><td>explain</td></tr>
+{{foreach from=$detail_list item=data}}
+<tr><td>{{$data.rank_no}}</td><td>{{$data.shop_id}}</td><td>{{$data.explain}}</td></tr>
+{{/foreach}}
+</table>
+{{/if}}
+</body>
+</html>

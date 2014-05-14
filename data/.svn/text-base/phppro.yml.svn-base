@@ -1,0 +1,13 @@
+database:
+ real:
+  adapter:  mysql
+  host:     localhost
+  database: phppro
+  username: asial
+  password: password
+ test:
+  adapter:  mysql
+  host:     localhost
+  database: test_phppro
+  username: test_asial
+  password: test_password

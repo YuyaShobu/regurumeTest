@@ -1,0 +1,5 @@
+{{include file="./common/head_part_start.html"}}
+{{include file="./common/head_part_meta.html"}}
+{{include file="./common/head_part_js.html"}}
+{{include file="./common/head_part_css.html"}}
+{{include file="./common/head_part_end.html"}}

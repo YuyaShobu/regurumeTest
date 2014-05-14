@@ -1,0 +1,21 @@
+<!--#トップタブエリア/-->
+<ul class="navTab inline" id="tab">
+    <li  {{if $view_flg =="new" or $view_flg ==""}}class="current" {{/if}}>
+        <a href="/" >みんなの新着</a>
+    </li>
+    <li {{if $view_flg =="reguru"}}class="current" {{/if}}>
+        <a href="/index/reguru">みんなのリグルメ</a>
+    </li>
+    <li {{if $view_flg =="pageview"}}class="current" {{/if}}>
+        <a href="/index/pageview">みんなの閲覧数順</a>
+    </li>
+
+{{if $user_id != null}}
+    <li {{if $view_flg =="follow"}}class="current" {{/if}}>
+        <a href="/index/follow">フォロー</a>
+    </li>
+{{/if}}
+
+</ul>
+
+<!--#トップタブエリア/-->
