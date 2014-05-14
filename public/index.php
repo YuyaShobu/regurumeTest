@@ -11,6 +11,8 @@ $front = Zend_Controller_Front::getInstance();
 
 $front->setParam("noViewRenderer", false);
 
+echo"master";
+
 defined('ROOT_PATH')||define('ROOT_PATH',realpath(dirname(__FILE__)));
 
 defined('APPLICATION_PATH')
